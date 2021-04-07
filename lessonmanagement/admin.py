@@ -9,6 +9,7 @@ admin.site.register(SubjectManager)
 admin.site.register(GroupSubjectManager)
 admin.site.register(ClassYear)
 admin.site.register(ClassYearManager)
+admin.site.register(Lesson)
 
 
 
