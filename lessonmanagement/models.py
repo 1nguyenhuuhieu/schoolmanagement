@@ -23,9 +23,6 @@ class Teacher(models.Model):
     # Bổ sung trình crop ảnh vào tempate
     avatar = models.ImageField("Ảnh đại diện", help_text = "Ảnh nên được crop về ảnh vuông để đạt được độ thẩm mỹ cao nhất",upload_to = user_directory_path, blank = True, null = True)
 
-    class Meta:
-        verbose_name = "Giáo viên"
-        verbose_name_plural = "Danh sách giáo viên"
   
 
     def __str__(self):
