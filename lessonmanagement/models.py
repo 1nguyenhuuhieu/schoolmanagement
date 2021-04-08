@@ -14,6 +14,8 @@ class Teacher(models.Model):
     ('female', 'Nữ')
     ]
     sex = models.CharField(verbose_name="Giới tính",max_length=6, choices=SEX_CHOICES)
+    main_subject = models.ForeignKey("Subject", on_delete = models.SET_NULL, null=True, blank=True, verbose_name="Chuyên môn")
+    is_work = models.BooleanField("Có đang công tác",default=True, help_text="Tích vào ô nếu đang công tác tại trường, bỏ tích nếu đã nghỉ hưu hoặc chuyển sang đơn vị khác")
     def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
         return 'user_{0}/{1}'.format(instance.user.id, filename)
@@ -21,6 +23,10 @@ class Teacher(models.Model):
     # Bổ sung trình crop ảnh vào tempate
     avatar = models.ImageField("Ảnh đại diện", help_text = "Ảnh nên được crop về ảnh vuông để đạt được độ thẩm mỹ cao nhất",upload_to = user_directory_path, blank = True, null = True)
 
+    class Meta:
+        verbose_name = "Giáo viên"
+        verbose_name_plural = "Danh sách giáo viên"
+  
 
     def __str__(self):
         return '%s %s' % (self.firstname, self.lastname)
@@ -58,6 +64,11 @@ class ManagerAbstract(models.Model):
 
 class SubjectManager(ManagerAbstract):
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
+    ROLE_CHOICES = [
+    ('member', 'Thành viên'),
+    ('leader', 'Lãnh đạo'),
+    ]
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True)
     def __str__(self):
         return '%s %s %s' % (self.manager.firstname, self.manager.lastname, self.subject.title)
 
@@ -108,12 +119,28 @@ class Lesson(models.Model):
     title = models.CharField(max_length=200)
     upload_time = models.DateTimeField(auto_now=True)
 
-    def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-        return 'lesson/user_{0}/{1}'.format(instance.user.id, filename)
-    lesson_path = models.FileField(upload_to=user_directory_path)
+ 
+    lesson_path = models.FileField(upload_to='test/')
     description = models.CharField(max_length=200, null=True, blank=True)
-    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
+    teacher = models.ForeignKey(Teacher, related_name="teacher", on_delete=models.SET_NULL, null=True, blank=True)
+    checker = models.ForeignKey(Teacher, related_name="checker", on_delete=models.SET_NULL, null=True, blank=True)
+    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
+    start_number_lesson = models.IntegerField(null=True, blank=True)
+    end_number_lesson = models.IntegerField(null=True, blank=True)
+
+    class_year = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, null=True, blank=True)
+    STATUS_CHOICES = [
+    ('pending', 'Chờ duyệt'),
+    ('acept', 'Đã duyệt'),
+    ('deny', 'Bị từ chối'),
+    ]
+    status = models.CharField(max_length=10, blank=True, choices=STATUS_CHOICES)
+    note_checker = models.CharField(max_length=200, blank=True)
+
+
+    def __str__(self):
+        return self.title
+
 
 
 
