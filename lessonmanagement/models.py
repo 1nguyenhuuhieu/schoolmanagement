@@ -13,7 +13,7 @@ class Teacher(models.Model):
     ('male', 'Nam'),
     ('female', 'Nữ')
     ]
-    sex = models.CharField(verbose_name="Giới tính",max_length=6, choices=SEX_CHOICES)
+    sex = models.CharField(verbose_name="Giới tính", max_length=6, choices=SEX_CHOICES)
     main_subject = models.ForeignKey("Subject", on_delete = models.SET_NULL, null=True, blank=True, verbose_name="Chuyên môn")
     is_work = models.BooleanField("Có đang công tác",default=True, help_text="Tích vào ô nếu đang công tác tại trường, bỏ tích nếu đã nghỉ hưu hoặc chuyển sang đơn vị khác")
     def user_directory_path(instance, filename):
@@ -42,6 +42,7 @@ class SubjectAbstract(models.Model):
 
 class Subject(SubjectAbstract):
     group = models.ForeignKey("GroupSubject", on_delete=models.SET_NULL, null=True, blank=True)
+    member = models.ManyToManyField(Teacher, through="SubjectManager")
 
 class GroupSubject(SubjectAbstract):
     pass
@@ -122,10 +123,11 @@ class Lesson(models.Model):
     teacher = models.ForeignKey(Teacher, related_name="teacher", on_delete=models.SET_NULL, null=True, blank=True)
     checker = models.ForeignKey(Teacher, related_name="checker", on_delete=models.SET_NULL, null=True, blank=True)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
+
     start_number_lesson = models.IntegerField(null=True, blank=True)
     end_number_lesson = models.IntegerField(null=True, blank=True)
 
-    class_year = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, null=True, blank=True)
+    class_year = models.ManyToManyField(ClassYear, null=True, blank=True)
     STATUS_CHOICES = [
     ('pending', 'Chờ duyệt'),
     ('acept', 'Đã duyệt'),
