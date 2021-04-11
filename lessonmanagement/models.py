@@ -43,6 +43,7 @@ class SubjectAbstract(models.Model):
 class Subject(SubjectAbstract):
     group = models.ForeignKey("GroupSubject", on_delete=models.SET_NULL, null=True, blank=True)
     member = models.ManyToManyField(Teacher, through="SubjectManager")
+    classyear = models.ManyToManyField("ClassYear", through="SubjectClassYear")
 
 class GroupSubject(SubjectAbstract):
     pass
@@ -76,6 +77,9 @@ class GroupSubjectManager(ManagerAbstract):
         return '%s %s %s' % (self.manager.firstname, self.manager.lastname, self.group.title)
 
 
+
+
+
 class ClassYear(models.Model):
     TITLE_CHOICES = [
     ('a', 'A'),
@@ -85,16 +89,6 @@ class ClassYear(models.Model):
     ]
     title = models.CharField(verbose_name="Tên lớp",max_length=1, choices=TITLE_CHOICES)
     startyear = models.IntegerField()
-
-    def __str__(self):
-        return '%s %s' % (self.title, self.startyear)
-
-    def class_status(self):
-        now = datetime.now()
-        if (self.startyear + 3) > now.year:
-            return "Đang đào tạo"
-        else:
-            return "Đã tốt nghiệp"
 
     def class_level(self):
         now = datetime.now()
@@ -108,6 +102,17 @@ class ClassYear(models.Model):
             return "9"
         else:
             return "Đã tốt nghiệp"
+
+  
+
+    def class_status(self):
+        now = datetime.now()
+        if (self.startyear + 3) > now.year:
+            return "Đang đào tạo"
+        else:
+            return "Đã tốt nghiệp"
+    def __str__(self):
+        return  '%s %s'% (self.class_level(),self.title)
 
 class ClassYearManager(ManagerAbstract):
     class_year = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, null=True, blank=True)
@@ -139,6 +144,15 @@ class Lesson(models.Model):
 
     def __str__(self):
         return self.title
+
+class SubjectClassYear(models.Model):
+    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
+    classyear = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, null=True, blank=True)
+    total_lesson = models.IntegerField(blank=True)
+    teacher = models.OneToOneField(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return '%s %s %s' % (self.subject, self.classyear, self.teacher.firstname)
 
 
 
