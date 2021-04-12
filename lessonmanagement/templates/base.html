@@ -54,7 +54,7 @@
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <img src="{{ request.user.teacher.avatar.url }}" class="rounded-circle" alt="" height="25px">
+                  <img src="{% if request.user.teacher %}{{ request.user.teacher.avatar.url }} {% endif %}" class="rounded-circle" alt="" height="25px">
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                   <li><a class="dropdown-item" href="#">Action</a></li>
@@ -108,14 +108,15 @@
         </div>
         <div class="col-9 pt-4 ps-4 pe-lg-5">
           <div class="d-flex justify-content-between align-items-center">
-          <h5>Toán 6   <small class="text-muted">With faded secondary text</small> </h5> 
+          <h5>Toán 6   <small class="text-muted"> - 6A, 6B</small> </h5> 
 
           <div class="d-flex">
 
             <div class="btn-group  me-3">
-              <a href="#" class="btn btn-outline-dark active" aria-current="page">Toàn bộ</a>
-              <a href="#" class="btn btn-outline-dark">Đã dạy</a>
-              <a href="#" class="btn btn-outline-dark">Chưa dạy</a>
+              <a href="#" class="btn btn-outline-dark " aria-current="page">Toàn bộ</a>
+              <a href="#" class="btn btn-outline-dark active " aria-current="page">6A</a>
+              <a href="#" class="btn btn-outline-dark">6B</a>
+              <a href="#" class="btn btn-outline-dark">6C</a>
             </div>
 
 
@@ -135,7 +136,12 @@
           </div>
 
           </div>
+          <div class="progress mt-3" >
+            <div class="progress-bar" role="progressbar" style="width: 55%;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">45/59</div>
+          </div>
           <hr>
+
+
           <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
               <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Toàn bộ giáo án</button>
@@ -151,7 +157,37 @@
             </li>
           </ul>
           <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+              <table class="table table-hover mt-3">
+                <thead >
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Handle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>@fat</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td colspan="2">Larry the Bird</td>
+                    <td>@twitter</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
             <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
           </div>

@@ -1,19 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.conf import settings
 
 # Create your models here.
 class Teacher(models.Model):
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, blank=True, null=True)
-    firstname = models.CharField("họ",max_length=200)
-    lastname = models.CharField("Tên", max_length=200)
-    zalo_number = models.DecimalField(verbose_name="Số điện thoại",help_text="Số điện thoại có đăng ký zalo, sử dụng để nhận thông báo từ ban giám hiệu", max_digits=12, decimal_places=0)
-    birth_date = models.DateField("Ngày sinh")
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Tài khoản đăng nhập", help_text="Tài khoản đăng nhập viết liền không dấu. Ví dụ: nhhieu. Viết tắt của Nguyễn Hữu Hiếu. Nếu trùng họ tên thì thêm số vào sau, ví dụ nhhieu2")
+    firstname = models.CharField("Họ",max_length=200, blank=True)
+    lastname = models.CharField("Tên", max_length=200, blank=True)
+    zalo_number = models.DecimalField(verbose_name="Số điện thoại",help_text="Số điện thoại có đăng ký zalo, sử dụng để nhận thông báo từ ban giám hiệu", max_digits=12, decimal_places=0, blank=True)
+    birth_date = models.DateField("Ngày sinh", blank=True, help_text="Định dạng: năm - tháng - ngày. Ví dụ: 1990-04-21")
     SEX_CHOICES = [
     ('male', 'Nam'),
     ('female', 'Nữ')
     ]
-    sex = models.CharField(verbose_name="Giới tính", max_length=6, choices=SEX_CHOICES)
+    sex = models.CharField(verbose_name="Giới tính", max_length=6, choices=SEX_CHOICES, null=True, blank=True)
     main_subject = models.ForeignKey("Subject", on_delete = models.SET_NULL, null=True, blank=True, verbose_name="Chuyên môn")
     is_work = models.BooleanField("Có đang công tác",default=True, help_text="Tích vào ô nếu đang công tác tại trường, bỏ tích nếu đã nghỉ hưu hoặc chuyển sang đơn vị khác")
     def user_directory_path(instance, filename):
@@ -121,18 +122,17 @@ class ClassYearManager(ManagerAbstract):
 class Lesson(models.Model):
     title = models.CharField(max_length=200)
     upload_time = models.DateTimeField(auto_now=True)
-
- 
     lesson_path = models.FileField(upload_to='test/')
     description = models.CharField(max_length=200, null=True, blank=True)
     teacher = models.ForeignKey(Teacher, related_name="teacher", on_delete=models.SET_NULL, null=True, blank=True)
     checker = models.ForeignKey(Teacher, related_name="checker", on_delete=models.SET_NULL, null=True, blank=True)
+    check_date = models.DateField(blank=True, null=True)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
 
     start_number_lesson = models.IntegerField(null=True, blank=True)
     end_number_lesson = models.IntegerField(null=True, blank=True)
 
-    class_year = models.ManyToManyField(ClassYear, null=True, blank=True)
+    # class_year = models.ManyToManyField(ClassYear, null=True, blank=True ,through="LessonClassYear")
     STATUS_CHOICES = [
     ('pending', 'Chờ duyệt'),
     ('acept', 'Đã duyệt'),
@@ -142,13 +142,27 @@ class Lesson(models.Model):
     note_checker = models.CharField(max_length=200, blank=True)
 
 
+
     def __str__(self):
         return self.title
+
+class LessonClassYear(models.Model):
+    is_teach = models.BooleanField(blank=True, null=True)
+    teach_date = models.DateField(blank=True, null=True)
+    lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, blank=True, null=True)
+    classyear = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, blank=True, null=True)
+
+    def __str__(self):
+        return '%s %s %s' % (self.lesson, self.classyear, self.is_teach)
+
+
+
 
 class SubjectClassYear(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
     classyear = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, null=True, blank=True)
     total_lesson = models.IntegerField(blank=True)
+    current_lesson = models.IntegerField(blank=True)
     teacher = models.OneToOneField(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
