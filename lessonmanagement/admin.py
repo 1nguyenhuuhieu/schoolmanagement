@@ -13,7 +13,7 @@ admin.site.register(ClassYear)
 admin.site.register(ClassYearManager)
 admin.site.register(Lesson)
 admin.site.register(SubjectClassYear)
-# admin.site.register(LessonClassYear)
+admin.site.register(LessonClassYear)
 
 
 

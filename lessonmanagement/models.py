@@ -25,10 +25,16 @@ class Teacher(models.Model):
     # Bổ sung trình crop ảnh vào tempate
     avatar = models.ImageField("Ảnh đại diện", help_text = "Ảnh nên được crop về ảnh vuông để đạt được độ thẩm mỹ cao nhất",upload_to = user_directory_path, blank = True, null = True)
 
+    class Meta:
+        verbose_name = "Giáo viên"
+        verbose_name_plural = "Giáo viên"
+
   
 
     def __str__(self):
         return '%s %s %s' % (self.firstname, self.lastname, self.main_subject)
+
+
 
 
 class SubjectAbstract(models.Model):
@@ -72,7 +78,7 @@ class SubjectTeacher(ManagerAbstract):
     is_mainsubject = models.BooleanField(null=True, blank=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True)
     def __str__(self):
-        return '%s %s %s' % (self.manager.firstname, self.manager.lastname, self.subject.title)
+        return '%s %s %s' % (self.teacher.firstname, self.teacher.lastname, self.subject.title)
 
 class GroupSubjectManager(ManagerAbstract):
     group = models.ForeignKey(GroupSubject, on_delete=models.SET_NULL, null=True, blank=True)
@@ -128,6 +134,7 @@ class Lesson(models.Model):
     description = models.CharField(max_length=200, null=True, blank=True)
     teacher = models.ForeignKey(Teacher, related_name="teacher", on_delete=models.SET_NULL, null=True, blank=True)
     checker = models.ForeignKey(Teacher, related_name="checker", on_delete=models.SET_NULL, null=True, blank=True)
+    classyear = models.ManyToManyField(ClassYear, through="LessonClassYear")
     check_date = models.DateField(blank=True, null=True)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
 
