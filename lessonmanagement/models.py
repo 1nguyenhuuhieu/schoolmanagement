@@ -15,6 +15,7 @@ class Teacher(models.Model):
     ('female', 'Nữ')
     ]
     sex = models.CharField(verbose_name="Giới tính", max_length=6, choices=SEX_CHOICES, null=True, blank=True)
+    #chuyên môn chính
     main_subject = models.ForeignKey("Subject",on_delete=models.SET_NULL,null=True,blank=True)
     is_work = models.BooleanField("Có đang công tác",default=True, help_text="Tích vào ô nếu đang công tác tại trường, bỏ tích nếu đã nghỉ hưu hoặc chuyển sang đơn vị khác")
     def user_directory_path(instance, filename):
@@ -27,7 +28,7 @@ class Teacher(models.Model):
   
 
     def __str__(self):
-        return '%s %s' % (self.firstname, self.lastname)
+        return '%s %s %s' % (self.firstname, self.lastname, self.main_subject)
 
 
 class SubjectAbstract(models.Model):
