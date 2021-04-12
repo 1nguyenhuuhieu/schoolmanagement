@@ -3,7 +3,6 @@ from .models import *
 
 # Register your models here.
 @admin.register(Teacher)
-
 class TeacherAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Subject)
