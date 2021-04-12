@@ -54,7 +54,7 @@
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <img src="{% if request.user.teacher %}{{ request.user.teacher.avatar.url }} {% endif %}" class="rounded-circle" alt="" height="25px">
+                  <img src="{% if request.user.teacher.avatar %}{{ request.user.teacher.avatar.url }} {% endif %}" class="rounded-circle" alt="" height="25px">
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                   <li><a class="dropdown-item" href="#">Action</a></li>
@@ -76,7 +76,7 @@
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-3 border bg-light pt-4 ps-lg-5">
+        <div class="col-3 border pt-4 ps-lg-5">
           <div class="d-flex justify-content-between mb-3 align-items-center">
           <span class="fw-bold">Giáo án</span>
           <button type="button" class="btn btn-success btn-sm"><i class="fas fa-book me-2"></i>Thêm</button>
@@ -92,8 +92,8 @@
             <option value="Chicago">
           </datalist>
 
-          <div class="list-group list-group-flush">
-            <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+          <div class="list-group list-group-flush ">
+            <a href="#" class="list-group-item list-group-item-action border-0 fw-bold" aria-current="true">
               Toán 6
             </a>
             <a href="#" class="list-group-item list-group-item-action border-0">A second link item</a>
