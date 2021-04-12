@@ -15,7 +15,7 @@ class Teacher(models.Model):
     ('female', 'Nữ')
     ]
     sex = models.CharField(verbose_name="Giới tính", max_length=6, choices=SEX_CHOICES, null=True, blank=True)
-    main_subject = models.ForeignKey("Subject", on_delete = models.SET_NULL, null=True, blank=True, verbose_name="Chuyên môn")
+    main_subject = models.ForeignKey("Subject",on_delete=models.SET_NULL,null=True,blank=True)
     is_work = models.BooleanField("Có đang công tác",default=True, help_text="Tích vào ô nếu đang công tác tại trường, bỏ tích nếu đã nghỉ hưu hoặc chuyển sang đơn vị khác")
     def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
@@ -43,7 +43,7 @@ class SubjectAbstract(models.Model):
 
 class Subject(SubjectAbstract):
     group = models.ForeignKey("GroupSubject", on_delete=models.SET_NULL, null=True, blank=True)
-    member = models.ManyToManyField(Teacher, through="SubjectManager")
+    member = models.ManyToManyField(Teacher, through="SubjectTeacher")
     classyear = models.ManyToManyField("ClassYear", through="SubjectClassYear")
 
 class GroupSubject(SubjectAbstract):
@@ -51,7 +51,7 @@ class GroupSubject(SubjectAbstract):
 
 
 class ManagerAbstract(models.Model):
-    manager = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
     startdate = models.DateField(blank=True, null=True)
     enddate = models.DateField(blank=True, null=True)
     note = models.CharField("Ghi chú", max_length=200,blank=True, null=True)
@@ -62,12 +62,13 @@ class ManagerAbstract(models.Model):
 
 
 
-class SubjectManager(ManagerAbstract):
+class SubjectTeacher(ManagerAbstract):
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
     ROLE_CHOICES = [
     ('member', 'Thành viên'),
-    ('leader', 'Lãnh đạo'),
+    ('manager', 'Quản lý'),
     ]
+    is_mainsubject = models.BooleanField(null=True, blank=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True)
     def __str__(self):
         return '%s %s %s' % (self.manager.firstname, self.manager.lastname, self.subject.title)
