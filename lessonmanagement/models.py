@@ -8,8 +8,8 @@ class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Tài khoản đăng nhập", help_text="Tài khoản đăng nhập viết liền không dấu. Ví dụ: nhhieu. Viết tắt của Nguyễn Hữu Hiếu. Nếu trùng họ tên thì thêm số vào sau, ví dụ nhhieu2")
     firstname = models.CharField("Họ",max_length=200, blank=True)
     lastname = models.CharField("Tên", max_length=200, blank=True)
-    zalo_number = models.DecimalField(verbose_name="Số điện thoại",help_text="Số điện thoại có đăng ký zalo, sử dụng để nhận thông báo từ ban giám hiệu", max_digits=12, decimal_places=0, blank=True)
-    birth_date = models.DateField("Ngày sinh", blank=True, help_text="Định dạng: năm - tháng - ngày. Ví dụ: 1990-04-21")
+    zalo_number = models.DecimalField(verbose_name="Số điện thoại",help_text="Số điện thoại có đăng ký zalo, sử dụng để nhận thông báo từ ban giám hiệu", max_digits=12, decimal_places=0,null=True, blank=True)
+    birth_date = models.DateField("Ngày sinh", null=True, blank=True, help_text="Định dạng: năm - tháng - ngày. Ví dụ: 1990-04-21")
     SEX_CHOICES = [
     ('male', 'Nam'),
     ('female', 'Nữ')
@@ -17,6 +17,8 @@ class Teacher(models.Model):
     sex = models.CharField(verbose_name="Giới tính", max_length=6, choices=SEX_CHOICES, null=True, blank=True)
     #chuyên môn chính
     main_subject = models.ForeignKey("Subject",on_delete=models.SET_NULL,null=True,blank=True)
+
+
     is_work = models.BooleanField("Có đang công tác",default=True, help_text="Tích vào ô nếu đang công tác tại trường, bỏ tích nếu đã nghỉ hưu hoặc chuyển sang đơn vị khác")
     def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
@@ -27,9 +29,10 @@ class Teacher(models.Model):
 
     class Meta:
         verbose_name = "Giáo viên"
-        verbose_name_plural = "Giáo viên"
+        verbose_name_plural = "Giáo viên"    
 
-  
+    def subjectclassyearteacher(self):
+        subjectclassyearteacher_list = []
 
     def __str__(self):
         return '%s %s %s' % (self.firstname, self.lastname, self.main_subject)
@@ -110,7 +113,12 @@ class ClassYear(models.Model):
         elif (self.startyear + 3) == now.year:
             return "9"
         else:
-            return "Đã tốt nghiệp"
+            return "Đã tốt nghiệp khoá %s - %s" %( self.startyear, self.startyear+3)
+
+
+    class Meta:
+        verbose_name = "Lớp học"
+        verbose_name_plural = "Lớp học"
 
   
 
@@ -121,7 +129,7 @@ class ClassYear(models.Model):
         else:
             return "Đã tốt nghiệp"
     def __str__(self):
-        return  '%s %s'% (self.class_level(),self.title)
+        return  '%s %s'% (self.class_level(), self.get_title_display())
 
 class ClassYearManager(ManagerAbstract):
     class_year = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, null=True, blank=True)
@@ -129,13 +137,15 @@ class ClassYearManager(ManagerAbstract):
 
 class Lesson(models.Model):
     title = models.CharField(max_length=200)
-    upload_time = models.DateTimeField(auto_now=True)
+    upload_time = models.DateTimeField(auto_now_add=True)
     lesson_path = models.FileField(upload_to='test/')
     description = models.CharField(max_length=200, null=True, blank=True)
     teacher = models.ForeignKey(Teacher, related_name="teacher", on_delete=models.SET_NULL, null=True, blank=True)
     checker = models.ForeignKey(Teacher, related_name="checker", on_delete=models.SET_NULL, null=True, blank=True)
     classyear = models.ManyToManyField(ClassYear, through="LessonClassYear")
-    check_date = models.DateField(blank=True, null=True)
+
+
+    check_date = models.DateTimeField(auto_now = True, blank=True, null=True)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
 
     start_number_lesson = models.IntegerField(null=True, blank=True)
@@ -149,6 +159,14 @@ class Lesson(models.Model):
     ]
     status = models.CharField(max_length=10, blank=True, choices=STATUS_CHOICES)
     note_checker = models.CharField(max_length=200, blank=True)
+
+ 
+
+    def display_classyear(self):
+        classyear_list = []
+        for i in self.classyear.all():
+            classyear_list.append(i)
+        return classyear_list
 
 
 
@@ -170,12 +188,18 @@ class LessonClassYear(models.Model):
 class SubjectClassYear(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
     classyear = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, null=True, blank=True)
-    total_lesson = models.IntegerField(blank=True)
-    current_lesson = models.IntegerField(blank=True)
-    teacher = models.OneToOneField(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
+    total_lesson = models.IntegerField(blank=True,null=True)
+    current_lesson = models.IntegerField(blank=True, null=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Giáo viên dạy môn và lớp"
+        verbose_name_plural = "Giáo viên dạy môn và lớp"
 
     def __str__(self):
-        return '%s %s %s' % (self.subject, self.classyear, self.teacher.firstname)
+        return '%s %s %s %s' % (self.subject, self.classyear, self.teacher.firstname, self.teacher.lastname)
+
+    
 
 
 

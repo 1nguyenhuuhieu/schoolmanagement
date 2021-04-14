@@ -2,9 +2,11 @@ from django.contrib import admin
 from .models import *
 
 # Register your models here.
+class SubjectClassYearInline(admin.TabularInline):
+    model = SubjectClassYear
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
-    pass
+    inlines = [SubjectClassYearInline]
 admin.site.register(Subject)
 admin.site.register(GroupSubject)
 admin.site.register(SubjectTeacher)

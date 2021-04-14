@@ -6,12 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {% load static %}
-    
-    <link href="{% static 'css/all.css' %}" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" rel="stylesheet">
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+
+    <!-- <link href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" rel="stylesheet"> -->
+
+
+    <!-- Datatable -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap5.min.css">
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap5.min.js"></script>
+
+
+    
+    <!-- fontawesome -->
+    <link href="{% static 'css/all.css' %}" rel="stylesheet">
+    <!-- boostrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 
 
 
@@ -19,8 +33,7 @@
     <title>Hello, world!</title>
   </head>
   <body>
-    <header>
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom  ">
         <div class="container-fluid px-lg-4">
           <a class="navbar-brand" href="#">Quản lý trường học</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,11 +90,10 @@
 
         </div>
       </nav>
-    </header>
 
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-3 border border-top-0 px-lg-4  ">
+      <div class="row px-lg-3">
+        <div class="col-3 border-end ">
 
           <div class="position-sticky top-0 start-0 pt-4">
 
@@ -94,6 +106,7 @@
   
             <input class="form-control mb-3  form-control-sm" list="datalistOptions" id="exampleDataList" placeholder="Tìm giáo án...">
             <datalist id="datalistOptions">
+
               <option value="San Francisco">
               <option value="New York">
               <option value="Seattle">
@@ -104,7 +117,7 @@
             <div class="list-group list-group-flush ">
               
               <a href="#" class="list-group-item list-group-item-action border-0 fw-bold text-primary px-0" aria-current="true">
-                <i class="fas fa-book me-2 text-muted"></i> Toán 6
+                <i class="fas fa-book me-2 text-muted"></i> Toán 6 <span class="badge rounded-pill bg-primary ms-3">6A</span> <span class="badge rounded-pill bg-primary">6B</span>
               </a>
 
               <a href="#" class="list-group-item list-group-item-action border-0 text-primary  px-0" aria-current="true">
@@ -123,7 +136,7 @@
           </div>
 
         </div>
-        <div class="col-9 pt-4 ps-4 pe-lg-4">
+        <div class="col-9 pt-4 ps-4 pe-lg-4 ">
           <div class="d-flex justify-content-between align-items-center">
           <h5> <i class="fas fa-book me-2 text-muted"></i>  <a href="#" class="text-decoration-none">Toán 6</a> / 6A <small class="text-muted"> - 45/59 tiết</small> </h5> 
          
@@ -205,10 +218,11 @@
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
     
     <script type="text/javascript" charset="utf8" src="{% static 'js/all.js' %}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
 
 
 
