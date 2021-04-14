@@ -27,9 +27,7 @@ class Teacher(models.Model):
     # Bổ sung trình crop ảnh vào tempate
     avatar = models.ImageField("Ảnh đại diện", help_text = "Ảnh nên được crop về ảnh vuông để đạt được độ thẩm mỹ cao nhất",upload_to = user_directory_path, blank = True, null = True)
 
-    class Meta:
-        verbose_name = "Giáo viên"
-        verbose_name_plural = "Giáo viên"    
+
 
     def subjectclassyearteacher(self):
         subjectclassyearteacher_list = []
@@ -99,7 +97,7 @@ class ClassYear(models.Model):
     ('c', 'C'),
     ('d', 'D')
     ]
-    title = models.CharField(verbose_name="Tên lớp",max_length=1, choices=TITLE_CHOICES)
+    title = models.CharField(verbose_name="Tên lớp", max_length=1, choices=TITLE_CHOICES)
     startyear = models.IntegerField()
 
     def class_level(self):
@@ -114,11 +112,13 @@ class ClassYear(models.Model):
             return "9"
         else:
             return "Đã tốt nghiệp khoá %s - %s" %( self.startyear, self.startyear+3)
+    
+    def class_title_year(self):
+        return "%s %s" % (self.class_level(), self.get_title_display())
 
 
     class Meta:
-        verbose_name = "Lớp học"
-        verbose_name_plural = "Lớp học"
+        unique_together = ('title', 'startyear')
 
   
 
@@ -129,7 +129,7 @@ class ClassYear(models.Model):
         else:
             return "Đã tốt nghiệp"
     def __str__(self):
-        return  '%s %s'% (self.class_level(), self.get_title_display())
+        return  self.class_title_year()
 
 class ClassYearManager(ManagerAbstract):
     class_year = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, null=True, blank=True)
@@ -192,9 +192,6 @@ class SubjectClassYear(models.Model):
     current_lesson = models.IntegerField(blank=True, null=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
 
-    class Meta:
-        verbose_name = "Giáo viên dạy môn và lớp"
-        verbose_name_plural = "Giáo viên dạy môn và lớp"
 
     def __str__(self):
         return '%s %s %s %s' % (self.subject, self.classyear, self.teacher.firstname, self.teacher.lastname)
