@@ -100,6 +100,17 @@ class ClassYear(models.Model):
     title = models.CharField(verbose_name="Tên lớp", max_length=1, choices=TITLE_CHOICES)
     startyear = models.IntegerField()
 
+    @property
+    def is_learning(self):
+        now = datetime.now()
+        if (self.startyear + 3) > now.year:
+            return True
+        else:
+            return False
+    
+    
+
+
     def class_level(self):
         now = datetime.now()
         if (self.startyear) == now.year:
@@ -122,12 +133,6 @@ class ClassYear(models.Model):
 
   
 
-    def class_status(self):
-        now = datetime.now()
-        if (self.startyear + 3) > now.year:
-            return "Đang đào tạo"
-        else:
-            return "Đã tốt nghiệp"
     def __str__(self):
         return  self.class_title_year()
 

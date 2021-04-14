@@ -19,6 +19,8 @@ class ClassYearAdmin(admin.ModelAdmin):
     list_display = ['class_title_year', 'startyear']
     # @admin.display(description='ClassYearTitle')
 
+    list_filter  = ('title',)
+
     inlines = [SubjectClassYearInline]
 
 # admin.site.register(Subject)
