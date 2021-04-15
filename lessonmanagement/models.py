@@ -30,17 +30,6 @@ class Teacher(models.Model):
     def full_name(self):
         return '%s %s' % (self.firstname, self.lastname)
 
-    def classyear_subject_list_6(self):
-        subjectclassyear = SubjectClassYear.objects.filter(teacher=self.user.id)
-        j = []
-        for i in subjectclassyear:
-            if i.classyear.class_level == 6:
-                j.append(i)
-        return j
-
-
-
-
 
 
     def __str__(self):
