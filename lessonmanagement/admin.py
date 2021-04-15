@@ -13,9 +13,12 @@ class ClassYearManagerInline(admin.TabularInline):
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
     # date_hierarchy = 'birth_date'
-    list_display = ['lastname','firstname','user',  'main_subject', 'is_work']
+    list_display = ['fullname','main_subject','user',   'is_work']
+    @admin.display()
+    def fullname(self, obj):
+        return '%s %s' % (obj.firstname, obj.lastname)
     list_filter  = ('main_subject','is_work')
-    inlines = [SubjectClassYearInline]
+    inlines = [SubjectClassYearInline, ClassYearManagerInline]
     
 
 @admin.register(ClassYear)
@@ -28,12 +31,18 @@ class ClassYearAdmin(admin.ModelAdmin):
 
     inlines = [SubjectClassYearInline, ClassYearManagerInline]
 
+@admin.register(Subject)
+class SubjectAdmin(admin.ModelAdmin):
+    pass
+
+
+
 # admin.site.register(Subject)
-# admin.site.register(GroupSubject)
+admin.site.register(GroupSubject)
 # admin.site.register(SubjectTeacher)
 # admin.site.register(GroupSubjectManager)
 
-# admin.site.register(ClassYearManager)
+admin.site.register(ClassYearManager)
 # admin.site.register(Lesson)
 # admin.site.register(SubjectClassYear)
 # admin.site.register(LessonClassYear)
