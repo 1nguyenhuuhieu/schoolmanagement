@@ -56,15 +56,14 @@ class SubjectAdmin(admin.ModelAdmin):
 
 
 
-# admin.site.register(Subject)
 admin.site.register(GroupSubject)
-# admin.site.register(SubjectTeacher)
-# admin.site.register(GroupSubjectManager)
+admin.site.register(SubjectTeacher)
+admin.site.register(GroupSubjectManager)
 
 admin.site.register(ClassYearManager)
 admin.site.register(Lesson)
-# admin.site.register(SubjectClassYear)
-# admin.site.register(LessonClassYear)
+admin.site.register(SubjectClassYear)
+admin.site.register(LessonClassYear)
 
 
 
