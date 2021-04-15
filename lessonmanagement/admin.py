@@ -10,8 +10,8 @@ class SubjectTeacherInline(admin.TabularInline):
     model = SubjectTeacher
     extra = 5
 
-class GroupSubjectManagerInline(admin.TabularInline):
-    model = GroupSubjectManager
+class SubjectInline(admin.TabularInline):
+    model = Subject
 
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
@@ -58,7 +58,7 @@ class SubjectTeacher(admin.ModelAdmin):
 
 @admin.register(GroupSubject)
 class GroupSubject(admin.ModelAdmin):
-    inlines = [GroupSubjectManagerInline]
+    pass
 
 
 admin.site.register(GroupSubjectManager)

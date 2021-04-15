@@ -59,6 +59,7 @@ class Subject(SubjectAbstract):
         verbose_name_plural = "Môn học"
 
 class GroupSubject(SubjectAbstract):
+    subject = models.ManyToManyField(Subject)
     class Meta:
         verbose_name = "Bộ môn"
         verbose_name_plural = "Bộ môn"
