@@ -51,12 +51,17 @@ class SubjectAbstract(models.Model):
         return self.title
 
 class Subject(SubjectAbstract):
-    group = models.ForeignKey("GroupSubject", on_delete=models.SET_NULL, null=True, blank=True)
+    group = models.ForeignKey("GroupSubject", related_name='subject123',on_delete=models.SET_NULL, null=True, blank=True)
     member = models.ManyToManyField(Teacher, through="SubjectTeacher")
     classyear = models.ManyToManyField("ClassYear", through="SubjectClassYear")
+    class Meta:
+        verbose_name = "Môn học"
+        verbose_name_plural = "Môn học"
 
 class GroupSubject(SubjectAbstract):
-    pass
+    class Meta:
+        verbose_name = "Bộ môn"
+        verbose_name_plural = "Bộ môn"
 
 
 class ManagerAbstract(models.Model):
@@ -72,7 +77,7 @@ class ManagerAbstract(models.Model):
 
 
 class SubjectTeacher(ManagerAbstract):
-    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
+    subject = models.ForeignKey(Subject, related_name="subjectteacher",on_delete=models.SET_NULL, null=True, blank=True)
     ROLE_CHOICES = [
     ('member', 'Thành viên'),
     ('manager', 'Quản lý'),

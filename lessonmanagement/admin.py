@@ -8,6 +8,11 @@ class ClassYearManagerInline(admin.TabularInline):
     model = ClassYearManager
 class SubjectTeacherInline(admin.TabularInline):
     model = SubjectTeacher
+    extra = 5
+
+class GroupSubjectManagerInline(admin.TabularInline):
+    model = GroupSubjectManager
+
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
     # date_hierarchy = 'birth_date'
@@ -17,6 +22,7 @@ class TeacherAdmin(admin.ModelAdmin):
         return '%s %s' % (obj.firstname, obj.lastname)
     list_filter  = ('main_subject','is_work')
     inlines = [SubjectTeacherInline, SubjectClassYearInline, ClassYearManagerInline]
+
 @admin.register(ClassYear)
 class ClassYearAdmin(admin.ModelAdmin):
     list_display = ['class_title_year', 'startyear','class_year_manager_name']
@@ -34,17 +40,27 @@ class ClassYearAdmin(admin.ModelAdmin):
             return "Chưa có Giáo viên chủ nhiệm"
     list_filter  = ('title',)
     inlines = [SubjectClassYearInline, ClassYearManagerInline]
+
+
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
-    pass
+    inlines = [SubjectTeacherInline]
+    list_display = ['title','group']
+    list_filter = ('group',)
+  
 
 
 
-admin.site.register(GroupSubject)
 
 @admin.register(SubjectTeacher)
 class SubjectTeacher(admin.ModelAdmin):
     pass
+
+@admin.register(GroupSubject)
+class GroupSubject(admin.ModelAdmin):
+    inlines = [GroupSubjectManagerInline]
+
+
 admin.site.register(GroupSubjectManager)
 
 admin.site.register(ClassYearManager)
