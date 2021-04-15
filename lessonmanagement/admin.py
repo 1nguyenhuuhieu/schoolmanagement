@@ -5,13 +5,18 @@ from .models import *
 class SubjectClassYearInline(admin.TabularInline):
     model = SubjectClassYear
 
+class ClassYearManagerInline(admin.TabularInline):
+    model = ClassYearManager
 
 
 
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
+    # date_hierarchy = 'birth_date'
+    list_display = ['lastname','firstname','user',  'main_subject', 'is_work']
+    list_filter  = ('main_subject','is_work')
     inlines = [SubjectClassYearInline]
-
+    
 
 @admin.register(ClassYear)
 class ClassYearAdmin(admin.ModelAdmin):
@@ -21,7 +26,7 @@ class ClassYearAdmin(admin.ModelAdmin):
 
     list_filter  = ('title',)
 
-    inlines = [SubjectClassYearInline]
+    inlines = [SubjectClassYearInline, ClassYearManagerInline]
 
 # admin.site.register(Subject)
 # admin.site.register(GroupSubject)

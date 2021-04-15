@@ -138,6 +138,9 @@ class ClassYear(models.Model):
 
 class ClassYearManager(ManagerAbstract):
     class_year = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, null=True, blank=True)
+    class Meta:
+        verbose_name = "Giáo viên chủ nhiệm"
+        verbose_name_plural = "Giáo viên chủ nhiệm"
 
 
 class Lesson(models.Model):
