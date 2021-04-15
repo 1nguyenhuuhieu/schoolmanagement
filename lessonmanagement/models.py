@@ -27,6 +27,9 @@ class Teacher(models.Model):
     # Bổ sung trình crop ảnh vào tempate
     avatar = models.ImageField("Ảnh đại diện", help_text = "Ảnh nên được crop về ảnh vuông để đạt được độ thẩm mỹ cao nhất",upload_to = user_directory_path, blank = True, null = True)
 
+    def full_name(self):
+        return '%s %s' % (self.firstname, self.lastname)
+
 
 
     def subjectclassyearteacher(self):
