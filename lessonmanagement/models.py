@@ -77,7 +77,6 @@ class SubjectTeacher(ManagerAbstract):
     ('member', 'Thành viên'),
     ('manager', 'Quản lý'),
     ]
-    is_mainsubject = models.BooleanField(null=True, blank=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True)
     def __str__(self):
         return '%s %s %s' % (self.teacher.firstname, self.teacher.lastname, self.subject.title)
