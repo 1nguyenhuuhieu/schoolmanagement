@@ -32,8 +32,6 @@ class Teacher(models.Model):
 
 
 
-    def subjectclassyearteacher(self):
-        subjectclassyearteacher_list = []
 
     def __str__(self):
         return '%s %s %s' % (self.firstname, self.lastname, self.main_subject)
@@ -223,7 +221,7 @@ class SubjectClassYear(models.Model):
     classyear = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, null=True, blank=True)
     total_lesson = models.IntegerField(blank=True,null=True)
     current_lesson = models.IntegerField(blank=True, null=True)
-    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True,related_name='subjectclassyearlist')
     startdate = models.DateField(blank=True, null=True)
     enddate = models.DateField(blank=True, null=True)
 
