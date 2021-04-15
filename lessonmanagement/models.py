@@ -29,6 +29,9 @@ class Teacher(models.Model):
 
     def full_name(self):
         return '%s %s' % (self.firstname, self.lastname)
+    
+    def list_classyear(self):
+        return SubjectClassYear.objects.filter(teacher=self.user.id)
 
 
 

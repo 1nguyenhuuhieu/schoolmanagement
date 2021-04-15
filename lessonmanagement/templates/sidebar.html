@@ -24,6 +24,15 @@
         </a>
         <hr>
 
+        {% for i in request.user.teacher.list_classyear %}
+        {% if i.classyear.class_level == 6 %}
+        <a href="#" class="list-group-item list-group-item-action border-0 fw-bold text-primary px-0" aria-current="true">
+          <i class="fas fa-book me-2 text-muted"></i> {{ i.subject.title }} 6 <span class="badge rounded-pill bg-primary ms-3">6A</span> <span class="badge rounded-pill bg-primary">6B</span>
+        </a>
+        {% endif %}
+        {% endfor %}
+        <hr>
+
 
         <a href="#" class="list-group-item list-group-item-action border-0 text-primary  px-0" aria-current="true">
           <i class="fas fa-book me-2 text-muted"></i> Toán 7
