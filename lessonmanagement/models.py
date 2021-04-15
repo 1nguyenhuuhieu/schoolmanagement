@@ -30,6 +30,16 @@ class Teacher(models.Model):
     def full_name(self):
         return '%s %s' % (self.firstname, self.lastname)
 
+    def classyear_subject_list_6(self):
+        subjectclassyear = SubjectClassYear.objects.filter(teacher=self.user.id)
+        j = []
+        for i in subjectclassyear:
+            if i.classyear.class_level == 6:
+                j.append(i)
+        return j
+
+
+
 
 
 
@@ -120,13 +130,13 @@ class ClassYear(models.Model):
     def class_level(self):
         now = datetime.now()
         if (self.startyear) == now.year:
-            return "6"
+            return 6
         elif (self.startyear + 1) == now.year:
-            return "7"
+            return 7
         elif (self.startyear + 2) == now.year:
-            return "8"
+            return 8
         elif (self.startyear + 3) == now.year:
-            return "9"
+            return 9
         else:
             return "Đã tốt nghiệp khoá %s - %s" %( self.startyear, self.startyear+3)
     
@@ -229,6 +239,7 @@ class SubjectClassYear(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True,related_name='subjectclassyearlist')
     startdate = models.DateField(blank=True, null=True)
     enddate = models.DateField(blank=True, null=True)
+
 
 
     def __str__(self):

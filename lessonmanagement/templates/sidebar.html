@@ -30,6 +30,17 @@
 
 
         {% endfor %}
+        <hr>
+
+        {% for i in request.user.teacher.classyear_subject_list_6 %}
+
+        <a href="#" class="list-group-item list-group-item-action border-0 text-primary px-0" aria-current="true">
+          <i class="fas fa-book me-2 text-muted"></i>   {{ i.subject.title }} {{ i.classyear.class_level }} <span class="badge rounded-pill bg-primary ms-3"> {{ i.classyear.get_title_display }}</span> 
+        </a>
+
+
+        {% endfor %}
+        <hr>
 
 
         <a href="#" class="list-group-item list-group-item-action border-0 text-primary  px-0" aria-current="true">
