@@ -127,20 +127,39 @@ class ClassYear(models.Model):
     def class_title_year(self):
         return "%s %s" % (self.class_level(), self.get_title_display())
 
+    def class_year_manager_display(self):
+        class_year_manager = ClassYearManager.objects.filter(class_year_id = self.id)
+
+        if class_year_manager:
+            for i in class_year_manager:
+                if i.enddate:
+                    return "Chưa có Giáo viên chủ nhiệm"
+                else:
+                    return i.teacher
+        else:
+            return "Chưa có Giáo viên chủ nhiệm"
+                    
+
 
     class Meta:
         unique_together = ('title', 'startyear')
+        verbose_name = "Lớp học"
+        verbose_name_plural = "Lớp học"
 
   
 
     def __str__(self):
-        return  self.class_title_year()
+        return  '%s %s' % (self.class_title_year(),self.class_year_manager_display())
 
 class ClassYearManager(ManagerAbstract):
     class_year = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, null=True, blank=True)
+        
     class Meta:
         verbose_name = "Giáo viên chủ nhiệm"
         verbose_name_plural = "Giáo viên chủ nhiệm"
+
+    def __str__(self):
+        return '%s - %s' % (self.class_year, self.teacher)
 
 
 class Lesson(models.Model):
@@ -167,6 +186,9 @@ class Lesson(models.Model):
     ]
     status = models.CharField(max_length=10, blank=True, choices=STATUS_CHOICES)
     note_checker = models.CharField(max_length=200, blank=True)
+    class Meta:
+        verbose_name = "Giáo Án"
+        verbose_name_plural = "Giáo Án"
 
  
 
@@ -199,6 +221,8 @@ class SubjectClassYear(models.Model):
     total_lesson = models.IntegerField(blank=True,null=True)
     current_lesson = models.IntegerField(blank=True, null=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
+    startdate = models.DateField(blank=True, null=True)
+    enddate = models.DateField(blank=True, null=True)
 
 
     def __str__(self):
