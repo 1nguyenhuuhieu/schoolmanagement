@@ -23,16 +23,7 @@
           <i class="fas fa-book me-2 text-muted"></i> Toán 6 <span class="badge rounded-pill bg-primary ms-3">6A</span> <span class="badge rounded-pill bg-primary">6B</span>
         </a>
         <hr>
-
-        {% for i in request.user.teacher.list_subject %}
-        {{ i.subject.title }}
-        {% endfor %}
-
-        {% if request.user.teacher.list_classyear_6 %}
-        {{ request.user.teacher.list_classyear_6.subject }}
-        {% endif %}
-
-        {{ request.user.teacher.list_classyear_7 }}
+        {{ request.user.teacher.list_classyear_6 }}
         <hr>
 
 
