@@ -32,9 +32,16 @@ class Teacher(models.Model):
         return '%s %s' % (self.firstname, self.lastname)
 
 
-    def list_subject(self):
-        return SubjectTeacher.objects.filter(teacher=self.id)
-    
+
+    def list_subject_classyear(self):
+        now = datetime.now()
+        listyear = []
+        if now.month > 9:
+            listyear = [now.year, now.year-1, now.year-2]
+        else:
+            listyear = [now.year - 1, now.year-2, now.year-3]
+        return SubjectClassYear.objects.filter(teacher = self.id).filter(classyear__startyear__in = listyear).values_list('subject__title', 'classyear__startyear').distinct()
+     
     def list_classyear_6(self):
         today = datetime.today()
         if today.month < 9:
@@ -199,7 +206,7 @@ class ClassYear(models.Model):
   
 
     def __str__(self):
-        return  '%s %s' % (self.class_title_year(),self.class_year_manager_display())
+        return  self.class_title_year()
 
 class ClassYearManager(ManagerAbstract):
     class_year = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, null=True, blank=True)
@@ -209,7 +216,7 @@ class ClassYearManager(ManagerAbstract):
         verbose_name_plural = "Giáo viên chủ nhiệm"
 
     def __str__(self):
-        return '%s - %s' % (self.class_year, self.teacher)
+        return self.class_year
 
 
 class Lesson(models.Model):
@@ -277,7 +284,7 @@ class SubjectClassYear(models.Model):
 
 
     def __str__(self):
-        return '%s %s %s %s' % (self.subject, self.classyear, self.teacher.firstname, self.teacher.lastname)
+        return '%s - %s - %s %s' % (self.subject, self.classyear, self.teacher.firstname, self.teacher.lastname)
 
     
 
