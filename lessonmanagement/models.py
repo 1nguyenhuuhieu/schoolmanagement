@@ -30,10 +30,39 @@ class Teacher(models.Model):
 
     def full_name(self):
         return '%s %s' % (self.firstname, self.lastname)
+
+
+    def list_subject(self):
+        return SubjectTeacher.objects.filter(teacher=self.id)
     
-    def list_classyear(self):
+    def list_classyear_6(self):
         today = datetime.today()
-        return SubjectClassYear.objects.filter(classyear__startyear=today.year)
+        if today.month < 9:
+            return SubjectClassYear.objects.filter(classyear__startyear= today.year - 1)
+        else:
+            return SubjectClassYear.objects.filter(classyear__startyear= today.year)
+    def list_classyear_7(self):
+        today = datetime.today()
+        toyear = today.year  - 1
+        if today.month < 9:
+            return SubjectClassYear.objects.filter(classyear__startyear= toyear - 1)
+        else:
+            return SubjectClassYear.objects.filter(classyear__startyear= toyear)
+    def list_classyear_8(self):
+        today = datetime.today()
+        toyear = today.year  - 2
+        if today.month < 9:
+            return SubjectClassYear.objects.filter(classyear__startyear= toyear - 1)
+        else:
+            return SubjectClassYear.objects.filter(classyear__startyear= toyear)
+    def list_classyear_9(self):
+        today = datetime.today()
+        toyear = today.year  - 3
+        if today.month < 9:
+            return SubjectClassYear.objects.filter(classyear__startyear= toyear - 1)
+        else:
+            return SubjectClassYear.objects.filter(classyear__startyear= toyear)
+  
 
 
 
@@ -119,20 +148,31 @@ class ClassYear(models.Model):
             return False
     
     
-
-
     def class_level(self):
         now = datetime.now()
-        if (self.startyear) == now.year:
-            return 6
-        elif (self.startyear + 1) == now.year:
-            return 7
-        elif (self.startyear + 2) == now.year:
-            return 8
-        elif (self.startyear + 3) == now.year:
-            return 9
+        if now.month < 9:
+            if (self.startyear) == now.year - 1:
+                return 6
+            elif (self.startyear) == now.year -2:
+                return 7
+            elif (self.startyear) == now.year -3:
+                return 8
+            elif (self.startyear) == now.year -4:
+                return 9
+            else:
+                return "Khoá %s - %s" %( self.startyear, self.startyear+3)
         else:
-            return "Đã tốt nghiệp khoá %s - %s" %( self.startyear, self.startyear+3)
+            if (self.startyear) == now.year:
+                return 6
+            elif (self.startyear) == now.year - 1:
+                return 7
+            elif (self.startyear) == now.year - 2:
+                return 8
+            elif (self.startyear) == now.year - 3:
+                return 9
+            else:
+                return "Khoá %s - %s" %( self.startyear, self.startyear+3)
+
     
     def class_title_year(self):
         return "%s %s" % (self.class_level(), self.get_title_display())

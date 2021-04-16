@@ -24,7 +24,15 @@
         </a>
         <hr>
 
-        {{ request.user.teacher.list_classyear }}
+        {% for i in request.user.teacher.list_subject %}
+        {{ i.subject.title }}
+        {% endfor %}
+
+        {% if request.user.teacher.list_classyear_6 %}
+        {{ request.user.teacher.list_classyear_6.subject }}
+        {% endif %}
+
+        {{ request.user.teacher.list_classyear_7 }}
         <hr>
 
 
