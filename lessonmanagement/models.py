@@ -40,7 +40,35 @@ class Teacher(models.Model):
             listyear = [now.year, now.year-1, now.year-2]
         else:
             listyear = [now.year - 1, now.year-2, now.year-3]
-        return SubjectClassYear.objects.filter(teacher = self.id).filter(classyear__startyear__in = listyear).values_list('subject__title', 'classyear__startyear').distinct()
+        m = SubjectClassYear.objects.filter(teacher = self.id).filter(classyear__startyear__in = listyear).values_list('subject__title', 'classyear__startyear').distinct()
+        t = []
+        
+        for i in m:
+            t.append(list(i))
+
+        if now.month > 9:
+            for i in t:
+                if i[1] == now.year:
+                    i[1] = 6
+                elif i[1] == now.year - 1:
+                    i[1] = 7
+                elif i[1] == now.year - 2:
+                    i[1] = 8
+                else:
+                    i[1] = 9
+        else:
+            for i in t:
+                if i[1] == now.year-1:
+                    i[1] = 6
+                elif i[1] == now.year - 2:
+                    i[1] = 7
+                elif i[1] == now.year - 3:
+                    i[1] = 8
+                else:
+                    i[1] = 9
+        return t
+
+
      
     def list_classyear_6(self):
         today = datetime.today()
