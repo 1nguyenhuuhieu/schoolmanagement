@@ -31,6 +31,9 @@ class Teacher(models.Model):
     def full_name(self):
         return '%s %s' % (self.firstname, self.lastname)
 
+    def total_lesson(self):
+        return Lesson.objects.filter(teacher=self.id).count()
+
 
 
     def list_subject_classyear(self):
