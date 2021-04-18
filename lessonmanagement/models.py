@@ -266,8 +266,8 @@ class Lesson(models.Model):
     check_date = models.DateTimeField(auto_now = True, blank=True, null=True)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
 
-    start_number_lesson = models.IntegerField(null=True, blank=True)
-    end_number_lesson = models.IntegerField(null=True, blank=True)
+    start_number_lesson = models.IntegerField(null=True, blank=True, help_text="Bài giảng này ở tiết số mấy")
+    cout_number_lesson = models.IntegerField(null=True, blank=True, help_text="Bài giảng này trong bao nhiêu tiết")
 
     # class_year = models.ManyToManyField(ClassYear, null=True, blank=True ,through="LessonClassYear")
     STATUS_CHOICES = [

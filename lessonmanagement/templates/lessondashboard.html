@@ -3,39 +3,45 @@
           {% load static %}
 
           {% block content %}
-              <h5 class="mb-3">Giáo Án vừa tải lên</h5>
+              <h5 class="mb-4">Giáo Án vừa tải lên</h5>
 
                 {% for i in latest_lesson %}
 
 
-                <div class="card mb-3 shadow">
-                  <div class="card-header">
-                    <a href="#" class="text-decoration-none"> {{ i.subject.title }}</a>({% for j in i.display_classyear %}{{j}}{%if forloop.last %}{% else %},{% endif %}{% endfor %}) / Tiết 45 
-                  </div>
+                <div class="card mb-4 shadow">
+                  
+     
                   <div class="card-body">
                     <h6 class="card-title">
                       <a href="#" class="text-reset text-decoration-none">  {{ i.title }}</a>
                     
                     </h6>
-                    <p class="card-text"><a href="#" class="text-decoration-none"> {{ i.teacher.full_name}}</a> <small class="text-muted"> {{ i.upload_time }}</small></p>
-                  </div>
 
-                  <div class="card-footer">
-                   
+                    <span class="text-muted">
+
+                    <a href="#" class="text-decoration-none"> {{ i.subject.title }}</a>({% for j in i.display_classyear %}{{j}}{%if forloop.last %}{% else %},{% endif %}{% endfor %}) / Tiết {{ i.start_number_lesson}} {% if i.cout_number_lesson > 1 %} - {{ i.start_number_lesson|add:i.cout_number_lesson }} {% endif %}
+                  </span>
+
+                    <p class="card-text my-0"><a href="#" class="text-decoration-none"> {{ i.teacher.full_name}}</a> <small class="text-muted"> {{ i.upload_time }}</small></p>
+                    <hr class="my-2">
+                    
                       
-                      {% if i.status == "pending" %}
-                      <span class="badge bg-warning text-dark badge-pill"><i class="far fa-clock me-2"></i> Chờ duyệt</span>
-                
-                      {% endif %} 
+                    {% if i.status == "pending" %}
+                    <span class="badge bg-warning text-dark badge-pill"><i class="far fa-clock me-2"></i> Chờ duyệt</span>
+              
+                    {% endif %} 
 
                   </div>
+
+            
+                   
+         
                 </div>
 
 
                 {% endfor %}
-                <small class="d-block text-start mt-3">
-                  <a href="#">All updates</a>
-                </small>
+
+                <a href="#" class="btn btn-primary"> Xem tất cả giáo án <i class="fas fa-arrow-right ms-3"></i> </a>
     
       
          
