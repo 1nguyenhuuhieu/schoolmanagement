@@ -1,48 +1,6 @@
+{% extends 'base.html' %}
 
-          {% load static %}
-          <div class="d-flex justify-content-between align-items-center">
-            <h5> School Management Dashboard </h5> 
-            </div>
-            <hr class="mb-4">
+{% block content %}
+{{ request.path.name }}
 
-            <div class="row">
-                <div class="col">
-                    <div class="card bg-primary text-white shadow" >
-                        <div class="card-body ">
-                          <h5 class="card-title"><i class="fas fa-book me-2"></i> Giáo Án</h5>
-                          <p class="card-text"><h1>{{ request.user.teacher.total_lesson}}</h1></p>
-                          <a href="#" class="btn btn-outline-dark">Xem tất cả</a>
-                        </div>
-                      </div>
-                </div>
-                <div class="col">
-                    <div class="card shadow" >
-                        <div class="card-body">
-                          <h5 class="card-title"><i class="fas fa-book me-2"></i> Giáo Án</h5>
-                          <p class="card-text"><h1>200</h1></p>
-                          <a href="#" class="btn btn-outline-dark">Xem tất cả</a>
-                        </div>
-                      </div>
-                </div>
-                <div class="col">
-                    <div class="card shadow" >
-                        <div class="card-body">
-                          <h5 class="card-title"><i class="fas fa-book me-2"></i> Giáo Án</h5>
-                          <p class="card-text"><h1>200</h1></p>
-                          <a href="#" class="btn btn-outline-dark">Xem tất cả</a>
-                        </div>
-                      </div>
-                </div>
-                <div class="col">
-                    <div class="card shadow" >
-                        <div class="card-body">
-                          <h5 class="card-title"><i class="fas fa-book me-2"></i> Giáo Án</h5>
-                          <p class="card-text"><h1>200</h1></p>
-                          <a href="#" class="btn btn-outline-dark">Xem tất cả</a>
-                        </div>
-                      </div>
-                </div>
-            </div>
-  
-         
-           
+{% endblock %}

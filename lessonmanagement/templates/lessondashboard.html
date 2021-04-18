@@ -1,0 +1,27 @@
+
+          {% extends 'base_withsidebar.html' %}
+          {% load static %}
+
+          {% block content %}
+            <div class="p-3 bg-body rounded shadow-sm">
+              <h6 class="border-bottom pb-2 mb-0">Giáo Án vừa tải lên</h6>
+              {% for i in latest_lesson %}
+              
+              <div class="d-flex text-muted pt-3">
+                <img src="{{ i.teacher.avatar.url }}"  class="me-3 rounded-circle"  width = "40px" height = "40px" alt="">
+          
+                <p class="pb-3 mb-0   border-bottom">
+                  <strong class="d-block text-dark"> <a href="" class="text-decoration-none">{{ i.subject.title }}</a> / <span class="badge bg-primary">Tiết 42 - 45</span>
+                    <a href="#" class=""></a> {{ i.title }}</strong>
+                 <a href="" class="text-decoration-none">{{ i.teacher.full_name}}</a>  / {{ i.upload_time }}
+                </p>
+              </div>
+
+              {% endfor %}
+
+              <small class="d-block text-end mt-3">
+                <a href="#" class="text-decoration-none">All updates</a>
+              </small>
+            </div>
+         
+           {% endblock %}

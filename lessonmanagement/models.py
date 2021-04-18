@@ -176,6 +176,7 @@ class ClassYear(models.Model):
     ]
     title = models.CharField(verbose_name="Tên lớp", max_length=1, choices=TITLE_CHOICES)
     startyear = models.IntegerField()
+    lesson = models.ManyToManyField("Lesson", through="LessonClassYear")
 
     @property
     def is_learning(self):
@@ -226,6 +227,8 @@ class ClassYear(models.Model):
                     return i.teacher
         else:
             return "Chưa có Giáo viên chủ nhiệm"
+    # def list_title(self):
+    #     for i in self.
                     
 
 
@@ -277,6 +280,7 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = "Giáo Án"
         verbose_name_plural = "Giáo Án"
+        ordering = ["-upload_time"]
 
  
 
