@@ -176,7 +176,7 @@ class ClassYear(models.Model):
     ]
     title = models.CharField(verbose_name="Tên lớp", max_length=1, choices=TITLE_CHOICES)
     startyear = models.IntegerField()
-    lesson = models.ManyToManyField("Lesson", through="LessonClassYear")
+    lesson_list = models.ManyToManyField("Lesson", through="LessonClassYear")
 
     @property
     def is_learning(self):
@@ -227,8 +227,8 @@ class ClassYear(models.Model):
                     return i.teacher
         else:
             return "Chưa có Giáo viên chủ nhiệm"
-    # def list_title(self):
-    #     for i in self.
+    def list_title(self):
+        return ', '.join(lesson.title for lesson in self.lesson_list.all())
                     
 
 
@@ -260,7 +260,7 @@ class Lesson(models.Model):
     description = models.CharField(max_length=200, null=True, blank=True)
     teacher = models.ForeignKey(Teacher, related_name="teacher", on_delete=models.SET_NULL, null=True, blank=True)
     checker = models.ForeignKey(Teacher, related_name="checker", on_delete=models.SET_NULL, null=True, blank=True)
-    classyear = models.ManyToManyField(ClassYear, through="LessonClassYear")
+    classyear_list = models.ManyToManyField(ClassYear, through="LessonClassYear")
 
 
     check_date = models.DateTimeField(auto_now = True, blank=True, null=True)
