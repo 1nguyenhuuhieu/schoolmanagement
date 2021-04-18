@@ -214,7 +214,7 @@ class ClassYear(models.Model):
 
     
     def class_title_year(self):
-        return "%s %s" % (self.class_level(), self.get_title_display())
+        return "%s%s" % (self.class_level(), self.get_title_display())
 
     def class_year_manager_display(self):
         class_year_manager = ClassYearManager.objects.filter(class_year_id = self.id)
@@ -275,7 +275,7 @@ class Lesson(models.Model):
     ('acept', 'Đã duyệt'),
     ('deny', 'Bị từ chối'),
     ]
-    status = models.CharField(max_length=10, blank=True, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=10, blank=True, choices=STATUS_CHOICES ,default='pending')
     note_checker = models.CharField(max_length=200, blank=True)
     class Meta:
         verbose_name = "Giáo Án"
@@ -285,10 +285,10 @@ class Lesson(models.Model):
  
 
     def display_classyear(self):
-        classyear_list = []
-        for i in self.classyear.all():
-            classyear_list.append(i)
-        return classyear_list
+        classyear_list1 = []
+        for i in self.classyear_list.all():
+            classyear_list1.append(i)
+        return classyear_list1
 
 
 

@@ -3,25 +3,40 @@
           {% load static %}
 
           {% block content %}
-            <div class="p-3 bg-body rounded shadow-sm">
-              <h6 class="border-bottom pb-2 mb-0">Giáo Án vừa tải lên</h6>
-              {% for i in latest_lesson %}
-              
-              <div class="d-flex text-muted pt-3">
-                <img src="{{ i.teacher.avatar.url }}"  class="me-3 rounded-circle"  width = "40px" height = "40px" alt="">
-          
-                <p class="pb-3 mb-0   border-bottom">
-                  <strong class="d-block text-dark"> <a href="" class="text-decoration-none">{{ i.subject.title }}</a> / <span class="badge bg-primary">Tiết 42 - 45</span>
-                    <a href="#" class=""></a> {{ i.title }}</strong>
-                 <a href="" class="text-decoration-none">{{ i.teacher.full_name}}</a>  / {{ i.upload_time }}
-                </p>
-              </div>
+              <h5 class="mb-3">Giáo Án vừa tải lên</h5>
 
-              {% endfor %}
+                {% for i in latest_lesson %}
 
-              <small class="d-block text-end mt-3">
-                <a href="#" class="text-decoration-none">All updates</a>
-              </small>
-            </div>
+
+                <div class="card mb-3 shadow">
+                  <div class="card-header">
+                    <a href="#" class="text-decoration-none"> {{ i.subject.title }}</a>({% for j in i.display_classyear %}{{j}}{%if forloop.last %}{% else %},{% endif %}{% endfor %}) / Tiết 45 
+                  </div>
+                  <div class="card-body">
+                    <h6 class="card-title">
+                      <a href="#" class="text-reset text-decoration-none">  {{ i.title }}</a>
+                    
+                    </h6>
+                    <p class="card-text"><a href="#" class="text-decoration-none"> {{ i.teacher.full_name}}</a> <small class="text-muted"> {{ i.upload_time }}</small></p>
+                  </div>
+
+                  <div class="card-footer">
+                   
+                      
+                      {% if i.status == "pending" %}
+                      <span class="badge bg-warning text-dark badge-pill"><i class="far fa-clock me-2"></i> Chờ duyệt</span>
+                
+                      {% endif %} 
+
+                  </div>
+                </div>
+
+
+                {% endfor %}
+                <small class="d-block text-start mt-3">
+                  <a href="#">All updates</a>
+                </small>
+    
+      
          
            {% endblock %}

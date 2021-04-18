@@ -20,7 +20,7 @@ def lessondashboard(request):
     teachersubjectclassyear = SubjectClassYear.objects.filter(teacher=request.user.teacher.id)
     now = datetime.now()
 
-    latest_lesson = Lesson.objects.filter(teacher=request.user.teacher.id)[:5]
+    latest_lesson = Lesson.objects.filter(teacher=request.user.teacher.id)[:3]
         
     context = {'lesson_list':lesson,'teachersubjectclassyear':teachersubjectclassyear, 'now': now, 'latest_lesson': latest_lesson
     }

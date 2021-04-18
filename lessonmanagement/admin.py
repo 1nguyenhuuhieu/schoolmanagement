@@ -64,7 +64,9 @@ class GroupSubject(admin.ModelAdmin):
 admin.site.register(GroupSubjectManager)
 
 admin.site.register(ClassYearManager)
-admin.site.register(Lesson)
+@admin.register(Lesson)
+class Lesson(admin.ModelAdmin):
+     empty_value_display = '---1231232'
 admin.site.register(SubjectClassYear)
 admin.site.register(LessonClassYear)
 
