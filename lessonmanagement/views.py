@@ -32,7 +32,7 @@ def lessondashboard(request):
     return render(request, 'lessondashboard.html', context)
 
 def lessons(request):
-    lesson = Lesson.objects.filter(teacher=request.user.teacher.id)
+    lesson = Lesson.objects.filter(teacher=request.user.teacher.id).order_by('-upload_time')
     teachersubjectclassyear = SubjectClassYear.objects.filter(teacher=request.user.teacher.id)
     now = datetime.now()
         
