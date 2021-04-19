@@ -5,6 +5,8 @@ from django.conf import settings
 from django.db.models import F
 
 # Create your models here.
+
+now = datetime.now()
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Tài khoản đăng nhập", help_text="Tài khoản đăng nhập viết liền không dấu. Ví dụ: nhhieu. Viết tắt của Nguyễn Hữu Hiếu. Nếu trùng họ tên thì thêm số vào sau, ví dụ nhhieu2")
     firstname = models.CharField("Họ",max_length=200, blank=True)
@@ -33,6 +35,10 @@ class Teacher(models.Model):
 
     def total_lesson(self):
         return Lesson.objects.filter(teacher=self.id).count()
+    def total_lesson_year(self):
+        return Lesson.objects.filter(teacher=self.id).filter(upload_time__year = now.year ).count()
+    def total_lesson_month(self):
+        return Lesson.objects.filter(teacher=self.id).filter(upload_time__year = now.year ).filter(upload_time__month = now.month).count()
 
 
 
