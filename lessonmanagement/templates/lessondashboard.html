@@ -16,13 +16,13 @@
                     <a href="#" class="text-decoration-none"> {{ i.teacher.full_name}}</a> vào lúc {{ i.upload_time }}</span>
                     <hr class="my-2">
                     {% if i.status == "pending" %}
-                    <span class="badge bg-warning text-dark badge-pill"><i class="far fa-clock me-1"></i>Chờ duyệt</span>
+                    <span class="badge bg-warning text-dark rounded-pill" style="width: 105px;"><i class="far fa-clock me-1"></i>Chờ duyệt</span>
                     {% elif i.status == "acept" %}
-                    <span class="badge bg-success  badge-pill"><i class="fas fa-check me-1"></i>Đã duyệt</span> <small class="text-muted">bởi<a href="#" class="text-decoration-none"> {{ i.checker.full_name }}</a> 
+                    <span class="badge bg-success  rounded-pill" style="width: 105px;"><i class="fas fa-check me-1"></i>Đã duyệt</span> <small class="text-muted">bởi<a href="#" class="text-decoration-none"> {{ i.checker.full_name }}</a> 
                      vào lúc {{ i.check_date }}</small>  
                      {% elif i.status == "deny" %}
-                     <span class="badge bg-danger  badge-pill"><i class="fas fa-times me-1"></i>Bị từ chối</span> <small class="text-muted">bởi<a href="#" class="text-decoration-none"> {{ i.checker.full_name }}</a> 
-                      vào lúc {{ i.check_date }}</small>  {{ i.check_date|timesince:now }}  {{ now }}
+                     <span class="badge bg-danger  rounded-pill" style="width: 105px;"><i class="fas fa-times me-1"></i>Bị từ chối</span> <small class="text-muted">bởi<a href="#" class="text-decoration-none"> {{ i.checker.full_name }}</a> 
+                      vào lúc {{ i.check_date }}</small> 
                     {% endif %} 
                   </div>
                 </div>
