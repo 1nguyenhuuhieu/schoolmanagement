@@ -40,10 +40,15 @@ class Teacher(models.Model):
     def total_lesson_month(self):
         return Lesson.objects.filter(teacher=self.id).filter(upload_time__year = now.year ).filter(upload_time__month = now.month).count()
 
+    def test(self):
+        if now.month > 9:
+            listyear = [now.year, now.year-1, now.year-2]
+        else:
+            listyear = [now.year - 1, now.year-2, now.year-3]
+        return  SubjectClassYear.objects.filter(teacher = self.id).filter(classyear__startyear__in = listyear).values_list('subject__title', 'classyear__startyear', 'classyear__title')
 
 
     def list_subject_classyear(self):
-        now = datetime.now()
         listyear = []
         if now.month > 9:
             listyear = [now.year, now.year-1, now.year-2]
