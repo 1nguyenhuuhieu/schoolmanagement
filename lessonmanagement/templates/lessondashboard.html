@@ -12,35 +12,58 @@
             </nav>
           </div>
   
-          <h5><i class="fas fa-chart-bar fa-fw me-2 "></i>Thống Kê Giáo Án Của Tôi</h5>
+          <h5><i class="fas fa-chart-bar fa-fw me-2 mb-3"></i>Thống Kê Giáo Án Của Tôi</h5>
 
-          <hr class="mb-4">
+          <div class="card mb-5 rounded-15 shadow" >
+            <div class="row g-0">
+              <div class="col-md-4">
+                <img src="{% static 'imgs/welcome.png' %}"  class="img-fluid" alt="...">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">Xin chào</h5>
+                  <h4><a href="#" class="text-decoration-none">{{ request.user.teacher.full_name }}!</a></h4>
+                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-              <h6 class="mb-3 ">Giáo án vừa thêm</h6>
+
+              <h6 class="mb-3  ">Giáo án vừa thêm</h6>
                 {% for i in request.user.teacher.latest_lesson %}
-                <div class="card mb-4 shadow-sm">
-                  <div class="card-body">
-                    <h6 class="card-title">
-                      <a href="#" class="text-reset text-decoration-none">  {{ i.title }}</a>
-                    </h6>
-                    <span class="text-dark fw-bold">
-                    <a href="#" class="text-decoration-none"> {{ i.subject.title }}</a>{% if i.display_classyear %}({% for j in i.display_classyear %}{{j}}{%if forloop.last %}{% else %},{% endif %}{% endfor %}) {% endif %} / Tiết {{ i.start_number_lesson}} {% if i.cout_number_lesson > 1 %} - {{ i.start_number_lesson|add:i.cout_number_lesson }} {% endif %}
-                  </span>
-                  <span class="text-muted">cách đây
-{{ i.upload_time|timesince}} vào lúc {{ i.upload_time }}</span>
-                    <hr class="my-2">
-                    {% if i.status == "pending" %}
-                    <span class="badge bg-warning text-dark rounded-pill" style="width: 105px;"><i class="far fa-clock me-1"></i>Chờ duyệt</span>
-                    {% elif i.status == "acept" %}
-                    <span class="badge bg-success  rounded-pill" style="width: 105px;"><i class="fas fa-check me-1"></i>Đã duyệt</span> <small class="text-muted">bởi<a href="#" class="text-decoration-none"> {{ i.checker.full_name }}</a> 
-                      cách đây
-                      {{ i.upload_time|timesince}} vào lúc {{ i.check_date }}</small>  
-                     {% elif i.status == "deny" %}
-                     <span class="badge bg-danger  rounded-pill" style="width: 105px;"><i class="fas fa-times me-1"></i>Bị từ chối</span> <small class="text-muted">bởi<a href="#" class="text-decoration-none"> {{ i.checker.full_name }}</a> 
-                      cách đây
-{{ i.upload_time|timesince}} vào lúc {{ i.check_date }}</small> 
-                    {% endif %} 
+                <div class="card mb-4 rounded-15 shadow">
+                  <div class="row g-0">
+                    <div class="col-2 p-3">
+                      <img src="{% static 'imgs/math.jpeg' %}"  class="img-fluid rounded-circle" alt="">
+                    </div>
+                    <div class="col-10">
+                      <div class="card-body">
+                        <h6 class="card-title">
+                          <a href="#" class="text-reset text-decoration-none">  {{ i.title }}</a>
+                        </h6>
+                        <span class="text-dark fw-bold">
+                        <a href="#" class="text-decoration-none"> {{ i.subject.title }}</a>{% if i.display_classyear %}({% for j in i.display_classyear %}{{j}}{%if forloop.last %}{% else %},{% endif %}{% endfor %}) {% endif %} / Tiết {{ i.start_number_lesson}} {% if i.cout_number_lesson > 1 %} - {{ i.start_number_lesson|add:i.cout_number_lesson }} {% endif %}
+                      </span>
+                      <span class="text-muted">cách đây
+    {{ i.upload_time|timesince}} vào lúc {{ i.upload_time }}</span>
+                        <hr class="my-2">
+                        {% if i.status == "pending" %}
+                        <span class="badge bg-warning text-dark rounded-pill" style="width: 105px;"><i class="far fa-clock me-1"></i>Chờ duyệt</span>
+                        {% elif i.status == "acept" %}
+                        <span class="badge bg-success  rounded-pill" style="width: 105px;"><i class="fas fa-check me-1"></i>Đã duyệt</span> <small class="text-muted">bởi<a href="#" class="text-decoration-none"> {{ i.checker.full_name }}</a> 
+                          cách đây
+                          {{ i.upload_time|timesince}} vào lúc {{ i.check_date }}</small>  
+                         {% elif i.status == "deny" %}
+                         <span class="badge bg-danger  rounded-pill" style="width: 105px;"><i class="fas fa-times me-1"></i>Bị từ chối</span> <small class="text-muted">bởi<a href="#" class="text-decoration-none"> {{ i.checker.full_name }}</a> 
+                          cách đây
+    {{ i.upload_time|timesince}} vào lúc {{ i.check_date }}</small> 
+                        {% endif %} 
+                      </div>
+                    </div>
                   </div>
+                  
                 </div>
                 {% endfor %}
                 <a href="{% url 'alllessons' %}" class="text-decoration-none"> Xem tất cả giáo án <i class="fas fa-arrow-right ms-2"></i> </a>
