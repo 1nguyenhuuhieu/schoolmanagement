@@ -28,7 +28,7 @@
 
         </a>
 
-        <a href="{% url 'lessons' %}" class="list-group-item list-group-item-action border-0  text-primary px-0 " aria-current="true">
+        <a href="#" class="list-group-item list-group-item-action border-0  text-primary px-0 " aria-current="true">
           Toàn bộ giáo án
          
 
@@ -42,12 +42,16 @@
 
           {{ i.1 }}
 
-          
-         
+
+
+        
 
         </a>
      
         {% endfor %}
+
+        {{ request.user.teacher.list_subject_classyear }}
+         
         
         
       </div>

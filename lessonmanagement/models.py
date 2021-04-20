@@ -58,7 +58,9 @@ class Teacher(models.Model):
         t = []
         
         for i in m:
-            t.append(list(i))
+            i = list(i)
+            i.append(i[1])
+            t.append(i)
 
         if now.month > 9:
             for i in t:
@@ -112,6 +114,18 @@ class Teacher(models.Model):
         else:
             return SubjectClassYear.objects.filter(classyear__startyear= toyear)
     def list_lesson(self):
+        return Lesson.objects.filter(teacher=self.id)
+
+    
+    def latest_lesson(self):
+        return Lesson.objects.filter(teacher=self.id)[:3]
+    def classyear_list(self):
+        if now.month < 9:
+            return  SubjectClassYear.objects.filter(teacher=self.id).filter(startdate__year = now.year - 1 )
+        else:
+            return SubjectClassYear.objects.filter(teacher=self.id).filter(startdate__year = now.year)
+
+    def all_lessons(self):
         return Lesson.objects.filter(teacher=self.id)
   
 
@@ -268,8 +282,15 @@ class ClassYearManager(ManagerAbstract):
 
 class Lesson(models.Model):
     title = models.CharField(max_length=200)
-    upload_time = models.DateTimeField(auto_now_add=True)
+    upload_time = models.DateTimeField()
     lesson_path = models.FileField(upload_to='test/')
+    LEVEL_CHOICES = [
+        (6, 6),
+        (7, 7),
+        (8, 8),
+        (9, 9)
+    ]
+    level = models.IntegerField(choices=LEVEL_CHOICES, null=True, blank=True)
     description = models.CharField(max_length=200, null=True, blank=True)
     teacher = models.ForeignKey(Teacher, related_name="teacher", on_delete=models.SET_NULL, null=True, blank=True)
     checker = models.ForeignKey(Teacher, related_name="checker", on_delete=models.SET_NULL, null=True, blank=True)

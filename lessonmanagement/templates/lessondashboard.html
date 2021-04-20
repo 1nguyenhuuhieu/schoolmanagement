@@ -2,8 +2,10 @@
           {% extends 'base_withsidebar.html' %}
           {% load static %}
           {% block content %}
+
+          {% include 'breadcrumb.html' %}
               <h5 class="mb-4">Giáo Án vừa tải lên</h5>
-                {% for i in latest_lesson %}
+                {% for i in request.user.teacher.latest_lesson %}
                 <div class="card mb-4 shadow-sm">
                   <div class="card-body">
                     <h6 class="card-title">
@@ -27,7 +29,7 @@
                   </div>
                 </div>
                 {% endfor %}
-                <a href="{% url 'lessons' %}" class="btn btn-primary"> Xem tất cả giáo án <i class="fas fa-arrow-right ms-3"></i> </a>
+                <a href="{% url 'alllessons' %}" class="btn btn-primary"> Xem tất cả giáo án <i class="fas fa-arrow-right ms-3"></i> </a>
           <hr class="my-5"> 
           <div class="row">
             <h5 class="mb-4">Thống kê Giáo Án</h5>
@@ -56,7 +58,7 @@
               </div>
             </div>
           </div>
-          {% for i in classyear_list %}
+          {% for i in request.user.teacher.classyear_list %}
 
           <h6 class="mt-3"> <a href="#" class="text-decoration-none">{{i.subject}} {{ i.classyear }}</a>  <small class="text-muted">Tiết {{ i.current_lesson }}/{{ i.total_lesson }}</small> </h6>
 
