@@ -111,6 +111,8 @@ class Teacher(models.Model):
             return SubjectClassYear.objects.filter(classyear__startyear= toyear - 1)
         else:
             return SubjectClassYear.objects.filter(classyear__startyear= toyear)
+    def list_lesson(self):
+        return Lesson.objects.filter(teacher=self.id)
   
 
 
