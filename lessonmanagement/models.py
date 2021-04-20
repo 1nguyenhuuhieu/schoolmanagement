@@ -3,8 +3,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.conf import settings
 from django.db.models import F
-
-# Create your models here.
+from django.utils.text import slugify
 
 now = datetime.now()
 class Teacher(models.Model):
@@ -27,7 +26,7 @@ class Teacher(models.Model):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
         return 'user_{0}/{1}'.format(instance.user.id, filename)
 
-    # Bổ sung trình crop ảnh vào tempate
+    # Bổ sung trình crop ảnh
     avatar = models.ImageField("Ảnh đại diện", help_text = "Ảnh nên được crop về ảnh vuông để đạt được độ thẩm mỹ cao nhất",upload_to = user_directory_path, blank = True, null = True)
 
     def full_name(self):
@@ -48,7 +47,14 @@ class Teacher(models.Model):
         return  SubjectClassYear.objects.filter(teacher = self.id).filter(classyear__startyear__in = listyear).values_list('subject__title', 'classyear__startyear', 'classyear__title')
 
     def subjectclassyear(self):
-        return Lesson.objects.filter(teacher=self.id).values_list('subject__title', 'level').distinct()
+        i = Lesson.objects.filter(teacher=self.id).values_list('subject__title', 'level').distinct()
+        k = []
+        for j in i:
+            j = list(j)
+            j.append(slugify(j[0]))
+            k.append(j)
+        return k
+
     def list_subject_classyear(self):
         listyear = []
         if now.month > 9:
@@ -145,6 +151,8 @@ class SubjectAbstract(models.Model):
     
     class Meta:
         abstract = True
+    def get_slug(self):
+        return slugify(title)
 
     def __str__(self):
         return self.title

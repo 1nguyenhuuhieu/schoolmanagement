@@ -16,40 +16,18 @@
         <option value="Los Angeles">
         <option value="Chicago">
       </datalist>
+      <div class="list-group text-primary ">
+        <a href="{% url 'lessondashboard' %}" class="list-group-item list-group-item-action border-0 text-reset ps-0 {% if request.path == '/lessondashboard/' %} fw-bold {% endif %}"><i class="fas fa-chart-bar me-2 text-muted  fa-fw "></i>Thống Kê</a>
+        <a href="{% url 'alllessons' %}" class="list-group-item list-group-item-action border-0 text-reset ps-0 {% if request.path == '/lessons/' %} fw-bold {% endif %}"><i class="fas fa-book fa-fw me-2 text-muted    fa-fw"></i>Tất Cả Giáo Án</a>
+        {% for i in  request.user.teacher.subjectclassyear %}
+        {% if i.0 and i.1 %}   <a href=" {% url 'lessons_subject_level' i.2 i.1 %}" class="list-group-item list-group-item-action border-0 text-reset ps-0"><i class="fas fa-book fa-fw me-2 text-muted"></i>{{ i.0 }} {{ i.1 }}</a>
+        {% endif %}
+        {% endfor %}
+
+      </div>
      
 
       
-
-      <div class="list-group list-group-flush ">
-
-        <a href="{% url 'lessondashboard' %}" class="list-group-item list-group-item-action  text-primary px-0 " aria-current="true">
-          Dashboard
-         
-
-        </a>
-
-        <a href="#" class="list-group-item list-group-item-action border-0  text-primary px-0 " aria-current="true">
-          Toàn bộ giáo án
-         
-
-        </a>
-
-    
-        {% for i in  request.user.teacher.subjectclassyear %}
-        <a href="#" class="list-group-item list-group-item-action border-0  text-primary px-0" aria-current="true">
-          <i class="fas fa-book me-2 text-muted"></i> 
-
-
-        {{ i }}
-
-        </a>
-     
-        {% endfor %}
-         
-        
-        
-      </div>
-      <hr>
 
 
       

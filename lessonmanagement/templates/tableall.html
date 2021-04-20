@@ -23,7 +23,7 @@
 
             <td><a href="#" class="text-decoration-none">{{ lesson.title }}  </a></td>
 
-            <td class="text-muted" >{{ lesson.upload_time|date }}</td>
+            <td class="text-muted" >{{ lesson.upload_time|date:"SHORT_DATE_FORMAT" }}</td>
             <td>                    {% if lesson.status == "pending" %}
                 <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i class="far fa-clock me-1"></i>{{ lesson.get_status_display}}</span>
                 {% elif lesson.status == "acept" %}

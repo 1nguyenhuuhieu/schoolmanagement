@@ -2,16 +2,18 @@ from django.shortcuts import render
 from .models import *
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.utils.text import slugify
+
 
 now = datetime.now()
     
 def index(request):
     lesson = Lesson.objects.filter(teacher=request.user.teacher.id)
     teachersubjectclassyear = SubjectClassYear.objects.filter(teacher=request.user.teacher.id)
-  
         
     context = {'lesson_list':lesson,'teachersubjectclassyear':teachersubjectclassyear, 'now': now
     }
+    
     return render(request, 'index.html', context)
 
 
@@ -47,6 +49,9 @@ def alllessons(request):
     context = {'lesson_list':lesson,'teachersubjectclassyear':teachersubjectclassyear, 'now': now, 'lesson_pending':lesson_pending,'lesson_acept':lesson_acept, 'lesson_deny':lesson_deny,'lesson_toyear':lesson_toyear
     }
     return render(request, 'all_lessons.html', context)
+
+def lessons_subject_level(request, subject, level):
+    pass
 
 
 
