@@ -3,7 +3,6 @@
           {% load static %}
           {% block content %}
 
-          {% include 'breadcrumb.html' %}
               <h5 class="mb-4">Giáo Án vừa tải lên</h5>
                 {% for i in request.user.teacher.latest_lesson %}
                 <div class="card mb-4 shadow-sm">
@@ -29,7 +28,7 @@
                   </div>
                 </div>
                 {% endfor %}
-                <a href="{% url 'alllessons' %}" class="btn btn-primary"> Xem tất cả giáo án <i class="fas fa-arrow-right ms-3"></i> </a>
+                <a href="{% url 'alllessons' %}" class="text-decoration-none"> Xem tất cả giáo án <i class="fas fa-arrow-right ms-2"></i> </a>
           <hr class="my-5"> 
           <div class="row">
             <h5 class="mb-4">Thống kê Giáo Án</h5>

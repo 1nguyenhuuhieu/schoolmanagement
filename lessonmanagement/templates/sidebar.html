@@ -35,22 +35,16 @@
         </a>
 
     
-        {% for i in  request.user.teacher.list_subject_classyear %}
+        {% for i in  request.user.teacher.subjectclassyear %}
         <a href="#" class="list-group-item list-group-item-action border-0  text-primary px-0" aria-current="true">
-          <i class="fas fa-book me-2 text-muted"></i>  {{ i.0 }} 
+          <i class="fas fa-book me-2 text-muted"></i> 
 
 
-          {{ i.1 }}
-
-
-
-        
+        {{ i }}
 
         </a>
      
         {% endfor %}
-
-        {{ request.user.teacher.list_subject_classyear }}
          
         
         

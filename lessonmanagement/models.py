@@ -47,7 +47,8 @@ class Teacher(models.Model):
             listyear = [now.year - 1, now.year-2, now.year-3]
         return  SubjectClassYear.objects.filter(teacher = self.id).filter(classyear__startyear__in = listyear).values_list('subject__title', 'classyear__startyear', 'classyear__title')
 
-
+    def subjectclassyear(self):
+        return Lesson.objects.filter(teacher=self.id).values_list('subject__title', 'level').distinct()
     def list_subject_classyear(self):
         listyear = []
         if now.month > 9:
