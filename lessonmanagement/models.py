@@ -398,7 +398,9 @@ class SubjectClassYear(models.Model):
     enddate = models.DateField(blank=True, null=True)
 
     class Meta:
-        pass
+        verbose_name = 'Pha mon' 
+        verbose_name_plural = 'Phan mon' 
+
 
 
 
