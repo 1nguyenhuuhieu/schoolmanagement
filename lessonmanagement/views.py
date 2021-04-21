@@ -73,7 +73,7 @@ def lessons_subject_level(request, subject, level):
 
         
     context = {'lesson_list':lesson,'teachersubjectclassyear':teachersubjectclassyear, 'now': now, 'lesson_pending':lesson_pending,'lesson_acept':lesson_acept, 'lesson_deny':lesson_deny,'lesson_toyear':lesson_toyear, 
-    'title': title, 'title_class': title_class, 'subject':subject, 'level':'level'
+    'title': title, 'title_class': title_class, 'subject':subject, 'level':level
     }
     return render(request, 'lessons.html', context)
 
