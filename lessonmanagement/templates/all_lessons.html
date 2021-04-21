@@ -1,16 +1,13 @@
 {% extends 'base_withsidebar.html' %}
 {% block content %}
-
-<div class="bg-white border shadow-sm p-2 rounded-3 mb-4">
+<div class="bg-white border shadow-sm p-3 rounded-pill mb-4">
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb m-0 ">
-      <li class="breadcrumb-item"><a href="#" class="text-decoration-none"><i class="fas fa-home me-2"></i>Trang chủ</a></li>
-      <li class="breadcrumb-item"> Giáo án</li>
-      <li class="breadcrumb-item active" aria-current="page">Tất cả giáo án</li>
+      <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i class="fas fa-home me-2"></i>Trang chủ</a></li>
+      <li class="breadcrumb-item active"> Giáo án</li>
     </ol>
   </nav>
 </div>
-
 <h5><i class="fas fa-book fa-fw me-2 "></i>Tất cả giáo án của tôi</h5>
 
 <hr class="mb-4">

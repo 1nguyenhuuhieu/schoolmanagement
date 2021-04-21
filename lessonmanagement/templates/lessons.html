@@ -1,5 +1,8 @@
 {% extends 'base_withsidebar.html' %}
 {% block content %}
+{% include 'breadcrumb.html' with titlebreadcrumb1=title.0.0 titlebreadcrumb2=title.0.1 %}
+
+{% if title.0.0 and title.0.1 %}
           <div class="d-flex justify-content-between align-items-center">
             <h5> <i class="fas fa-book me-2 text-muted"></i>  <a href="#" class="text-decoration-none">
               {{ title.0.0 }} {{ title.0.1 }}
@@ -44,7 +47,7 @@
          
   
   
-            <ul class="nav nav-pills mb-3" id="myTab" role="tablist">
+            <ul class="nav nav-pills mb-4" id="myTab" role="tablist">
               <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="home" aria-selected="true">Toàn bộ giáo án</button>
               </li>
@@ -68,8 +71,13 @@
               {% include "table.html" %}
              
               </div>
-              <div class="tab-pane fade py-4 border border-top-0 px-3 shadow-sm" id="pending" role="tabpanel" aria-labelledby="profile-tab">  {% include "table_pending.html" %}</div>
-              <div class="tab-pane fade py-4 border border-top-0 px-3 shadow-sm" id="acept" role="tabpanel" aria-labelledby="contact-tab">  {% include "table_acept.html" %}</div>
-              <div class="tab-pane fade py-4 border border-top-0 px-3 shadow-sm" id="deny" role="tabpanel" aria-labelledby="contact-tab">  {% include "table_deny.html" %}</div>
+              <div class="tab-pane fade py-4 border border-top-0 px-3 shadow  rounded-15" id="pending" role="tabpanel" aria-labelledby="profile-tab">  {% include "table_pending.html" %}</div>
+              <div class="tab-pane fade py-4 border border-top-0 px-3 shadow  rounded-15" id="acept" role="tabpanel" aria-labelledby="contact-tab">  {% include "table_acept.html" %}</div>
+              <div class="tab-pane fade py-4 border border-top-0 px-3 shadow  rounded-15" id="deny" role="tabpanel" aria-labelledby="contact-tab">  {% include "table_deny.html" %}</div>
             </div>
+
+            {% else %}
+            <h4>Chưa có giáo án nào được tải lên</h4>
+
+            {% endif %}
   {% endblock %}

@@ -2,7 +2,15 @@
           {% extends 'base_withsidebar.html' %}
           {% load static %}
           {% block content %}
-          {% include 'breadcrumb.html' %}
+          <div class="bg-white border shadow-sm p-3 rounded-pill mb-4">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb m-0 ">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i class="fas fa-home me-2"></i>Trang chủ</a></li>
+                <li class="breadcrumb-item"> <a href="{% url 'alllessons' %}" class="text-decoration-none">Giáo án</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thống kê</li>
+              </ol>
+            </nav>
+          </div>
   
           <h5><i class="fas fa-chart-bar fa-fw me-2 mb-3"></i>Thống Kê Giáo Án Của Tôi</h5>
 
@@ -21,7 +29,7 @@
                   {% endfor %}
 
                   {% for i in request.user.teacher.list_groupsubject_manager %}
-                  {{ i.get_role_display }}<a href="" class="text-decoration-none">{{ i.group.title }}</a>.
+                  {{ i.get_role_display }}<a href="" class="text-decoration-none"> {{ i.group.title }}</a>.
                   {% endfor %}
                   {% for i in request.user.teacher.list_school_manager %}
                   {{ i.get_role_display }}<a href="" class="text-decoration-none"> {{ i.school.title }}</a>.
