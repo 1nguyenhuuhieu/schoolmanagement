@@ -1,5 +1,6 @@
 {% extends 'base_withsidebar.html' %}
 {% block content %}
+{% load static %}
 {% include 'breadcrumb.html' with titlebreadcrumb1=title.0.0 titlebreadcrumb2=title.0.1 %}
 
 {% if title.0.0 and title.0.1 %}
@@ -77,7 +78,40 @@
             </div>
 
             {% else %}
-            <h4>Chưa có giáo án nào được tải lên</h4>
+            <div class="text-center w-100 bg-white border rounded-15 shadow pb-5 px-5">
+              <img src="{% static 'imgs/empty.jpeg' %}" width="300px" alt="">
+            <h4 class="text-danger">Chưa có giáo án nào được tải lên <small class="text-muted">Hãy thêm mới giáo án của bạn ngay bây giờ nhé!</small></h4>
+
+            <button class="btn btn-success mt-3"> <i class="fas fa-book me-2"></i>Thêm Giáo án</button> <hr> hoặc <a href="#" class="text-decoration-none">Xem hướng dẫn thêm giáo án tại đây <i class="fas fa-arrow-right ms-2"></i></a>
+
+            </div>
 
             {% endif %}
+
+
+            <div class="row my-5 justify-content-between text-muted">
+              <hr class="mb-4">
+              
+              <div class="col-4">
+                <small>
+                <a href="#" class="text-decoration-none text-reset">
+
+
+               Hệ thống Quản Lý Trường Học Kim Nhan</a><span class="text-muted">
+                là dự án được tạo ra và duy trì bởi <a href="#" class="text-decoration-none text-reset">Nguyễn Hữu Hiếu</a> </span> 
+              </small>
+              </div>
+              <div class="col-2 text-muted text-center">
+                <small>
+                <a href="#" class="text-decoration-none text-secondary">About</a> </small> </div>
+              <div class="col-2 text-muted text-center">
+                <small>
+                <a href="#" class="text-decoration-none text-secondary">Pricing</a> </small> </div>
+              <div class="col-2 text-muted text-center">
+                <small>
+                <a href="#" class="text-decoration-none text-secondary">Contact</a></small>  </div>
+              <div class="col-2 text-muted text-center">
+                <small>
+                <a href="#" class="text-decoration-none text-secondary">Docs</a> </small> </div>
+            </div>
   {% endblock %}

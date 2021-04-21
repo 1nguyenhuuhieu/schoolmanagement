@@ -1,7 +1,7 @@
 <div class="position-sticky top-0 start-0 pt-4">
 
             
-    <div class="d-flex justify-content-between mb-3 align-items-center">
+    <div class="d-flex justify-content-between mb-4 align-items-center">
       <span class="fw-bold">Giáo án</span>
       <button type="button" class="btn btn-success btn-sm  "><i class="fas fa-book me-2"></i>Thêm</button>
 
@@ -36,14 +36,25 @@
       </form>
 
 
-      <div class="list-group text-primary ">
-        <a href="{% url 'lessondashboard' %}" class="list-group-item list-group-item-action border-0 text-reset ps-0 {% if request.path == '/lessondashboard/' %} fw-bold {% endif %}"><i class="fas fa-chart-bar me-2 text-muted  fa-fw "></i>Thống Kê</a>
-        <a href="{% url 'alllessons' %}" class="list-group-item list-group-item-action border-0 text-reset ps-0 {% if request.path == '/lessons/' %} fw-bold {% endif %}"><i class="fas fa-book fa-fw me-2 text-muted    fa-fw"></i>Tất Cả Giáo Án</a>
+      <div class="list-group">
+        <a href="{% url 'lessondashboard' %}" class="list-group-item list-group-item-action border-0 text-primary ps-0 {% if request.path == '/lessondashboard/' %} fw-bold {% endif %}"><i class="fas fa-chart-bar me-2 text-muted  fa-fw "></i>Thống Kê</a>
+        <a href="{% url 'alllessons' %}" class="list-group-item list-group-item-action border-0 text-primary ps-0 {% if request.path == '/lessons/' %} fw-bold {% endif %}"><i class="fas fa-book fa-fw me-2 text-muted    fa-fw"></i>Tất Cả Giáo Án</a>
+
+        <hr >
+
+
+        {% if request.user.teacher.time_now.month < 9 %}
+      <span class="fw-bold mb-3">Giáo án năm {{request.user.teacher.time_now.year|add:'-1'}}-{{request.user.teacher.time_now.year }} </span>
+      {% else %}
+      <span class="fw-bold mb-3">Giáo án năm {{request.user.teacher.time_now.year }}-{{request.user.teacher.time_now.year|add:'1' }} </span>
+       {% endif %}
+
         
         {% for i in  request.user.teacher.subjectclassyear %}
-        {% if i.0 and i.1 %}   <a href=" {% url 'lessons_subject_level' i.2 i.1 %}" class="list-group-item list-group-item-action border-0 text-reset ps-0"><i class="fas fa-book fa-fw me-2 text-muted"></i>{{ i.0 }} {{ i.1 }}</a>
+        {% if i.0 and i.1 %}   <a href=" {% url 'lessons_subject_level' i.2 i.1 %}" class="list-group-item list-group-item-action border-0 text-primary ps-0"><i class="fas fa-book fa-fw me-2 text-muted"></i>{{ i.0 }} {{ i.1 }}</a>
         {% endif %}
         {% endfor %}
+        <hr>
 
 
       </div>

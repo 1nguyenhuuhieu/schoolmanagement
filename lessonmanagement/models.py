@@ -59,7 +59,12 @@ class Teacher(models.Model):
 
 
     def subjectclassyear(self):
-        i = Lesson.objects.filter(teacher=self.id).order_by('subject__title', 'level').distinct().values_list('subject__title', 'level')
+
+        if now.month > 9:
+            listyear = [now.year]
+        else:
+            listyear = [now.year - 1, now.year]
+        i = Lesson.objects.filter(teacher=self.id).filter(upload_time__year__in = listyear).order_by('subject__title', 'level').distinct().values_list('subject__title', 'level')
         k = []
         m = []
         for j in i:
@@ -126,6 +131,8 @@ class Teacher(models.Model):
         return GroupSubjectManager.objects.filter(teacher=self.id).filter(enddate=None)
     def list_school_manager(self):
         return SchoolManager.objects.filter(teacher=self.id).filter(enddate=None)
+    def time_now(self):
+        return now
     
 
 
