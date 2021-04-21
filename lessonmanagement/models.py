@@ -374,7 +374,7 @@ class Lesson(models.Model):
 
 
     def __str__(self):
-        return self.title
+        return '%s - %s' % (self.title, self.level)
 
 class LessonClassYear(models.Model):
     is_teach = models.BooleanField(blank=True, null=True)

@@ -12,18 +12,13 @@
   
             <div class="d-flex">
   
-                      
-              <div class="btn-group btn-group-sm  me-3" role="group" aria-label="Basic outlined example">
-                <button type="button" class="btn btn-outline-secondary active"><i class="fas fa-list me-2"></i>Xem dạng bảng</button>
-                <button type="button" class="btn btn-outline-secondary "><i class="fas fa-th me-2"></i>Xem dạng lưới</button>
-              </div>
-           
+            
   
               <div class="btn-group btn-group-sm me-3">
                 <a href="#" class="btn btn-outline-secondary active " aria-current="page">Toàn bộ</a>
                 {% if title_class.0.0 != None %}
                 {% for i in title_class %}
-                <a href="{{ i.0 }}" class="btn btn-outline-secondary">{{ i.0|upper }}</a>
+                <a href="{{ i.0 }}" class="btn btn-outline-secondary">{{ level }}{{ i.0|upper }}</a>
                 {% endfor %}
                 {% endif %}
               </div>
