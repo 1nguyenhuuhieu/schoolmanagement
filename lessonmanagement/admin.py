@@ -70,5 +70,15 @@ class Lesson(admin.ModelAdmin):
 admin.site.register(SubjectClassYear)
 admin.site.register(LessonClassYear)
 
+@admin.register(SchoolManager)
+class SchoolManager(admin.ModelAdmin):
+    pass
+
+
+@admin.register(School)
+class School(admin.ModelAdmin):
+    pass
+
+
 
 

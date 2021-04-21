@@ -2,15 +2,7 @@
           {% extends 'base_withsidebar.html' %}
           {% load static %}
           {% block content %}
-          <div class="bg-white border shadow-sm p-2 rounded-3 mb-4">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb m-0 ">
-                <li class="breadcrumb-item"><a href="#" class="text-decoration-none"><i class="fas fa-home me-2"></i>Trang chủ</a></li>
-                <li class="breadcrumb-item"> Giáo án</li>
-                <li class="breadcrumb-item active" aria-current="page">Thống kê</li>
-              </ol>
-            </nav>
-          </div>
+          {% include 'breadcrumb.html' %}
   
           <h5><i class="fas fa-chart-bar fa-fw me-2 mb-3"></i>Thống Kê Giáo Án Của Tôi</h5>
 
@@ -23,7 +15,19 @@
                 <div class="card-body">
                   <h5 class="card-title">Xin chào</h5>
                   <h4><a href="#" class="text-decoration-none">{{ request.user.teacher.full_name }}!</a></h4>
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                  <p class="card-text">{{ request.user.teacher.full_name }}({{ request.user.teacher.yearold }}). {{ request.user.teacher.get_education_level_display }} <a href="" class="text-decoration-none"> {{ request.user.teacher.main_subject }}</a>.
+                    {% for i in request.user.teacher.list_subject_manager %}
+                    {{ i.get_role_display }} <a href="" class="text-decoration-none">{{ i.subject.title }}</a>.
+                  {% endfor %}
+
+                  {% for i in request.user.teacher.list_groupsubject_manager %}
+                  {{ i.get_role_display }}<a href="" class="text-decoration-none">{{ i.group.title }}</a>.
+                  {% endfor %}
+                  {% for i in request.user.teacher.list_school_manager %}
+                  {{ i.get_role_display }}<a href="" class="text-decoration-none"> {{ i.school.title }}</a>.
+                  {% endfor %}
+                
+                </p>  
                   <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                 </div>
               </div>
@@ -35,10 +39,10 @@
                 {% for i in request.user.teacher.latest_lesson %}
                 <div class="card mb-4 rounded-15 shadow">
                   <div class="row g-0">
-                    <div class="col-2 p-3">
+                    <div class="col-1 p-2 d-flex align-items-center">
                       <img src="{% static 'imgs/math.jpeg' %}"  class="img-fluid rounded-circle" alt="">
                     </div>
-                    <div class="col-10">
+                    <div class="col-11">
                       <div class="card-body">
                         <h6 class="card-title">
                           <a href="#" class="text-reset text-decoration-none">  {{ i.title }}</a>
@@ -110,7 +114,6 @@
           
             
 
-          
       
          
            {% endblock %}

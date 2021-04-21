@@ -51,7 +51,12 @@ def alllessons(request):
     return render(request, 'all_lessons.html', context)
 
 def lessons_subject_level(request, subject, level):
-    pass
+    lesson = Lesson.objects.filter(teacher=request.user.teacher.id).filter(slug_subject = subject).filter(level = level)
+    title = lesson.values_list('subject__title','level').distinct()
+    context = {'lesson_list': lesson, 'title': title }
+    return render(request, 'lessons.html', context)
+
+
 
 
 

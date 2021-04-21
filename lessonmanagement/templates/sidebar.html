@@ -7,22 +7,44 @@
 
       </div>
 
-      <input class="form-control mb-3  form-control-sm" list="datalistOptions" id="exampleDataList" placeholder="Tìm giáo án...">
-      <datalist id="datalistOptions">
+      <form action="">
 
-        <option value="San Francisco">
-        <option value="New York">
-        <option value="Seattle">
-        <option value="Los Angeles">
-        <option value="Chicago">
-      </datalist>
+        <div class="input-group input-group-sm mb-3">
+
+
+          
+        <input type="search" class="form-control " list="datalistOptions" id="exampleDataList" placeholder="Tìm giáo án..." aria-describedby="button-addon2">
+        <datalist id="datalistOptions">
+          {% for i in request.user.teacher.list_lesson %}
+  
+          <option value="{{ i.title }}">
+            {% endfor %}
+        </datalist>
+
+
+
+
+          
+          <button class="btn border" type="submit" id="button-addon2"><i class="fas fa-search"></i></button>
+       
+        </div>
+
+        
+
+
+
+      </form>
+
+
       <div class="list-group text-primary ">
         <a href="{% url 'lessondashboard' %}" class="list-group-item list-group-item-action border-0 text-reset ps-0 {% if request.path == '/lessondashboard/' %} fw-bold {% endif %}"><i class="fas fa-chart-bar me-2 text-muted  fa-fw "></i>Thống Kê</a>
         <a href="{% url 'alllessons' %}" class="list-group-item list-group-item-action border-0 text-reset ps-0 {% if request.path == '/lessons/' %} fw-bold {% endif %}"><i class="fas fa-book fa-fw me-2 text-muted    fa-fw"></i>Tất Cả Giáo Án</a>
+        
         {% for i in  request.user.teacher.subjectclassyear %}
         {% if i.0 and i.1 %}   <a href=" {% url 'lessons_subject_level' i.2 i.1 %}" class="list-group-item list-group-item-action border-0 text-reset ps-0"><i class="fas fa-book fa-fw me-2 text-muted"></i>{{ i.0 }} {{ i.1 }}</a>
         {% endif %}
         {% endfor %}
+
 
       </div>
      

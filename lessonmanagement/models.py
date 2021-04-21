@@ -6,6 +6,14 @@ from django.db.models import F
 from django.utils.text import slugify
 
 now = datetime.now()
+
+class School(models.Model):
+    title = models.CharField(max_length=200)
+
+
+    def __str__(self):
+        return self.title
+
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Tài khoản đăng nhập", help_text="Tài khoản đăng nhập viết liền không dấu. Ví dụ: nhhieu. Viết tắt của Nguyễn Hữu Hiếu. Nếu trùng họ tên thì thêm số vào sau, ví dụ nhhieu2")
     firstname = models.CharField("Họ",max_length=200, blank=True)
@@ -20,6 +28,14 @@ class Teacher(models.Model):
     #chuyên môn chính
     main_subject = models.ForeignKey("Subject",on_delete=models.SET_NULL,null=True,blank=True)
 
+    EDUCATION_LEVEL_CHOICES = [
+        ('inter', 'Trung Cấp'),
+        ('college', 'Cao Đẳng'),
+        ('university', 'Đại Học'),
+        ('master', 'Thạc Sĩ')
+    ]
+    education_level = models.CharField(max_length=20, choices=EDUCATION_LEVEL_CHOICES, null=True, blank=True)
+    
 
     is_work = models.BooleanField("Có đang công tác",default=True, help_text="Tích vào ô nếu đang công tác tại trường, bỏ tích nếu đã nghỉ hưu hoặc chuyển sang đơn vị khác")
     def user_directory_path(instance, filename):
@@ -29,6 +45,8 @@ class Teacher(models.Model):
     # Bổ sung trình crop ảnh
     avatar = models.ImageField("Ảnh đại diện", help_text = "Ảnh nên được crop về ảnh vuông để đạt được độ thẩm mỹ cao nhất",upload_to = user_directory_path, blank = True, null = True)
 
+    def yearold(self):
+        return now.year - self.birth_date.year
     def full_name(self):
         return '%s %s' % (self.firstname, self.lastname)
 
@@ -39,16 +57,11 @@ class Teacher(models.Model):
     def total_lesson_month(self):
         return Lesson.objects.filter(teacher=self.id).filter(upload_time__year = now.year ).filter(upload_time__month = now.month).count()
 
-    def test(self):
-        if now.month > 9:
-            listyear = [now.year, now.year-1, now.year-2]
-        else:
-            listyear = [now.year - 1, now.year-2, now.year-3]
-        return  SubjectClassYear.objects.filter(teacher = self.id).filter(classyear__startyear__in = listyear).values_list('subject__title', 'classyear__startyear', 'classyear__title')
 
     def subjectclassyear(self):
-        i = Lesson.objects.filter(teacher=self.id).values_list('subject__title', 'level').distinct()
+        i = Lesson.objects.filter(teacher=self.id).order_by('subject__title', 'level').distinct().values_list('subject__title', 'level')
         k = []
+        m = []
         for j in i:
             j = list(j)
             j.append(slugify(j[0]))
@@ -93,33 +106,6 @@ class Teacher(models.Model):
 
 
      
-    def list_classyear_6(self):
-        today = datetime.today()
-        if today.month < 9:
-            return SubjectClassYear.objects.filter(classyear__startyear= today.year - 1)
-        else:
-            return SubjectClassYear.objects.filter(classyear__startyear= today.year)
-    def list_classyear_7(self):
-        today = datetime.today()
-        toyear = today.year  - 1
-        if today.month < 9:
-            return SubjectClassYear.objects.filter(classyear__startyear= toyear - 1)
-        else:
-            return SubjectClassYear.objects.filter(classyear__startyear= toyear)
-    def list_classyear_8(self):
-        today = datetime.today()
-        toyear = today.year  - 2
-        if today.month < 9:
-            return SubjectClassYear.objects.filter(classyear__startyear= toyear - 1)
-        else:
-            return SubjectClassYear.objects.filter(classyear__startyear= toyear)
-    def list_classyear_9(self):
-        today = datetime.today()
-        toyear = today.year  - 3
-        if today.month < 9:
-            return SubjectClassYear.objects.filter(classyear__startyear= toyear - 1)
-        else:
-            return SubjectClassYear.objects.filter(classyear__startyear= toyear)
     def list_lesson(self):
         return Lesson.objects.filter(teacher=self.id)
 
@@ -134,6 +120,18 @@ class Teacher(models.Model):
 
     def all_lessons(self):
         return Lesson.objects.filter(teacher=self.id)
+    def list_subject_manager(self):
+        return SubjectTeacher.objects.filter(teacher=self.id).filter(enddate=None).filter(role = "manager")
+    def list_groupsubject_manager(self):
+        return GroupSubjectManager.objects.filter(teacher=self.id).filter(enddate=None)
+    def list_school_manager(self):
+        return SchoolManager.objects.filter(teacher=self.id).filter(enddate=None)
+    
+
+
+    class Meta:
+        verbose_name = "Giáo viên"
+        verbose_name_plural = "Giáo viên"
   
 
 
@@ -188,16 +186,42 @@ class SubjectTeacher(ManagerAbstract):
     subject = models.ForeignKey(Subject, related_name="subjectteacher",on_delete=models.SET_NULL, null=True, blank=True)
     ROLE_CHOICES = [
     ('member', 'Thành viên'),
-    ('manager', 'Quản lý'),
+    ('manager', 'Tổ trưởng'),
     ]
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True)
+    class Meta:
+        verbose_name = "Thành Viên/Quản lý Môn học"
+        verbose_name_plural = "Thành Viên/Quản lý Môn học"
     def __str__(self):
         return '%s %s %s' % (self.teacher.firstname, self.teacher.lastname, self.subject.title)
 
 class GroupSubjectManager(ManagerAbstract):
     group = models.ForeignKey(GroupSubject, on_delete=models.SET_NULL, null=True, blank=True)
+    ROLE_CHOICES = [
+    ('member', 'Phó bộ môn'),
+    ('manager', 'Trưởng bộ môn'),
+    ]
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True)
+    class Meta:
+        verbose_name = "Quản lý Bộ môn"
+        verbose_name_plural = "Quản lý Bộ môn"
     def __str__(self):
-        return '%s %s %s' % (self.manager.firstname, self.manager.lastname, self.group.title)
+        return '%s %s ' % (self.teacher.full_name(),  self.group.title)
+
+class SchoolManager(ManagerAbstract):
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
+    ROLE_CHOICES = [
+    ('member', 'Hiệu phó'),
+    ('manager', 'Hiệu trưởng'),
+    ]
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True)
+    class Meta:
+        verbose_name = "Quản lý trường "
+        verbose_name_plural = "Quản lý trường"
+    def __str__(self):
+        return '%s - %s ' % (self.teacher.full_name(),  self.role)
+
+
 
 
 
@@ -291,6 +315,7 @@ class ClassYearManager(ManagerAbstract):
 
 class Lesson(models.Model):
     title = models.CharField(max_length=200)
+  
     upload_time = models.DateTimeField()
     lesson_path = models.FileField(upload_to='test/')
     LEVEL_CHOICES = [
@@ -308,6 +333,7 @@ class Lesson(models.Model):
 
     check_date = models.DateTimeField(auto_now = True, blank=True, null=True)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
+    slug_subject = models.SlugField(max_length=200, null=True, blank=True)
 
     start_number_lesson = models.IntegerField(null=True, blank=True, help_text="Bài giảng này ở tiết số mấy")
     cout_number_lesson = models.IntegerField(null=True, blank=True, help_text="Bài giảng này trong bao nhiêu tiết")
@@ -332,6 +358,11 @@ class Lesson(models.Model):
         for i in self.classyear_list.all():
             classyear_list1.append(i)
         return classyear_list1
+
+    def save(self, *args, **kwargs):
+        value = self.subject.title
+        self.slug_subject = slugify(value)
+        super().save(*args, **kwargs)
 
 
 
@@ -359,14 +390,13 @@ class SubjectClassYear(models.Model):
     startdate = models.DateField(blank=True, null=True)
     enddate = models.DateField(blank=True, null=True)
 
+    class Meta:
+        pass
+
 
 
     def __str__(self):
         return '%s - %s - %s %s' % (self.subject, self.classyear, self.teacher.firstname, self.teacher.lastname)
-
-    
-
-
 
 
 
