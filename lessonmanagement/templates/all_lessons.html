@@ -1,5 +1,6 @@
 {% extends 'base_withsidebar.html' %}
 {% block content %}
+{% load static %}
 <div class="bg-white border shadow-sm p-3 rounded-pill mb-4">
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb m-0 ">
@@ -8,7 +9,10 @@
     </ol>
   </nav>
 </div>
+
+{% if request.user.teacher.all_lessons %}
 <h5><i class="fas fa-book fa-fw me-2 "></i>Tất cả giáo án của tôi</h5>
+
 
 <hr class="mb-4">
 
@@ -17,8 +21,17 @@
             </div>
   
            
-        
-  
+            {% else %}
+            <div class="text-center w-100 bg-white border rounded-15 shadow pb-5 px-5">
+              <img src="{% static 'imgs/empty.jpeg' %}" width="300px" alt="">
+            <h4 class="text-danger">Chưa có giáo án nào được tải lên <small class="text-muted">Hãy thêm mới giáo án của bạn ngay bây giờ nhé!</small></h4>
+
+            <button class="btn btn-success mt-3"> <i class="fas fa-book me-2"></i>Thêm Giáo án</button> <hr> hoặc <a href="#" class="text-decoration-none">Xem hướng dẫn thêm giáo án tại đây <i class="fas fa-arrow-right ms-2"></i></a>
+
+            </div>
+
+            {% endif %} 
+            
         
              
   {% endblock %}

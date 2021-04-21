@@ -378,9 +378,12 @@ class Lesson(models.Model):
 
 class LessonClassYear(models.Model):
     is_teach = models.BooleanField(blank=True, null=True)
-    teach_date = models.DateField(blank=True, null=True)
+    teach_date = models.DateField(auto_now=True,blank=True, null=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, blank=True, null=True)
     classyear = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, blank=True, null=True)
+    class Meta:
+        unique_together = ('lesson', 'classyear')
+    
 
     def __str__(self):
         return '%s %s %s' % (self.lesson, self.classyear, self.is_teach)
@@ -397,9 +400,6 @@ class SubjectClassYear(models.Model):
     startdate = models.DateField(blank=True, null=True)
     enddate = models.DateField(blank=True, null=True)
 
-    class Meta:
-        verbose_name = 'Pha mon' 
-        verbose_name_plural = 'Phan mon' 
 
 
 

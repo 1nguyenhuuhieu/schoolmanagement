@@ -62,6 +62,7 @@ def lessons_subject_level(request, subject, level):
         lesson_toyear = Lesson.objects.filter(teacher=request.user.teacher.id).filter(upload_time__year=now.year)
     lesson = lesson_toyear.filter(slug_subject = subject).filter(level = level)
     title = lesson.values_list('subject__title','level').distinct()
+    title_class = lesson.order_by('classyear__title').values_list('classyear__title').distinct()
     
         
 
@@ -72,10 +73,13 @@ def lessons_subject_level(request, subject, level):
 
         
     context = {'lesson_list':lesson,'teachersubjectclassyear':teachersubjectclassyear, 'now': now, 'lesson_pending':lesson_pending,'lesson_acept':lesson_acept, 'lesson_deny':lesson_deny,'lesson_toyear':lesson_toyear, 
-    'title': title
+    'title': title, 'title_class': title_class, 'subject':subject, 'level':'level'
     }
     return render(request, 'lessons.html', context)
 
+def lesson_classyear(request, subject, level, title):
+    context = {}
+    return render(request, 'lessons_classyear.html', context)
 
 
 
