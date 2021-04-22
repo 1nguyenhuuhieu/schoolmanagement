@@ -7,6 +7,17 @@ from django.utils.text import slugify
 
 now = datetime.now()
 
+def class_level_def(year):
+    i = 0
+    if (now.month < 9):
+        i =  (now.year - year) + 5
+    else:
+        i = (now.year - year) + 6
+    if i in [6,7,8,9]:
+        return i
+    else:
+        return year
+
 class School(models.Model):
     title = models.CharField(max_length=200)
 
@@ -59,8 +70,10 @@ class Teacher(models.Model):
 
 
     def subjectclassyear(self):
-        i = SubjectClassYear.objects.filter(teacher=self.id).filter(is_teach_now = True).order_by('subject__title', 'classyear__startyear').distinct()
-        return i
+        return SubjectClassYear.objects.filter(teacher=self.id).filter(is_teach_now = True)
+    def subjectclassyear_list(self):
+        return SubjectClassYear.objects.filter(teacher=self.id).filter(is_teach_now = True).values('subject__title', 'subject__subject_slug', 'classyear__class_level_field').distinct()
+       
       
 
     def list_subject_classyear(self):
@@ -123,6 +136,8 @@ class Teacher(models.Model):
         return SchoolManager.objects.filter(teacher=self.id).filter(enddate=None)
     def time_now(self):
         return now
+    def list_subject(self):
+        return SubjectClassYear.objects.filter(teacher=self.id).values('subject__title','subject__id').distinct()
     
 
 
@@ -240,6 +255,7 @@ class ClassYear(models.Model):
     title = models.CharField(verbose_name="Tên lớp", max_length=1, choices=TITLE_CHOICES)
     startyear = models.IntegerField()
     lesson_list = models.ManyToManyField("Lesson", through="LessonClassYear")
+    class_level_field = models.IntegerField(null=True, blank=True)
 
     @property
     def is_learning(self):
@@ -250,31 +266,9 @@ class ClassYear(models.Model):
             return False
     
     
-    def class_level(self):
-        now = datetime.now()
-        if now.month < 9:
-            if (self.startyear) == now.year - 1:
-                return 6
-            elif (self.startyear) == now.year -2:
-                return 7
-            elif (self.startyear) == now.year -3:
-                return 8
-            elif (self.startyear) == now.year -4:
-                return 9
-            else:
-                return "Khoá %s - %s" %( self.startyear, self.startyear+3)
-        else:
-            if (self.startyear) == now.year:
-                return 6
-            elif (self.startyear) == now.year - 1:
-                return 7
-            elif (self.startyear) == now.year - 2:
-                return 8
-            elif (self.startyear) == now.year - 3:
-                return 9
-            else:
-                return "Khoá %s - %s" %( self.startyear, self.startyear+3)
 
+    def class_level(self):
+        return class_level_def(self.startyear)
     
     def class_title_year(self):
         return "%s%s" % (self.class_level(), self.get_title_display())
@@ -299,6 +293,12 @@ class ClassYear(models.Model):
         unique_together = ('title', 'startyear')
         verbose_name = "Lớp học"
         verbose_name_plural = "Lớp học"
+
+    
+    def save(self, *args, **kwargs):
+        value = class_level_def(self.startyear)
+        self.class_level_field = value
+        super().save(*args, **kwargs)
 
   
 

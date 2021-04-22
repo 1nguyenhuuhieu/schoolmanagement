@@ -21,7 +21,7 @@
                 
             </td>
 
-            <td><a href="#" class="text-decoration-none">{{ lesson.title }}  </a></td>
+            <td><a href="{% url 'lesson' lesson.id %}" class="text-decoration-none">{{ lesson.title }}  </a></td>
 
             <td class="text-muted" >{{ lesson.upload_time|date:"SHORT_DATE_FORMAT" }}</td>
             <td>                    {% if lesson.status == "pending" %}

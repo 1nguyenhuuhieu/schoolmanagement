@@ -1,9 +1,12 @@
+
+
+
 <div class="position-sticky top-0 start-0 pt-4">
 
             
     <div class="d-flex justify-content-between mb-4 align-items-center">
       <span class="fw-bold">Giáo án</span>
-      <button type="button" class="btn btn-success btn-sm  "><i class="fas fa-book me-2"></i>Thêm</button>
+      <a href="{% url 'addlesson' %}" class="btn btn-success btn-sm  "><i class="fas fa-book me-2"></i>Thêm</a>
 
       </div>
 
@@ -51,8 +54,8 @@
 
 
         
-        {% for i in  request.user.teacher.subjectclassyear %}
-        {% if i.subject.title and i.classyear.startyear %}   <a href=" {% if  i.subject.subject_slug and i.classyear.title %} {% url 'lessons_subject_level' i.subject.subject_slug i.classyear.class_level %} {% else %} {% url 'emptylesson' %} {% endif %}" class="list-group-item list-group-item-action border-0 text-primary ps-0"><i class="fas fa-book fa-fw me-2 text-muted"></i>{{ i.subject.title }} {{ i.classyear.class_level }}</a>
+        {% for i in request.user.teacher.subjectclassyear_list %}
+        {% if i.subject__title and i.classyear__class_level_field %}   <a href=" {% if  i.subject__subject_slug and i.classyear__class_level_field %} {% url 'lessons_subject_level' i.subject__subject_slug i.classyear__class_level_field %} {% else %} {% url 'emptylesson' %} {% endif %}" class="list-group-item list-group-item-action border-0 text-primary ps-0"><i class="fas fa-book fa-fw me-2 text-muted"></i>{{ i.subject__title }} {{ i.classyear__class_level_field }}</a>
         {% endif %}
         {% endfor %}
         <hr>

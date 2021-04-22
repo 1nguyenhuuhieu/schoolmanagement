@@ -3,6 +3,7 @@ from .models import *
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils.text import slugify
+from django.http import Http404
 
 
 now = datetime.now()
@@ -87,6 +88,18 @@ def lesson_classyear(request, subject, level, title):
 def emptylesson(request):
     return render(request, 'no_lesson.html', {})
 
+def lesson(request, id):
+    try:
+        lesson = Lesson.objects.filter(teacher=request.user.teacher.id).get(id = id)
+
+    except Lesson.DoesNotExist:
+        raise Http404("Lesson does not exist")
+    
+    return render(request, 'lesson.html', {'lesson': lesson})
+
+def addlesson(request):
+    return render(request, 'lesson_add.html', {})
+        
 
 
     
