@@ -1,6 +1,27 @@
 {% extends 'base_withsidebar.html' %}
 
 {% block content %}
- <h1>re</h1>
+{% include 'breadcrumb/breadcrumb2.html' %}
+
+<div class="d-flex justify-content-between align-items-center">
+    <h5> <i class="fas fa-book me-2 "></i>  
+        {{ subject_name }} {{ level }}{{ title|upper }}
+    </h5> 
+   
+    </div>
+    <hr>
+
+
+    {% if i.current_lesson and i.total_lesson %}
+
+    <h6 class="mt-3"> <a href="#" class="text-decoration-none">{{i.subject}} {{ i.classyear }}</a>  <small class="text-muted">Tiết {{ i.current_lesson }}/{{ i.total_lesson }}</small> </h6>
+
+    <div class="progress mb-3">
+      <div class="progress-bar" role="progressbar" style="width: {% widthratio i.current_lesson i.total_lesson 100 %}%;" aria-valuenow="{% widthratio i.current_lesson i.total_lesson 100 %}" aria-valuemin="0" aria-valuemax="100">{% widthratio i.current_lesson i.total_lesson 100 %}%</div>
+    </div>
+
+    {% endif %}
+
+
 
 {% endblock %}

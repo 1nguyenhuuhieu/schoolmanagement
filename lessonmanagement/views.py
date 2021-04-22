@@ -78,9 +78,14 @@ def lessons_subject_level(request, subject, level):
     return render(request, 'lessons.html', context)
 
 def lesson_classyear(request, subject, level, title):
-    context = {}
+    subject2 = Lesson.objects.filter(slug_subject = subject).values_list('subject__title')
+    subject_name = subject2[0][0]
+    context = { 'level': level, 'subject_name': subject_name, 'subject_slug': subject, 'title': title}
+  
     return render(request, 'lessons_classyear.html', context)
 
+def emptylesson(request):
+    return render(request, 'no_lesson.html', {})
 
 
 

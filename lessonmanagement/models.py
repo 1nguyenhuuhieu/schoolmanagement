@@ -59,19 +59,9 @@ class Teacher(models.Model):
 
 
     def subjectclassyear(self):
-
-        if now.month > 9:
-            listyear = [now.year]
-        else:
-            listyear = [now.year - 1, now.year]
-        i = Lesson.objects.filter(teacher=self.id).filter(upload_time__year__in = listyear).order_by('subject__title', 'level').distinct().values_list('subject__title', 'level')
-        k = []
-        m = []
-        for j in i:
-            j = list(j)
-            j.append(slugify(j[0]))
-            k.append(j)
-        return k
+        i = SubjectClassYear.objects.filter(teacher=self.id).filter(is_teach_now = True).order_by('subject__title', 'classyear__startyear').distinct()
+        return i
+      
 
     def list_subject_classyear(self):
         listyear = []
@@ -144,7 +134,7 @@ class Teacher(models.Model):
 
 
     def __str__(self):
-        return '%s %s %s' % (self.firstname, self.lastname, self.main_subject)
+        return self.full_name()
 
 
 
@@ -164,11 +154,17 @@ class SubjectAbstract(models.Model):
 
 class Subject(SubjectAbstract):
     group = models.ForeignKey("GroupSubject", related_name='subject123',on_delete=models.SET_NULL, null=True, blank=True)
+    subject_slug = models.SlugField(max_length=200, null=True, blank=True)
     member = models.ManyToManyField(Teacher, through="SubjectTeacher")
     classyear = models.ManyToManyField("ClassYear", through="SubjectClassYear")
     class Meta:
         verbose_name = "Môn học"
         verbose_name_plural = "Môn học"
+    def save(self, *args, **kwargs):
+        value = self.title
+        self.subject_slug = slugify(value)
+        super().save(*args, **kwargs)
+
 
 class GroupSubject(SubjectAbstract):
     subject = models.ManyToManyField(Subject)
@@ -323,7 +319,7 @@ class ClassYearManager(ManagerAbstract):
 class Lesson(models.Model):
     title = models.CharField(max_length=200)
   
-    upload_time = models.DateTimeField()
+    upload_time = models.DateTimeField(auto_now_add=True)
     lesson_path = models.FileField(upload_to='test/')
     LEVEL_CHOICES = [
         (6, 6),
@@ -383,6 +379,8 @@ class LessonClassYear(models.Model):
     classyear = models.ForeignKey(ClassYear, on_delete=models.SET_NULL, blank=True, null=True)
     class Meta:
         unique_together = ('lesson', 'classyear')
+        verbose_name = 'Giáo án thuộc lớp nào'
+        verbose_name_plural = 'Giáo án thuộc lớp nào'
     
 
     def __str__(self):
@@ -399,13 +397,17 @@ class SubjectClassYear(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True,related_name='subjectclassyearlist')
     startdate = models.DateField(blank=True, null=True)
     enddate = models.DateField(blank=True, null=True)
+    is_teach_now = models.BooleanField(default=True,blank=True, null=True, verbose_name="Trạng thái hiệu lực")
 
+    class Meta:
+        verbose_name = "Phân công giảng dạy"
+        verbose_name_plural = "Phân công giảng dạy"
 
 
 
 
     def __str__(self):
-        return '%s - %s - %s %s' % (self.subject, self.classyear, self.teacher.firstname, self.teacher.lastname)
+        return '%s %s - %s' % (self.subject, self.classyear, self.teacher.full_name())
 
 
 

@@ -63,12 +63,28 @@ class GroupSubject(admin.ModelAdmin):
 
 admin.site.register(GroupSubjectManager)
 
-admin.site.register(ClassYearManager)
+@admin.register(LessonClassYear)
+class LessonClassYear(admin.ModelAdmin):
+    pass
 @admin.register(Lesson)
 class Lesson(admin.ModelAdmin):
-     empty_value_display = '---1231232'
-admin.site.register(SubjectClassYear)
-admin.site.register(LessonClassYear)
+    empty_value_display = '---1231232'
+
+@admin.register(SubjectClassYear)
+
+class SubjectClassYear(admin.ModelAdmin):
+    date_hierarchy = 'startdate'
+    list_display = ['__str__','is_teach_now','subject_name', 'teacher_name', 'startdate' , 'enddate']
+
+    list_filter = ('subject__title', 'is_teach_now', 'teacher')
+
+    @admin.display()
+    def subject_name(self, obj):
+        return ("%s %s %s" % (obj.subject.title, obj.classyear.class_level(), obj.classyear.get_title_display() ))
+    def teacher_name(self, obj):
+        return obj.teacher.full_name()
+
+
 
 @admin.register(SchoolManager)
 class SchoolManager(admin.ModelAdmin):
