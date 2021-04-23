@@ -137,8 +137,7 @@ class Teacher(models.Model):
     def time_now(self):
         return now
     def list_subject(self):
-        return SubjectClassYear.objects.filter(teacher=self.id).values('subject__title','subject__id').distinct()
-    
+        return SubjectClassYear.objects.filter(teacher=self.id)
 
 
     class Meta:
@@ -155,7 +154,7 @@ class Teacher(models.Model):
 
 
 class SubjectAbstract(models.Model):
-    title = models.CharField(max_length=20, verbose_name="Tên môn học", help_text="Tên chính xác của môn học theo quy định của Bộ Giáo Dục")
+    title = models.CharField(max_length=20, verbose_name="Tên môn học", help_text="Tên chính xác của môn học theo quy định của Bộ Giáo Dục", unique=True)
     description = models.TextField("Mô tả môn học", blank=True)
     coverimage = models.ImageField("Ảnh bìa cho môn học", upload_to = "subject/", null = True, blank = True)
     

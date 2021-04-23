@@ -83,25 +83,30 @@
           <div class="row">
             <h6 class="mb-3">Thống kê Giáo Án</h6>
             <div class="col">
-              <div class="card text-white bg-primary mb-3 text-center">
-              <div class="card-body">
-                <h1 class="card-title">{{ request.user.teacher.total_lesson }}</h1>
-                <p class="card-text" >Tổng số giáo án đã tải lên</p>
-              </div>
-            </div>
+              <a href="{% url 'alllessons' %}" class="text-decoration-none">
+
+                <div class="card  rounded-15 shadow mb-3 text-center">
+                  <div class="card-body">
+                    <h1 class="card-title link-primary fw-bold ">{{ request.user.teacher.total_lesson }}</h1>
+                    <p class="card-text text-dark" >Tổng số giáo án đã tải lên</p>
+                  </div>
+                </div>
+
+              </a>
+            
           </div>
             <div class="col">
-              <div class="card text-white bg-success mb-3  text-center">
+              <div class="card rounded-15 shadow mb-3  text-center">
                 <div class="card-body">
-                 <h1 class="card-title">{{ request.user.teacher.total_lesson_year }}</h1>
+                 <h1 class="card-title link-info fw-bold ">{{ request.user.teacher.total_lesson_year }}</h1>
                   <p class="card-text" >Giáo án đã tải lên năm 2020</p>
                 </div>
               </div>
             </div>
             <div class="col">
-              <div class="card text-white bg-danger mb-3  text-center">
+              <div class="card rounded-15 shadow mb-3  text-center">
                 <div class="card-body">
-                 <h1 class="card-title">{{ request.user.teacher.total_lesson_month }}</h1>
+                 <h1 class="card-title link-success fw-bold ">{{ request.user.teacher.total_lesson_month }}</h1>
                   <p class="card-text" >Giáo án đã tải lên trong tháng 4</p>
                 </div>
               </div>

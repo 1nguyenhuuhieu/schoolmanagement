@@ -18,11 +18,22 @@
 
 
     <div class="mb-3">
+
+      {% with mylist=request.user.teacher.list_subject %}
+
+      {% regroup mylist by subject.title as subject__title_list %}
+    
+      {{ subject__title_list }}
+
+      {% endwith %}
+
+
       <label for="exampleInputEmail1" class="form-label">Môn học</label>
       <select class="form-select"  id="exampleInputEmail1" name="hih">
         <option selected>Chọn môn học</option>
-        {% for i in request.user.teacher.list_subject %}
-        <option value="{{ i.subject__id }} "> {{ i.subject__title }}</option>
+        {% for i in subject__title_list %}
+        <option value="sf "> {{ i
+        .grouper }}</option>
         {% endfor %}
       </select>
     </div>
