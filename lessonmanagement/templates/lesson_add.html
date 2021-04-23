@@ -19,13 +19,12 @@
 
     <div class="mb-3">
 
-      {% with mylist=request.user.teacher.list_subject %}
-
-      {% regroup mylist by subject.title as subject__title_list %}
-    
-      {{ subject__title_list }}
-
-      {% endwith %}
+      
+          
+      {{ request.user.teacher.list_subject }}
+      {% regroup request.user.teacher.list_subject by subject__title  as country_list %}
+    <hr>
+      {{ country_list }}
 
 
       <label for="exampleInputEmail1" class="form-label">Môn học</label>
