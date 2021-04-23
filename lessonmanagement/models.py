@@ -136,7 +136,7 @@ class Classyear(models.Model):
 
     @property
     def is_learning(self):
-        return is_learning_def(self.startyear)
+        return is_learning_def(class_level_def(self.startyear))
 
     @property
     def class_level(self):
@@ -197,6 +197,16 @@ class Teacher(models.Model):
     def __str__(self):
         return self.full_name()
 
+    #danh sách giáo án
+    def lesson_list(self):
+        return self.lesson_set.all()
+    #danh sách môn dạy và lớp dạy phục vụ cho sidebar.html
+    def subject_classyear_list(self):
+        return self.subjectclassyear_set.filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear').distinct()
+
+
+    
+
 #Giáo án
 class Lesson(models.Model):
     title = models.CharField(max_length=200)
@@ -207,7 +217,7 @@ class Lesson(models.Model):
         (8, 8),
         (9, 9)
     ]
-    level = models.IntegerField(choices=LEVEL_CHOICES, null=True, blank=True)
+    level = models.IntegerField(choices=LEVEL_CHOICES)
     description = models.CharField(max_length=200, null=True, blank=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     
@@ -225,6 +235,8 @@ class Lesson(models.Model):
     checker = models.ForeignKey(Teacher, related_name="lesson_checker" ,on_delete=models.SET_NULL, null=True, blank=True)
     check_date = models.DateTimeField(auto_now=True)
     note_checker = models.CharField(max_length=200, blank=True)
+
+
     
     class Meta:
         verbose_name = "Giáo Án"
@@ -239,7 +251,14 @@ class LessonClassyear(models.Model):
     is_teach = models.BooleanField(default=False)
     teach_date = models.DateField(auto_now=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    subject_slug = models.SlugField(max_length=50, blank=True)
+
     classyear = models.ForeignKey(Classyear, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        self.subject_slug = slugify(self.lesson.subject.title) 
+        super().save(*args, **kwargs)
+
     
     class Meta:
         unique_together = ('lesson', 'classyear')
@@ -253,9 +272,10 @@ class LessonClassyear(models.Model):
 class SubjectClassyear(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     classyear = models.ForeignKey(Classyear, on_delete=models.CASCADE)
-    total_lesson = models.IntegerField(blank=True,null=True,verbose_name="Tổng số tiết dạy")
+    total_lesson = models.IntegerField(blank=True,verbose_name="Tổng số tiết dạy")
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     is_teach_now = models.BooleanField(default=True, verbose_name="Trạng thái hiệu lực")
+
 
     class Meta:
         verbose_name = "Phân công giảng dạy"

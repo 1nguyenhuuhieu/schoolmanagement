@@ -1,0 +1,43 @@
+
+
+
+
+<table id="exampletable" class="table table-hover  " style="width:100%">
+    <thead >
+        <tr>
+            <th>Tiết</th>
+            <th>Tên giáo án</th>
+            
+            <th>Ngày tải lên</th>
+            <th>Trạng thái</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in lesson_list %}
+        <tr>
+            <td> 
+                <span class="badge rounded-pill bg-secondary" style="width: 60px;">{{ i.lesson.start_number_lesson}}{% if i.lesson.cout_number_lesson > 1 %}-{{ i.lesson.start_number_lesson|add:i.lesson.cout_number_lesson }} {% endif %}</span>
+                
+            </td>
+
+            <td><a href="#" class="text-decoration-none">{{ i.lesson.title }}  </a></td>
+
+            <td class="text-muted" >{{ i.lesson.upload_time|date }}</td>
+            <td>                    {% if i.lesson.status == "pending" %}
+                <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i class="far fa-clock me-1"></i>{{ i.lesson.get_status_display}}</span>
+                {% elif i.lesson.status == "acept" %}
+                <span class="badge bg-success  rounded-pill"  style="width: 100px;"><i class="fas fa-check me-1"></i>{{ i.lesson.get_status_display}}</span> 
+                 {% elif i.lesson.status == "deny" %}
+                 <span class="badge bg-danger  rounded-pill"  style="width: 100px;"><i class="fas fa-times me-1"></i>{{ i.lesson.get_status_display}}</span> 
+                {% endif %} </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function() {
+    $('#exampletable').DataTable();
+} );
+</script>

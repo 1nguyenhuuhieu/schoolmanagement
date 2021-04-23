@@ -1,12 +1,22 @@
 {% extends 'base_withsidebar.html' %}
 {% block content %}
 {% load static %}
-{% include 'breadcrumb.html' with titlebreadcrumb1=title.0.0 titlebreadcrumb2=title.0.1 %}
 
-{% if title.0.0 and title.0.1 %}
+<div class="bg-white border shadow-sm p-3 rounded-pill mb-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb m-0 ">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i class="fas fa-home me-2"></i>Trang chủ</a></li>
+      <li class="breadcrumb-item active">Giáo án</li>
+    </ol>
+  </nav>
+</div>
+
+
+
+{% if lesson_list %}
           <div class="d-flex justify-content-between align-items-center">
             <h5> <i class="fas fa-book me-2 "></i>  
-              {{ title.0.0 }} {{ title.0.1 }}
+            dsfsfsdfdsf
             </h5> 
            
   
@@ -16,11 +26,9 @@
   
               <div class="btn-group btn-group-sm me-3">
                 <a href="#" class="btn btn-outline-secondary active " aria-current="page">Toàn bộ</a>
-                {% if title_class.0.0 != None %}
-                {% for i in title_class %}
-                <a href="{{ i.0 }}" class="btn btn-outline-secondary">{{ level }}{{ i.0|upper }}</a>
-                {% endfor %}
-                {% endif %}
+  
+                <a href="{{ i.0 }}" class="btn btn-outline-secondary">dsfdsfdsf dsfdsf</a>
+            
               </div>
 
            
@@ -37,7 +45,7 @@
          
   
   
-            <ul class="nav nav-pills mb-4" id="myTab" role="tablist">
+            <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
               <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="home" aria-selected="true">Toàn bộ giáo án</button>
               </li>
@@ -57,23 +65,16 @@
               <div class="tab-pane fade show active py-4 border  rounded-15 border-top-0 px-3 shadow bg-white" id="all" role="tabpanel" aria-labelledby="home-tab">
   
         
-  
-              {% include "table.html" %}
+              {% include "table/table.html" %}
              
               </div>
-              <div class="tab-pane fade py-4 border border-top-0 px-3 shadow  rounded-15" id="pending" role="tabpanel" aria-labelledby="profile-tab">  {% include "table_pending.html" %}</div>
-              <div class="tab-pane fade py-4 border border-top-0 px-3 shadow  rounded-15" id="acept" role="tabpanel" aria-labelledby="contact-tab">  {% include "table_acept.html" %}</div>
-              <div class="tab-pane fade py-4 border border-top-0 px-3 shadow  rounded-15" id="deny" role="tabpanel" aria-labelledby="contact-tab">  {% include "table_deny.html" %}</div>
+              <div class="tab-pane fade py-4 border border-top-0 px-3 shadow  rounded-15" id="pending" role="tabpanel" aria-labelledby="profile-tab">  {% include "table/table_pending.html" %}</div>
+              <div class="tab-pane fade py-4 border border-top-0 px-3 shadow  rounded-15" id="acept" role="tabpanel" aria-labelledby="contact-tab">  {% include "table/table_acept.html" %}</div>
+              <div class="tab-pane fade py-4 border border-top-0 px-3 shadow  rounded-15" id="deny" role="tabpanel" aria-labelledby="contact-tab">  {% include "table/table_deny.html" %}</div>
             </div>
 
             {% else %}
-            <div class="text-center w-100 bg-white border rounded-15 shadow pb-5 px-5">
-              <img src="{% static 'imgs/empty.jpeg' %}" width="300px" alt="">
-            <h4 class="text-danger">Chưa có giáo án nào được tải lên <small class="text-muted">Hãy thêm mới giáo án của bạn ngay bây giờ nhé!</small></h4>
-
-            <button class="btn btn-success mt-3"> <i class="fas fa-book me-2"></i>Thêm Giáo án</button> <hr> hoặc <a href="#" class="text-decoration-none">Xem hướng dẫn thêm giáo án tại đây <i class="fas fa-arrow-right ms-2"></i></a>
-
-            </div>
+            {% include "empty_lesson.html" %}
 
             {% endif %}
 

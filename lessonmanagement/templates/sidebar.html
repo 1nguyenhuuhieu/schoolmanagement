@@ -1,67 +1,56 @@
-
-
-
+{% load lessonmanagement_extras %}
+{% with teacher=request.user.teacher %}
 <div class="position-sticky top-0 start-0 pt-4">
-
-            
     <div class="d-flex justify-content-between mb-4 align-items-center">
       <span class="fw-bold">Giáo án</span>
       <a href="{% url 'addlesson' %}" class="btn btn-success btn-sm  "><i class="fas fa-book me-2"></i>Thêm</a>
-
       </div>
-
       <form action="">
-
         <div class="input-group input-group-sm mb-3">
-
-
-          
         <input type="search" class="form-control " list="datalistOptions" id="exampleDataList" placeholder="Tìm giáo án..." aria-describedby="button-addon2">
         <datalist id="datalistOptions">
-          {% for i in request.user.teacher.list_lesson %}
-  
-          <option value="{{ i.title }}">
+          {% for lesson in teacher.lesson_list %}
+          <option value="{{ lesson.title }}">
             {% endfor %}
         </datalist>
-
-
-
-
-          
           <button class="btn border" type="submit" id="button-addon2"><i class="fas fa-search"></i></button>
-       
         </div>
-
-        
-
-
-
       </form>
-
-
       <div class="list-group">
         <a href="{% url 'lessondashboard' %}" class="list-group-item list-group-item-action border-0 text-primary ps-0 {% if request.path == '/lessondashboard/' %} fw-bold {% endif %}"><i class="fas fa-chart-bar me-2 text-muted  fa-fw "></i>Thống Kê</a>
-        <a href="{% url 'alllessons' %}" class="list-group-item list-group-item-action border-0 text-primary ps-0 {% if request.path == '/lessons/' %} fw-bold {% endif %}"><i class="fas fa-book fa-fw me-2 text-muted    fa-fw"></i>Tất Cả Giáo Án</a>
+    
 
         <hr >
 
-
-        {% if request.user.teacher.time_now.month < 9 %}
-      <span class="fw-bold mb-3">Giáo án năm {{request.user.teacher.time_now.year|add:'-1'}}-{{request.user.teacher.time_now.year }} </span>
-      {% else %}
-      <span class="fw-bold mb-3">Giáo án năm {{request.user.teacher.time_now.year }}-{{request.user.teacher.time_now.year|add:'1' }} </span>
-       {% endif %}
-
-
+        <!-- Giáo án năm học này -->
+        {% now "m" as current_month %}
+        {% now "Y" as current_year %}
         
-        {% for i in request.user.teacher.subjectclassyear_list %}
-        {% if i.subject__title and i.classyear__class_level_field %}   <a href=" {% if  i.subject__subject_slug and i.classyear__class_level_field %} {% url 'lessons_subject_level' i.subject__subject_slug i.classyear__class_level_field %} {% else %} {% url 'emptylesson' %} {% endif %}" class="list-group-item list-group-item-action border-0 text-primary ps-0"><i class="fas fa-book fa-fw me-2 text-muted"></i>{{ i.subject__title }} {{ i.classyear__class_level_field }}</a>
-        {% endif %}
+
+
+        {% if current_month|add:"0" < 9 %}
+      <span class="fw-bold mb-3">Giáo án năm {{ current_year|add:'-1'}}-{{current_year }} </span>
+      {% else %}
+      <span class="fw-bold mb-3">Giáo án năm {{current_year }}-{{current_year|add:'1' }} </span>
+       {% endif %}
+       
+        {% for i in teacher.subject_classyear_list %}
+     <a href="{% url 'lessons_subject_level' i.subject__title|slugify i.classyear__startyear %}" class="list-group-item list-group-item-action border-0 text-primary ps-0"><i class="fas fa-book fa-fw me-2 text-muted"></i> {{ i.subject__title }} {{ i.classyear__startyear|classlevel }} </a>
+        
         {% endfor %}
         <hr>
+        
+
+        <span class="fw-bold mb-3">Bạn muốn xem các giáo án cũ hơn?</span>
+        <p class="text-muted pe-3">Hệ thống lưu trữ toàn bộ các giáo án bạn đã tải lên từ trước tới giờ. Đến thư viện giáo án và tìm lại.</p>
+
+
 
 
       </div>
+
+      <a href="{% url 'alllessons' %}" class="btn btn-outline-primary mb-3">Thư viện giáo án </a>
+      <hr>
      
 
       
@@ -69,3 +58,5 @@
 
       
     </div>
+
+  {% endwith %}

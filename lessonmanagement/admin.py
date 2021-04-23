@@ -50,4 +50,5 @@ class LessonClassyearAdmin(admin.ModelAdmin):
     pass
 @admin.register(SubjectClassyear)
 class SubjectClassyearAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('classyear', 'subject', 'teacher','is_teach_now')
+    list_filter = ('classyear', 'subject__title', 'is_teach_now')
