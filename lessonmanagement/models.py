@@ -197,7 +197,7 @@ class Teacher(models.Model):
     def __str__(self):
         return self.full_name()
 
-    #danh sách giáo án
+    #danh sách tất cả giáo án
     def lesson_list(self):
         return self.lesson_set.all()
     #danh sách môn dạy và lớp dạy phục vụ cho sidebar.html
@@ -222,8 +222,8 @@ class Lesson(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    start_number_lesson = models.IntegerField(blank=True, help_text="Bài giảng này ở tiết số mấy")
-    cout_number_lesson = models.IntegerField(blank=True, help_text="Bài giảng này trong bao nhiêu tiết")
+    start_number_lesson = models.IntegerField(help_text="Bài giảng này ở tiết số mấy")
+    cout_number_lesson = models.IntegerField(help_text="Bài giảng này trong bao nhiêu tiết")
 
     #Kiểm tra giáo án
     STATUS_CHOICES = [
@@ -251,13 +251,9 @@ class LessonClassyear(models.Model):
     is_teach = models.BooleanField(default=False)
     teach_date = models.DateField(auto_now=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    subject_slug = models.SlugField(max_length=50, blank=True)
 
     classyear = models.ForeignKey(Classyear, on_delete=models.CASCADE)
 
-    def save(self, *args, **kwargs):
-        self.subject_slug = slugify(self.lesson.subject.title) 
-        super().save(*args, **kwargs)
 
     
     class Meta:
@@ -272,8 +268,9 @@ class LessonClassyear(models.Model):
 class SubjectClassyear(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     classyear = models.ForeignKey(Classyear, on_delete=models.CASCADE)
-    total_lesson = models.IntegerField(blank=True,verbose_name="Tổng số tiết dạy")
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+
+    total_lesson = models.IntegerField(blank=True,verbose_name="Tổng số tiết dạy")
     is_teach_now = models.BooleanField(default=True, verbose_name="Trạng thái hiệu lực")
 
 

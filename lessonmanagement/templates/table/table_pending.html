@@ -13,17 +13,19 @@
         </tr>
     </thead>
     <tbody>
-        {% for lesson in lesson_pending %}
+        {% for i in lesson_list %}
+        {% if i.status == 'pending' %}
         <tr>
             <td> 
-                <span class="badge rounded-pill bg-secondary" style="width: 60px;">{{ lesson.start_number_lesson}}{% if lesson.cout_number_lesson > 1 %}-{{ lesson.start_number_lesson|add:lesson.cout_number_lesson }} {% endif %}</span>
+                <span class="badge rounded-pill bg-secondary" style="width: 60px;">{{ i.start_number_lesson }}{% if i.cout_number_lesson > 1 %}-{{ i.start_number_lesson|add:i.cout_number_lesson }} {% endif %}</span>
                 
             </td>
 
-            <td><a href="#" class="text-decoration-none">{{ lesson.title }}  </a></td>
+            <td><a href="#" class="text-decoration-none">{{ i.title }}  </a></td>
 
-            <td class="text-muted" > <span class="text-dark fw-bold">{{ lesson.upload_time|timesince }} trước </span> {{ lesson.upload_time }}</td>
+            <td class="text-muted" > <span class="text-dark fw-bold">{{ i.upload_time|timesince }} trước </span> {{ i.upload_time }}</td>
         </tr>
+        {% endif %}
         {% endfor %}
     </tbody>
 </table>

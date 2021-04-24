@@ -23,7 +23,7 @@
                 <div class="card-body">
                   <h5 class="card-title">Xin chào</h5>
                   <h4><a href="#" class="text-decoration-none">{{ request.user.teacher.full_name }}!</a></h4>
-                  <p class="card-text">{{ request.user.teacher.full_name }}({{ request.user.teacher.yearold }}). {{ request.user.teacher.get_education_level_display }} <a href="" class="text-decoration-none"> {{ request.user.teacher.main_subject }}</a>.
+                  <p class="card-text">{{ request.user.teacher.full_name }}. {{ request.user.teacher.get_education_level_display }} <a href="" class="text-decoration-none"> {{ request.user.teacher.main_subject }}</a>.
                     {% for i in request.user.teacher.list_subject_manager %}
                     {{ i.get_role_display }} <a href="" class="text-decoration-none">{{ i.subject.title }}</a>.
                   {% endfor %}
