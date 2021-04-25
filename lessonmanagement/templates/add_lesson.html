@@ -17,49 +17,60 @@
   <h5 class="mb-4">Chọn môn học mà bạn muốn thêm giáo án</h5>
   <hr>
 
-  {% regroup subject_classyear_list by subject__title as subject_classyear_list_regroup %}
-  
-  {{ subject_classyear_list_regroup }}
+ 
+  {% regroup teacher.subject_classyeartitle_list by subject__title as subject_classyeartitle_list_regroup %}
 
-  {% for i, j in subject_classyear_list_regroup %}
-
-  <h6>{{ i }}</h6>
   
-  <div class="row py-3">
-    <div class="col-4">
-        <div class="card rounded-15 shadow">
-            <div class="card-body">
-              <h5 class="card-title"><i class="fas fa-book fa-fw me-2"></i>{{ j.subject__title}} {{ j.classyear__startyear }} </h5>
+
+  {% for i in subject_classyeartitle_list_regroup %}
+
+  
+
+  <div class="row">
+
+    <h6>{{ i.grouper }}</h6>
+
+    {% regroup i.list by classyear__startyear as i_list_regroup %}
+     
+    {% for j in i_list_regroup %}
+  
+
+    
+    <div class="col-4 my-3">
+        <div class="card rounded-15 shadow h-100">
+            <div class="card-body d-flex flex-column  ">
+              <h5 class="card-title"><i class="fas fa-book fa-fw me-2"></i> {{ i.grouper }} {{ j.grouper|classlevel }}</h5>
               <hr>
-              <p class="card-text">
+                <p class="card-text m-0">
 
-                <ul class="list-unstyled">
-                    <li>Bộ môn: <a href="#" class="text-decoration-none">{{ i.subject__group__title }}</a></li>
-                    <li>Dạy các lớp:
+                <ul>
+                    <li>Bộ môn <a href="#" class="text-decoration-none">{{ j.list.0.subject__group__title }}</a></li>
+                    <li>Dạy các lớp
                       <ul>
-                        <li>are unaffected by this style</li>
-                        <li>will still show a bullet</li>
-                        <li>and have appropriate left margin</li>
+                          {% for k in j.list %}
+                        <li>{{ k.classyear__startyear|classlevel }}{{ k.classyear__title }}</li>
+                        {% endfor %}
                       </ul>
                     </li>
                     <li>This may still come in handy in some situations.</li>
                   </ul>
-                  
-            
-            
-            </p>
+                </p>
 
 
-              <a href="#" class="btn btn-outline-success">Thêm giáo án</a>
+              <a href="#" class="btn btn-outline-success mt-auto">Thêm giáo án</a>
             </div>
           </div>
 
       </div>
 
+      {% endfor %}
+
 
    
 
   </div>
+
+
   <hr>
   {% endfor %}
 

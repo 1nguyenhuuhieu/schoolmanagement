@@ -210,6 +210,9 @@ class Teacher(models.Model):
     #danh sách môn dạy và lớp dạy phục vụ cho sidebar.html
     def subject_classyear_list(self):
         return self.subjectclassyear_set.filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear','subject__group__title').distinct()
+    def subject_classyeartitle_list(self):
+        return self.subjectclassyear_set.filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear','subject__group__title', 'classyear__title').distinct()
+
 
 
     
