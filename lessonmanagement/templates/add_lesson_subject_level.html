@@ -1,0 +1,71 @@
+{% extends 'base_withsidebar.html' %}
+
+{% block content %}
+{% with teacher=request.user.teacher %}
+{% load lessonmanagement_extras %}
+
+<div class="bg-white border shadow-sm p-3 rounded-pill mb-4">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb m-0 ">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i class="fas fa-home me-2"></i>Trang chủ</a></li>
+        <li class="breadcrumb-item"> <a href="{% url 'alllessons' %}" class="text-decoration-none">Giáo án</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Thêm Giáo án</li>
+      </ol>
+    </nav>
+  </div>
+
+  <h5><i class="fas fa-book  me-2 mb-3"></i>Thêm Giáo Án Toán 6</h5>
+
+  <form class="bg-white border rounded-15 shadow p-4">
+
+    <label for="inputGroupSelect01" class="form-label">Môn học và tên giáo án</label>
+    <div class="input-group mb-3">
+
+      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Môn học</button>
+      <ul class="dropdown-menu">
+        {% for i in teacher.subject_classyear_list %}
+        <li><a class="dropdown-item" href="#">{{ i.subject__title }} {{ i.classyear__startyear|classlevel }}</a></li>
+        {% endfor %}
+      </ul>
+
+      <span class="input-group-text ">Tiết số</span>
+      <input type="number" class="form-control" disabled>
+      <span class="input-group-text" >Số tiết</span>
+      <select class="form-select" id="inputGroupSelect01"  name="test" disabled>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
+
+
+
+
+    </div>
+
+    
+  <label class="form-label">Tên giáo án</label>
+  <div class="input-group mb-3">
+    <span class="input-group-text" id="basic-addon1"><i class="fas fa-book"></i></span>
+    <input type="text" class="form-control" placeholder="Tên giáo án" aria-label="Username" aria-describedby="basic-addon1">
+  </div>
+
+
+
+    <div class="mb-3">
+    <label for="formFile" class="form-label">Tải lên giáo án</label>
+    <input class="form-control" type="file" id="formFile">
+  </div>
+
+
+
+
+    <button type="submit" class="btn btn-primary mt-5 ">Thêm</button>
+
+
+  </form>
+
+  
+
+  {% endwith %}
+
+{% endblock %}

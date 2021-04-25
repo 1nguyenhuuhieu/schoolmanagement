@@ -19,6 +19,13 @@ def class_level_def(year):
     else:
         return year
 
+#lấy niên khoá từ class level
+def school_year(upload_time):
+    if (upload_time.month < 9):
+        return now.year -1
+    else:
+        return now.year
+
 def is_learning_def(class_level):
     return class_level in [6,7,8,9] 
 
@@ -199,10 +206,10 @@ class Teacher(models.Model):
 
     #danh sách tất cả giáo án
     def lesson_list(self):
-        return self.lesson_set.all()
+        return self.lesson_set.filter(teacher = self.user.id)
     #danh sách môn dạy và lớp dạy phục vụ cho sidebar.html
     def subject_classyear_list(self):
-        return self.subjectclassyear_set.filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear').distinct()
+        return self.subjectclassyear_set.filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear','subject__group__title').distinct()
 
 
     
@@ -243,6 +250,9 @@ class Lesson(models.Model):
         verbose_name_plural = "Giáo Án"
         ordering = ["-upload_time"]
 
+    def school_year(self):
+        return school_year(self.upload_time)
+
     def __str__(self):
         return '%s - %s' % (self.title, self.level)
 
@@ -270,7 +280,7 @@ class SubjectClassyear(models.Model):
     classyear = models.ForeignKey(Classyear, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
-    total_lesson = models.IntegerField(blank=True,verbose_name="Tổng số tiết dạy")
+    total_lesson = models.IntegerField(blank=True,verbose_name="Tổng số tiết dạy", null=True)
     is_teach_now = models.BooleanField(default=True, verbose_name="Trạng thái hiệu lực")
 
 

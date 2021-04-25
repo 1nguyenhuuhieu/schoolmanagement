@@ -13,6 +13,7 @@ urlpatterns = [
     path('lessons/<str:subject>/<int:level>/<str:title>/', views.lesson_classyear, name="lesson_classyear"),
     path('lesson/<int:id>/', views.lesson, name="lesson"),
     path('lesson/add/', views.addlesson, name="addlesson"),
+    path('lessons/add/<str:subject>/<int:level>/', views.add_lesson_subject_level, name="add_lesson_subject_level"),
 
 
     

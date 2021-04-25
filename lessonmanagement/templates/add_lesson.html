@@ -1,0 +1,75 @@
+{% extends 'base_withsidebar.html' %}
+
+{% block content %}
+{% with teacher=request.user.teacher %}
+{% load lessonmanagement_extras %}
+
+<div class="bg-white border shadow-sm p-3 rounded-pill mb-4">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb m-0 ">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i class="fas fa-home me-2"></i>Trang chủ</a></li>
+        <li class="breadcrumb-item"> <a href="{% url 'alllessons' %}" class="text-decoration-none">Giáo án</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Thêm Giáo án</li>
+      </ol>
+    </nav>
+  </div>
+
+  <h5 class="mb-4">Chọn môn học mà bạn muốn thêm giáo án</h5>
+  <hr>
+
+  {% regroup subject_classyear_list by subject__title as subject_classyear_list_regroup %}
+  
+  {{ subject_classyear_list_regroup }}
+
+  {% for i, j in subject_classyear_list_regroup %}
+
+  <h6>{{ i }}</h6>
+  
+  <div class="row py-3">
+    <div class="col-4">
+        <div class="card rounded-15 shadow">
+            <div class="card-body">
+              <h5 class="card-title"><i class="fas fa-book fa-fw me-2"></i>{{ j.subject__title}} {{ j.classyear__startyear }} </h5>
+              <hr>
+              <p class="card-text">
+
+                <ul class="list-unstyled">
+                    <li>Bộ môn: <a href="#" class="text-decoration-none">{{ i.subject__group__title }}</a></li>
+                    <li>Dạy các lớp:
+                      <ul>
+                        <li>are unaffected by this style</li>
+                        <li>will still show a bullet</li>
+                        <li>and have appropriate left margin</li>
+                      </ul>
+                    </li>
+                    <li>This may still come in handy in some situations.</li>
+                  </ul>
+                  
+            
+            
+            </p>
+
+
+              <a href="#" class="btn btn-outline-success">Thêm giáo án</a>
+            </div>
+          </div>
+
+      </div>
+
+
+   
+
+  </div>
+  <hr>
+  {% endfor %}
+
+
+     
+   
+
+
+  
+
+  {% endwith %}
+
+{% endblock %}

@@ -64,7 +64,16 @@ def lesson(request, id):
     return render(request, 'lesson.html', {'lesson': lesson})
 
 def addlesson(request):
-    return render(request, 'lesson_add.html', {})
+    subject_classyear_list = SubjectClassyear.objects.filter(teacher=request.user.teacher.id).filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear','subject__group__title','classyear__title', 'teacher__id').distinct()
+
+    context = { 'subject_classyear_list':subject_classyear_list
+     }
+    return render(request, 'add_lesson.html', context)
+
+def add_lesson_subject_level(request, subject, level):
+    context = {}
+
+    return render(request, 'add_lesson_subject_level.html', context)
         
 
 
