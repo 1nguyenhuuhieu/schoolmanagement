@@ -38,11 +38,15 @@ def index(request):
 
     
 def lessondashboard(request):
-    context = { 
+    teacher = request.user.teacher
+    #lấy tiết đã dạy hiện tại để tính thời lượng giảng dạy
+    subject_classyear = SubjectClassyear.objects.filter(teacher=teacher.id, is_teach_now=True)
+    context = { 'subject_classyear': subject_classyear
     }
     return render(request, 'lessondashboard.html', context)
 
 def alllessons(request):
+    teacher = request.user.teacher
     context = {}
     return render(request, 'all_lessons.html', context)
 

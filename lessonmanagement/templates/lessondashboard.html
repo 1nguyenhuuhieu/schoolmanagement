@@ -2,6 +2,7 @@
           {% extends 'base_withsidebar.html' %}
           {% load static %}
           {% block content %}
+          {% load lessonmanagement_extras %}
           {% with teacher=request.user.teacher %}
           <div class="bg-white border shadow-sm p-3 rounded-pill mb-4">
             <nav aria-label="breadcrumb">
@@ -32,7 +33,7 @@
                 {{ teacher.managers.school.get_role_display }} <a href="#" class="text-decoration-none"> {{ teacher.managers.school.school.title }}</a>.
               {% if teacher.managers.class %}Chủ nhiệm lớp <a href="#" class="text-decoration-none"> {{ teacher.managers.class }}</a> {% endif %}
                 </p>  
-                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                  <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
                 </div>
               </div>
             </div>
@@ -74,7 +75,7 @@
                   
                 </div>
                 {% endfor %}
-                <a href="{% url 'alllessons' %}" class="text-decoration-none"> Xem tất cả giáo án <i class="fas fa-arrow-right ms-2"></i> </a>
+                <a href="{% url 'alllessons' %}" class="text-decoration-none"> Xem tất cả giáo án <i class="fas fa-arrow-right ms-2 text-muted"></i> </a>
           <hr class="mb-4"> 
           <div class="row">
             <h6 class="mb-3">Thống kê Giáo Án</h6>
@@ -83,7 +84,7 @@
 
                 <div class="card  rounded-15 shadow-sm mb-3 text-center">
                   <div class="card-body">
-                    <h1 class="card-title link-primary fw-bold ">{{ teacher.count_lesson.total }}</h1>
+                    <h1 class="card-title link-success fw-bold display-4">{{ teacher.count_lesson.total }}</h1>
                     <p class="card-text text-muted fs-5" >Tổng số đã tải lên</p>
                   </div>
                 </div>
@@ -96,7 +97,7 @@
 
               <div class="card rounded-15 shadow-sm mb-3  text-center">
                 <div class="card-body">
-                 <h1 class="card-title link-info fw-bold ">{{ teacher.count_lesson.year }}</h1>
+                 <h1 class="card-title link-primary fw-bold display-4">{{ teacher.count_lesson.year }}</h1>
                   <p class="card-text text-muted fs-5" >Tải lên năm {{ teacher.schoolyear }}</p>
                 </div>
               </div>
@@ -107,30 +108,37 @@
 
               <div class="card rounded-15 shadow-sm mb-3  text-center">
                 <div class="card-body">
-                 <h1 class="card-title link-success fw-bold ">{{ teacher.count_lesson.month }}</h1>
+                 <h1 class="card-title link-info fw-bold display-4">{{ teacher.count_lesson.month }}</h1>
                   <p class="card-text text-muted fs-5" >Tải lên trong {% now "M" %}</p>
                 </div>
               </div>
               </a>
             </div>
           </div>
-          {% for i in request.user.teacher.classyear_list %}
-          {% if i.current_lesson and i.total_lesson %}
+          <hr class="mb-4">
 
-          <h6 class="mt-3"> <a href="#" class="text-decoration-none">{{i.subject}} {{ i.classyear }}</a>  <small class="text-muted">Tiết {{ i.current_lesson }}/{{ i.total_lesson }}</small> </h6>
+          <h6 class="mb-3">Thời lượng giảng dạy</h6>
 
-          <div class="progress mb-3">
-            <div class="progress-bar" role="progressbar" style="width: {% widthratio i.current_lesson i.total_lesson 100 %}%;" aria-valuenow="{% widthratio i.current_lesson i.total_lesson 100 %}" aria-valuemin="0" aria-valuemax="100">{% widthratio i.current_lesson i.total_lesson 100 %}%</div>
-          </div>
 
+          {% for i in subject_classyear %}
+          <div class="row 
+          {% if not forloop.last %}
+          border-bottom
           {% endif %}
+           py-3">
+            <div class="col-4">
+              <h6 class="m-0"> <a href="#" class="text-decoration-none">{{i.subject.title}} {{ i.classyear }}</a>  <small class="text-muted">Tiết {{ i.current_lesson }}/{{ i.total_lesson }}</small> </h6>
 
+            </div>
+            <div class="col">
+                
+          <div class="progress">
+            <div class="progress-bar bg-success" role="progressbar" style="width: {% widthratio i.current_lesson i.total_lesson 100 %}%;" aria-valuenow="{% widthratio i.current_lesson i.total_lesson 100 %}" aria-valuemin="0" aria-valuemax="100">{% widthratio i.current_lesson i.total_lesson 100 %}%</div>
+          </div>
+            </div>
+
+          </div>
+     
           {% endfor %}
-
           {% endwith %}
-          
-            
-
-          
-         
            {% endblock %}

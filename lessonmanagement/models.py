@@ -341,8 +341,14 @@ class SubjectClassyear(models.Model):
     classyear = models.ForeignKey(Classyear, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
+    #update mỗi khi teacher chọn is_teach tại LessonClassyear
+    current_lesson = models.IntegerField(blank=True, null=True)
+
     total_lesson = models.IntegerField(blank=True,verbose_name="Tổng số tiết dạy", null=True)
     is_teach_now = models.BooleanField(default=True, verbose_name="Trạng thái hiệu lực")
+
+    #update when current_lesson change
+    edit_time = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 
     class Meta:
