@@ -12,9 +12,9 @@
             </nav>
           </div>
   
-          <h5><i class="fas fa-chart-bar fa-fw me-2 mb-3"></i>Thống Kê Giáo Án Của Tôi</h5>
+          <h5 class="mb-4"><i class="fas fa-chart-bar fa-fw me-2"></i>Thống Kê Giáo Án Của Tôi</h5>
 
-          <div class="card mb-5 rounded-15 shadow" >
+          <div class="card mb-5 rounded-15 shadow-sm" >
             <div class="row g-0">
               <div class="col-md-4">
                 <img src="{% static 'imgs/welcome.png' %}"  class="img-fluid" alt="...">
@@ -45,7 +45,7 @@
 
               <h6 class="mb-3  ">Giáo án vừa thêm</h6>
                 {% for i in request.user.teacher.latest_lesson %}
-                <div class="card mb-4 rounded-15 shadow">
+                <div class="card mb-4 rounded-15 shadow-sm">
                   <div class="row g-0">
                     <div class="col-1 p-2 d-flex align-items-center">
                       <img src="{% static 'imgs/math.jpeg' %}"  class="img-fluid rounded-circle" alt="">
@@ -58,8 +58,8 @@
                         <span class="text-dark fw-bold">
                         <a href="#" class="text-decoration-none"> {{ i.subject.title }}</a>{% if i.display_classyear %}({% for j in i.display_classyear %}{{j}}{%if forloop.last %}{% else %},{% endif %}{% endfor %}) {% endif %} / Tiết {{ i.start_number_lesson}} {% if i.cout_number_lesson > 1 %} - {{ i.start_number_lesson|add:i.cout_number_lesson }} {% endif %}
                       </span>
-                      <span class="text-muted">cách đây
-    {{ i.upload_time|timesince}} vào lúc {{ i.upload_time }}</span>
+                      <small class="text-muted">cách đây
+    {{ i.upload_time|timesince}} vào lúc {{ i.upload_time }}</small>
                         <hr class="my-2">
                         {% if i.status == "pending" %}
                         <span class="badge bg-warning text-dark rounded-pill" style="width: 105px;"><i class="far fa-clock me-1"></i>Chờ duyệt</span>
@@ -85,7 +85,7 @@
             <div class="col">
               <a href="{% url 'alllessons' %}" class="text-decoration-none">
 
-                <div class="card  rounded-15 shadow mb-3 text-center">
+                <div class="card  rounded-15 shadow-sm mb-3 text-center">
                   <div class="card-body">
                     <h1 class="card-title link-primary fw-bold ">{{ request.user.teacher.total_lesson }}</h1>
                     <p class="card-text text-dark" >Tổng số giáo án đã tải lên</p>
@@ -96,7 +96,7 @@
             
           </div>
             <div class="col">
-              <div class="card rounded-15 shadow mb-3  text-center">
+              <div class="card rounded-15 shadow-sm mb-3  text-center">
                 <div class="card-body">
                  <h1 class="card-title link-info fw-bold ">{{ request.user.teacher.total_lesson_year }}</h1>
                   <p class="card-text" >Giáo án đã tải lên năm 2020</p>
@@ -104,7 +104,7 @@
               </div>
             </div>
             <div class="col">
-              <div class="card rounded-15 shadow mb-3  text-center">
+              <div class="card rounded-15 shadow-sm mb-3  text-center">
                 <div class="card-body">
                  <h1 class="card-title link-success fw-bold ">{{ request.user.teacher.total_lesson_month }}</h1>
                   <p class="card-text" >Giáo án đã tải lên trong tháng 4</p>

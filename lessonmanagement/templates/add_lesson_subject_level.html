@@ -9,61 +9,89 @@
       <ol class="breadcrumb m-0 ">
         <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i class="fas fa-home me-2"></i>Trang chủ</a></li>
         <li class="breadcrumb-item"> <a href="{% url 'alllessons' %}" class="text-decoration-none">Giáo án</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Thêm Giáo án</li>
+        <li class="breadcrumb-item"><a href="{% url 'addlesson' %}" class="text-decoration-none">Thêm Giáo án</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> {{ subject_level_title }}</li>
       </ol>
     </nav>
   </div>
 
-  <h5><i class="fas fa-book  me-2 mb-3"></i>Thêm Giáo Án Toán 6</h5>
+  <h5 class="mb-4"><i class="fas fa-plus me-2"></i>Thêm Giáo Án {{ subject_level_title }} <small class="text-muted">
+    - {{classyear_title_list}}
 
-  <form class="bg-white border rounded-15 shadow p-4">
+  </small></h5>
 
-    <label for="inputGroupSelect01" class="form-label">Môn học và tên giáo án</label>
+<div class="row">
+  <div class="col-8">
+    <form class="bg-white border rounded-15 shadow-sm py-4 px-4">
+
+      <div class="input-group mb-3">
+  
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">{{subject_level_title}}</button>
+        <ul class="dropdown-menu">
+          {% for i in teacher.subject_classyear_list %}
+          <li><a class="dropdown-item" href="{% url 'add_lesson_subject_level' i.subject__title|slugify i.classyear__startyear|classlevel %}">{{ i.subject__title }} {{ i.classyear__startyear|classlevel }}</a></li>
+          {% endfor %}
+        </ul>
+  
+        <span class="input-group-text ">Tiết số</span>
+  
+        <input type="number" class="form-control" 
+        
+        value = {{ new_number_lesson }}
+        required>
+  
+        <span class="input-group-text" >Số tiết</span>
+        <select class="form-select" id="inputGroupSelect01">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+  
+  
+  
+  
+      </div>
+  
+      
     <div class="input-group mb-3">
-
-      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Môn học</button>
-      <ul class="dropdown-menu">
-        {% for i in teacher.subject_classyear_list %}
-        <li><a class="dropdown-item" href="#">{{ i.subject__title }} {{ i.classyear__startyear|classlevel }}</a></li>
-        {% endfor %}
-      </ul>
-
-      <span class="input-group-text ">Tiết số</span>
-      <input type="number" class="form-control" disabled>
-      <span class="input-group-text" >Số tiết</span>
-      <select class="form-select" id="inputGroupSelect01"  name="test" disabled>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-      </select>
-
-
-
-
+      <span class="input-group-text" id="basic-addon1"><i class="fas fa-book me-2"></i>Tên giáo án</span>
+      <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" required>
     </div>
-
-    
-  <label class="form-label">Tên giáo án</label>
-  <div class="input-group mb-3">
-    <span class="input-group-text" id="basic-addon1"><i class="fas fa-book"></i></span>
-    <input type="text" class="form-control" placeholder="Tên giáo án" aria-label="Username" aria-describedby="basic-addon1">
-  </div>
-
-
-
+  
+  
+  
+      <div class="mb-3">
+      <input class="form-control" type="file" id="formFile" required>
+      <div class="form-text">File giáo án tải lên nên là định dạng pptx.</div>
+    </div>
+  
     <div class="mb-3">
-    <label for="formFile" class="form-label">Tải lên giáo án</label>
-    <input class="form-control" type="file" id="formFile">
+      <label for="exampleFormControlTextarea1" class="form-label">Tóm tắt nội dung bài giảng</label>
+      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+    </div>
+  
+  
+  
+  
+      <button type="submit" class="btn btn-success mt-3">Thêm <i class="far fa-paper-plane ms-1"></i></button>
+  
+  
+    </form>
+  
   </div>
-
-
-
-
-    <button type="submit" class="btn btn-primary mt-5 ">Thêm</button>
-
-
-  </form>
-
+  <div class="col">
+    <div class="list-group rounded-15 shadow-sm">
+      <button type="button" class="list-group-item list-group-item-action disabled"><i class="fas fa-history me-2"></i>Giáo án vừa thêm trong mục này</button>
+      {% for i in last_lesson %}
+      <a href="#"  class="list-group-item list-group-item-action ">{{ i.title }} <small class="text-muted">{{ i.upload_time|timesince }}</small> </a>
+      {% endfor %}
+    
+    </div>
+  </div>
+</div>
+ 
   
 
   {% endwith %}

@@ -3,7 +3,23 @@
 <div class="position-sticky top-0 start-0 pt-4">
     <div class="d-flex justify-content-between mb-4 align-items-center">
       <span class="fw-bold">Giáo án</span>
-      <a href="{% url 'addlesson' %}" class="btn btn-success btn-sm  "><i class="fas fa-book me-2"></i>Thêm</a>
+
+
+<div class="btn-group">
+  <a href="{% url 'addlesson' %}" class="btn btn-sm btn-success"><i class="fas fa-plus me-2"></i>Thêm giáo án</a>
+  <button type="button" class="btn btn-sm btn-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end  ">
+    <li class="dropdown-item disabled text-muted" >Thêm giáo án vào môn <i class="fas fa-angle-down ms-2"></i></li>
+    <li> <hr class="dropdown-divider"></li>
+        {% for i in teacher.subject_classyear_list %}
+    <li><a class="dropdown-item" href="{% url 'add_lesson_subject_level' i.subject__title|slugify i.classyear__startyear|classlevel %}">{{ i.subject__title }} {{ i.classyear__startyear|classlevel }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+
+
       </div>
       <form action="">
         <div class="input-group input-group-sm mb-3">
@@ -28,11 +44,8 @@
         
 
 
-        {% if current_month|add:"0" < 9 %}
-      <span class="fw-bold mb-3">Giáo án năm {{ current_year|add:'-1'}}-{{current_year }} </span>
-      {% else %}
-      <span class="fw-bold mb-3">Giáo án năm {{current_year }}-{{current_year|add:'1' }} </span>
-       {% endif %}
+      <span class="fw-bold mb-3">Giáo án năm {{ teacher.schoolyear }} </span>
+     
        
         {% for i in teacher.subject_classyear_list %}
      <a href="{% url 'lessons_subject_level' i.subject__title|slugify i.classyear__startyear %}" class="list-group-item list-group-item-action border-0 text-primary ps-0"><i class="fas fa-book fa-fw me-2 text-muted"></i> {{ i.subject__title }} {{ i.classyear__startyear|classlevel }} </a>
