@@ -27,7 +27,9 @@ def school_year(upload_time):
         return now.year
 
 def is_learning_def(class_level):
-    return class_level in [6,7,8,9] 
+    return class_level in [6,7,8,9]
+
+
 
 #Abstract for: School, Subject, GroupSubject
 class SchoolAbstract(models.Model):
@@ -99,7 +101,7 @@ class ClassyearManager(MembershipAbstract):
         verbose_name_plural = "Giáo viên chủ nhiệm"
 
     def __str__(self):
-        return self.classyear
+        return self.classyear.__str__()
 
 #Giáo viên quản lý bộ môn
 class GroupSubjectManager(MembershipAbstract):
@@ -223,6 +225,51 @@ class Teacher(models.Model):
     #giáo án mới nhất phục vụ trang dashboard
     def latest_lesson(self):
         return Lesson.objects.filter(teacher=self.user.teacher.id).order_by('-upload_time')[:5]
+
+    #chức danh phục vụ cho trang dashboard
+    def managers(self):
+        managers = {}
+        teacher = self.user.teacher.id
+        
+        subject_manager = SubjectTeacher.objects.filter(teacher=teacher).filter(is_active = True)
+        if subject_manager:
+            subject_manager = subject_manager.latest('-id')
+            managers['subject'] = subject_manager
+
+        group_manager = GroupSubjectManager.objects.filter(teacher=teacher).filter(is_active=True)
+        if group_manager:
+            group_manager = group_manager.latest('-id')
+            managers['group'] = group_manager
+
+        school_manager = SchoolManager.objects.filter(teacher=teacher).filter(is_active=True)
+        if school_manager:
+            school_manager = school_manager.latest('-id')
+            managers['school'] = school_manager
+        
+        classyear_manager = ClassyearManager.objects.filter(teacher=teacher).filter(is_active=True)
+        if classyear_manager:
+            classyear_manager = classyear_manager.latest('-id')
+            managers['class'] = classyear_manager
+      
+        return managers
+
+
+    #thống kê số lượng giáo án
+    def count_lesson(self):
+        count = {}
+        teacher = self.user.teacher.id
+
+        lessons = Lesson.objects.filter(teacher=teacher)
+        count['total'] = lessons.count()
+        current_year = [school_year(now), school_year(now)+1]
+
+        lesson_current_year = lessons.filter(upload_time__year__in = current_year )
+        count['year'] = lesson_current_year.count()
+
+        lesson_current_month =  lessons.filter(upload_time__year__in = current_year).filter(upload_time__month = now.month)
+        count['month'] = lesson_current_month.count()
+
+        return count
 
 
 

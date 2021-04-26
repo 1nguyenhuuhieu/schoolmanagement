@@ -2,6 +2,7 @@
           {% extends 'base_withsidebar.html' %}
           {% load static %}
           {% block content %}
+          {% with teacher=request.user.teacher %}
           <div class="bg-white border shadow-sm p-3 rounded-pill mb-4">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb m-0 ">
@@ -22,19 +23,14 @@
               <div class="col-md-8">
                 <div class="card-body">
                   <h5 class="card-title">Xin chào</h5>
-                  <h4><a href="#" class="text-decoration-none">{{ request.user.teacher.full_name }}!</a></h4>
-                  <p class="card-text">{{ request.user.teacher.full_name }}. {{ request.user.teacher.get_education_level_display }} <a href="" class="text-decoration-none"> {{ request.user.teacher.main_subject }}</a>.
-                    {% for i in request.user.teacher.list_subject_manager %}
-                    {{ i.get_role_display }} <a href="" class="text-decoration-none">{{ i.subject.title }}</a>.
-                  {% endfor %}
-
-                  {% for i in request.user.teacher.list_groupsubject_manager %}
-                  {{ i.get_role_display }}<a href="" class="text-decoration-none"> {{ i.group.title }}</a>.
-                  {% endfor %}
-                  {% for i in request.user.teacher.list_school_manager %}
-                  {{ i.get_role_display }}<a href="" class="text-decoration-none"> {{ i.school.title }}</a>.
-                  {% endfor %}
-                
+                  <h4><a href="#" class="text-decoration-none">{{ teacher.full_name }}!</a></h4>
+                  <p class="card-text">
+                    
+                    {{ teacher.full_name }}. {{ teacher.get_education_level_display }} <a href="" class="text-decoration-none"> {{ teacher.main_subject }}</a>. 
+                {{ teacher.managers.subject.get_role_display }} tổ <a href="#" class="text-decoration-none"> {{ teacher.managers.subject.subject.title }}</a>.
+                {{ teacher.managers.group.get_role_display }} tổ <a href="#" class="text-decoration-none"> {{ teacher.managers.group.group.title }}</a>.
+                {{ teacher.managers.school.get_role_display }} <a href="#" class="text-decoration-none"> {{ teacher.managers.school.school.title }}</a>.
+              {% if teacher.managers.class %}Chủ nhiệm lớp <a href="#" class="text-decoration-none"> {{ teacher.managers.class }}</a> {% endif %}
                 </p>  
                   <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                 </div>
@@ -87,8 +83,8 @@
 
                 <div class="card  rounded-15 shadow-sm mb-3 text-center">
                   <div class="card-body">
-                    <h1 class="card-title link-primary fw-bold ">{{ request.user.teacher.total_lesson }}</h1>
-                    <p class="card-text text-dark" >Tổng số giáo án đã tải lên</p>
+                    <h1 class="card-title link-primary fw-bold ">{{ teacher.count_lesson.total }}</h1>
+                    <p class="card-text text-muted fs-5" >Tổng số đã tải lên</p>
                   </div>
                 </div>
 
@@ -96,20 +92,26 @@
             
           </div>
             <div class="col">
+              <a href="{% url 'alllessons' %}" class="text-decoration-none">
+
               <div class="card rounded-15 shadow-sm mb-3  text-center">
                 <div class="card-body">
-                 <h1 class="card-title link-info fw-bold ">{{ request.user.teacher.total_lesson_year }}</h1>
-                  <p class="card-text" >Giáo án đã tải lên năm 2020</p>
+                 <h1 class="card-title link-info fw-bold ">{{ teacher.count_lesson.year }}</h1>
+                  <p class="card-text text-muted fs-5" >Tải lên năm {{ teacher.schoolyear }}</p>
                 </div>
               </div>
+              </a>
             </div>
             <div class="col">
+              <a href="{% url 'alllessons' %}" class="text-decoration-none">
+
               <div class="card rounded-15 shadow-sm mb-3  text-center">
                 <div class="card-body">
-                 <h1 class="card-title link-success fw-bold ">{{ request.user.teacher.total_lesson_month }}</h1>
-                  <p class="card-text" >Giáo án đã tải lên trong tháng 4</p>
+                 <h1 class="card-title link-success fw-bold ">{{ teacher.count_lesson.month }}</h1>
+                  <p class="card-text text-muted fs-5" >Tải lên trong {% now "M" %}</p>
                 </div>
               </div>
+              </a>
             </div>
           </div>
           {% for i in request.user.teacher.classyear_list %}
@@ -124,6 +126,8 @@
           {% endif %}
 
           {% endfor %}
+
+          {% endwith %}
           
             
 

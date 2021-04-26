@@ -26,7 +26,10 @@ class SchoolAdmin(admin.ModelAdmin):
     
 @admin.register(SubjectTeacher)
 class SubjectTeacherAdmin(admin.ModelAdmin):
-    pass
+    date_hierarchy = 'startdate'
+    list_display = ('subject','teacher','role', 'is_active')
+    list_filter = ('subject','role', 'is_active')
+    
 @admin.register(ClassyearManager)
 class ClassyearManagerAdmin(admin.ModelAdmin):
     pass
@@ -42,9 +45,14 @@ class TeacherAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'main_subject', 'is_work')
     list_filter = ('main_subject', 'is_work')
     inlines = [ClassyearManagerInline, SubjectTeacherInline, SubjectClassyearInline]
+
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    pass
+    date_hierarchy = 'upload_time'
+    list_filter = ('subject', 'subject__group__title','level','teacher__lastname','status','checker')
+
+
+
 @admin.register(LessonClassyear)
 class LessonClassyearAdmin(admin.ModelAdmin):
     pass
@@ -52,3 +60,7 @@ class LessonClassyearAdmin(admin.ModelAdmin):
 class SubjectClassyearAdmin(admin.ModelAdmin):
     list_display = ('classyear', 'subject', 'teacher','is_teach_now')
     list_filter = ('classyear', 'subject__title', 'is_teach_now')
+
+@admin.register(SchoolManager)
+class SchoolManagerAdmin(admin.ModelAdmin):
+    pass

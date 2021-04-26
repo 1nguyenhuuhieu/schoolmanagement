@@ -83,7 +83,7 @@
   </div>
   <div class="col">
     <div class="list-group rounded-15 shadow-sm">
-      <button type="button" class="list-group-item list-group-item-action disabled"><i class="fas fa-history me-2"></i>Giáo án vừa thêm trong mục này</button>
+      <button type="button" class="list-group-item list-group-item-action disabled bg-success text-white"><i class="fas fa-history me-2"></i>Giáo án vừa thêm trong {{ subject_level_title }}</button>
       {% for i in last_lesson %}
       <a href="#"  class="list-group-item list-group-item-action ">{{ i.title }} <small class="text-muted">{{ i.upload_time|timesince }}</small> </a>
       {% endfor %}
