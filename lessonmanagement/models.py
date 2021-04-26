@@ -204,14 +204,25 @@ class Teacher(models.Model):
     def __str__(self):
         return self.full_name()
 
-    #danh sách tất cả giáo án
+    #niên khóa hiện tại
+    def schoolyear(self):
+        if now.month < 9:
+            return ('%s - %s') % (now.year - 1, now.year)
+        else:
+            return ('%s - %s') % (now.year, now.year+1)
+
+    #tất cả giáo án
     def lesson_list(self):
         return self.lesson_set.filter(teacher = self.user.id)
-    #danh sách môn dạy và lớp dạy phục vụ cho sidebar.html
+    #môn dạy và lớp dạy phục vụ cho sidebar.html
     def subject_classyear_list(self):
         return self.subjectclassyear_set.filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear','subject__group__title').distinct()
     def subject_classyeartitle_list(self):
         return self.subjectclassyear_set.filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear','subject__group__title', 'classyear__title').distinct()
+
+    #giáo án mới nhất phục vụ trang dashboard
+    def latest_lesson(self):
+        return Lesson.objects.filter(teacher=self.user.teacher.id).order_by('-upload_time')[:5]
 
 
 
@@ -290,6 +301,7 @@ class SubjectClassyear(models.Model):
     class Meta:
         verbose_name = "Phân công giảng dạy"
         verbose_name_plural = "Phân công giảng dạy"
+        ordering = ('subject__title', '-classyear__startyear')
 
     def __str__(self):
         return '%s %s - %s' % (self.subject, self.classyear, self.teacher.full_name())
