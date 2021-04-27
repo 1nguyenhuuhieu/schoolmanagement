@@ -107,13 +107,14 @@ class ClassyearManager(MembershipAbstract):
 class GroupSubjectManager(MembershipAbstract):
     group = models.ForeignKey(GroupSubject, on_delete=models.CASCADE)
     ROLE_CHOICES = [
+    ('member','Thành viên'), 
     ('submanager', 'Phó bộ môn'),
     ('manager', 'Trưởng bộ môn'),
     ]
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     class Meta:
-        verbose_name = "Quản lý Bộ môn"
-        verbose_name_plural = "Quản lý Bộ môn"
+        verbose_name = "Thành Viên/Quản lý Bộ Môn"
+        verbose_name_plural = "Thành Viên/Quản lý Bộ Môn"
     def __str__(self):
         return '%s %s ' % (self.teacher.full_name(),  self.group.title)
 
