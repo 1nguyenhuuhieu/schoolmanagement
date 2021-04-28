@@ -125,7 +125,8 @@ def add_lesson_subject_level(request, subject, level):
             'subject_level_title': subject_level_title,
             'new_number_lesson': new_number_lesson,
             'classyear_title_list': classyear_title_list,
-            'last_lesson': last_lesson
+            'last_lesson': last_lesson,
+            'subject_classyear': q1
         }
     except:
          return redirect('addlesson')

@@ -288,7 +288,7 @@ class Teacher(models.Model):
 #Giáo án
 class Lesson(models.Model):
     title = models.CharField(max_length=200)
-    upload_time = models.DateTimeField(auto_now_add=True)
+    upload_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     LEVEL_CHOICES = [
         (6, 6),
         (7, 7),
@@ -303,6 +303,7 @@ class Lesson(models.Model):
     start_number_lesson = models.IntegerField(help_text="Bài giảng này ở tiết số mấy")
     cout_number_lesson = models.IntegerField(help_text="Bài giảng này trong bao nhiêu tiết")
 
+    classyear = models.ManyToManyField(Classyear, through="LessonClassyear")
     #Kiểm tra giáo án
     STATUS_CHOICES = [
     ('pending', 'Chờ duyệt'),
