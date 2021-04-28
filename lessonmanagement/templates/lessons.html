@@ -12,7 +12,7 @@
 
             <div>
            
-                  <div class="btn-group btn-group-sm me-5">
+                  <div class="btn-group btn-group-sm me-3">
                     <a href="#" class="btn btn-outline-success active " aria-current="page">Toàn bộ</a>
                     {% for i in classyear_list %}
                     <a href="{{ i.classyear__title|slugify }}" class="btn btn-outline-success">{{ lesson_list.0.level }}{{ i.classyear__title}}</a>
