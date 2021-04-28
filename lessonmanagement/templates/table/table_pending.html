@@ -7,6 +7,7 @@
         <tr>
             <th>Tiết</th>
             <th>Tên giáo án</th>
+            <th>Trạng thái</th>
             
             <th>Thời gian tải lên</th>
            
@@ -22,6 +23,7 @@
             </td>
 
             <td><a href="#" class="text-decoration-none">{{ i.title }}  </a></td>
+            <td>  <span class="badge bg-warning text-dark rounded-pill"><i class="far fa-clock me-1"></i>{{ i.get_status_display}}</span></td>
 
             <td class="text-muted" > <span class="text-dark fw-bold">{{ i.upload_time|timesince }} trước </span> {{ i.upload_time }}</td>
         </tr>

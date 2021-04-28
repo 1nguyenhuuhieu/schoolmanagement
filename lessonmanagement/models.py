@@ -20,11 +20,18 @@ def class_level_def(year):
         return year
 
 #lấy niên khoá từ class level
-def school_year(upload_time):
+def school_year_def(upload_time):
     if (upload_time.month < 9):
         return now.year -1
     else:
         return now.year
+
+#lấy năm vào trường của lớp từ level
+def level_to_startyear(level):
+    if now.month < 9:
+        return (now.year + 5 - level)
+    else:
+        return (now.year + 6 - level)
 
 def is_learning_def(class_level):
     return class_level in [6,7,8,9]
@@ -214,6 +221,8 @@ class Teacher(models.Model):
         else:
             return ('%s - %s') % (now.year, now.year+1)
 
+
+
     #tất cả giáo án
     def lesson_list(self):
         return self.lesson_set.filter(teacher = self.user.id)
@@ -262,7 +271,7 @@ class Teacher(models.Model):
 
         lessons = Lesson.objects.filter(teacher=teacher)
         count['total'] = lessons.count()
-        current_year = [school_year(now), school_year(now)+1]
+        current_year = [school_year_def(now), school_year_def(now)+1]
 
         lesson_current_year = lessons.filter(upload_time__year__in = current_year )
         count['year'] = lesson_current_year.count()
@@ -312,8 +321,16 @@ class Lesson(models.Model):
         verbose_name_plural = "Giáo Án"
         ordering = ["-upload_time"]
 
+    #niên khoá hiện tại
     def school_year(self):
-        return school_year(self.upload_time)
+        return school_year_def(self.upload_time)
+
+    #năm vào trường của lớp học của bài giảng
+    def start_year_level(self):
+        if now.month < 9:
+            return school_year_def(self.upload_time) - self.level + 6
+        else:
+            return school_year_def(self.upload_time) - self.level + 7
 
     def __str__(self):
         return '%s - %s' % (self.title, self.level)
