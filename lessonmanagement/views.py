@@ -65,7 +65,7 @@ def lessons_subject_level(request, subject, level):
     #danh sách giáo án với subject và startyear tương ứng
     lesson_list = Lesson.objects.filter(id__in = lesson_id_list)
     context = {
-        'lesson_list':lesson_list, 'classyear_list':classyear_list
+        'lesson_list':lesson_list, 'classyear_list':classyear_list, 'subject':subject, 'level':level
 
     }
     return render(request, 'lessons.html', context)
@@ -132,7 +132,7 @@ def add_lesson_subject_level(request, subject, level):
          return redirect('addlesson')
 
  
-    return render(request, 'add_lesson_subject_level.html', context)
+    return render(request, 'lesson/add_lesson_subject.html', context)
         
 
 

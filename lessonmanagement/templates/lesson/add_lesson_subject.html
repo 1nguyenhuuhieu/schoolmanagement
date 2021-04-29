@@ -1,0 +1,179 @@
+{% extends 'base_clean.html' %}
+{% block content %}
+{% with teacher=request.user.teacher %}
+{% load lessonmanagement_extras %}
+
+
+<div class="row justify-content-center ">
+  <div class="col-4 border-bottom">
+
+    <h2 class="mt-5 text-center"><i class="fas fa-plus me-2"></i>Thêm Giáo Án</h2>
+    <p class="text-center text-muted"><i class="far fa-lightbulb me-2"></i>Danh sách môn học và lớp học được hiển thị dựa trên sự sắp xếp của <a href="#" class="text-decoration-none">ban giám hiệu nhà trường</a>.<a href="#" class="text-decoration-none"> Xem thêm</a></p>
+    
+    </div>
+    
+
+</div>
+<div class="row pt-4 justify-content-center">
+  <div class="col-6">
+    
+    
+      <form class="needs-validation" novalidate >
+
+        <div class="row">
+          <h4 class="mb-4">Thông tin chung của giáo án</h4>
+        <div class="col-4">
+
+          <label for="subjectLevel" class="form-label">Môn học</label>
+
+          <div id="subjectLevel">
+            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">{{subject_level_title}}</button>
+            <ul class="dropdown-menu">
+              {% for i in teacher.subject_classyear_list %}
+              <li><a class="dropdown-item" href="{% url 'add_lesson_subject_level' i.subject__title|slugify i.classyear__startyear|classlevel %}">{{ i.subject__title }} {{ i.classyear__startyear|classlevel }}</a></li>
+              {% endfor %}
+            </ul>
+
+
+          </div>
+        </div>
+        <div class="col-4">
+          <label for="startLesson" class="form-label">Tiết số</label>
+          <input type="number" class="form-control" id="startLesson"
+          value = {{ new_number_lesson }} required >
+          <div class="invalid-feedback">
+            Phải chọn tiết số mấy
+          </div>
+
+        </div>
+        <div class="col-4">
+          <label for="countLesson" class="form-label">Số tiết</label>
+          
+          <div id="countLesson">
+          <select class="form-select">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+
+        </div>
+  
+        <div class="col-12">
+          <label for="titleLesson" class="form-label mt-4">Tên giáo án</label>
+          <div class="input-group mb-3" >
+            <span class="input-group-text" id="basic-addon1"><i class="fas fa-book me-2"></i></span>
+            <input type="text" id="titleLesson" class="form-control" aria-label="Username" aria-describedby="basic-addon1" required value placeholder>
+            <div class="invalid-feedback">
+             Yêu cầu điền tên của giáo án
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <label for="fileLesson" class="form-label mt-4">File giáo án</label>
+          <input class="form-control" type="file" id="fileLesson" required>
+          <div class="form-text">File giáo án tải lên nên là định dạng pptx.</div>
+          <div class="invalid-feedback">
+            Yêu cầu tải file lên
+          </div>
+
+        </div>
+
+        <div class="col-12">
+
+          <label for="descriptionLesson" class="form-label mt-4">Tóm tắt nội dung bài giảng</label>
+          <textarea class="form-control" id="descriptionLesson" rows="3"></textarea>
+          <div class="form-text">Giáo án nên có phần tóm tắt để người quản lý tiện theo dõi</div>
+
+
+          <hr class="my-4">
+
+        </div>
+        <div class="col-12 d-flex justify-content-center">
+  <button type="submit" class="btn btn-lg btn-success mb-4 w-50">Thêm giáo án</button>
+
+        </div>
+</div>
+      </form>
+
+      <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+      </script>
+  </div>
+
+  <div class="col-4">
+    {% if last_lesson %}
+    <h5 class="mb-4">Giáo án vừa tải lên trong {{ subject_level_title }}</h5>
+
+    <div class="list-group">
+      {% for lesson in last_lesson %}
+
+      <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">
+            {{ lesson.title }}
+         </div>
+         <small class="text-muted">   {{ lesson.upload_time|timesince }} trước vào 
+         {{ lesson.upload_time|date:"SHORT_DATE_FORMAT" }}
+
+         </small>
+         
+
+        </div>
+        <span class="badge bg-primary rounded-pill ">
+          Tiết {{ lesson.start_number_lesson }} - {{ lesson.start_number_lesson|add:lesson.cout_number_lesson }}
+
+        </span>
+      </a>
+
+      {% endfor %}
+
+    </div>
+
+    {% else %}
+    <h4 class="text-danger">Chưa có giáo án nào được tải lên trong mục này</h4>
+
+    {% endif %}
+  </div>
+
+
+
+<div class="row justify-content-center">
+  <div class="col-10">
+
+    {% include 'footer_withsidebar.html' %}
+
+  </div>
+</div>
+
+
+
+
+  
+</div>
+
+
+  {% endwith %}
+{% endblock %}
