@@ -11,17 +11,17 @@
     </ol>
   </nav>
 </div>
-{% if request.user.teacher.lesson_list %}
+{% if lesson_list %}
 <div class="d-flex justify-content-between align-items-center" >
 
-<h5><i class="fas fa-book fa-fw me-2 "></i>Tất cả giáo án của tôi</h5>
+<h5><i class="fas fa-book fa-fw me-2 "></i>Giáo án của tôi năm học {{ teacher.schoolyear }}</h5>
 <div>
   <div class="btn-group me-3" role="group" aria-label="Button group with nested dropdown">
     <a href="#" class="btn btn-outline-secondary">Tuần này</a>
     <a href="#" class="btn btn-outline-secondary">Tháng này</a>
-    <a href="{% url 'lessons_toyear' sdf|schoolyear  %}" class="btn btn-outline-secondary">Năm học {{ teacher.schoolyear }}</a>
+    <a href="{% url 'lessons_toyear' sdf|schoolyear  %}" class="btn btn-secondary">Năm học {{ teacher.schoolyear }}</a>
   </div>
-  <button type="button" class="btn btn-secondary">Tất cả</button>
+  <a href="{% url 'alllessons' %}"  class="btn btn-outline-secondary">Tất cả</a>
 </div>
 </div>
 <hr class="mb-4">

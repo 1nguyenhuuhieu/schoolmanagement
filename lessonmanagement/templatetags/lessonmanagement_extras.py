@@ -15,4 +15,10 @@ def classlevel(value):
     else:
         return value
 
-
+@register.filter
+def schoolyear(value):
+    now = datetime.now()
+    if (now.month < 9):
+        return now.year -1
+    else:
+        return now.year

@@ -288,7 +288,7 @@ class Teacher(models.Model):
 #Giáo án
 class Lesson(models.Model):
     title = models.CharField(max_length=200)
-    upload_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    upload_time = models.DateTimeField( blank=True, null=True)
     LEVEL_CHOICES = [
         (6, 6),
         (7, 7),
@@ -340,12 +340,25 @@ class Lesson(models.Model):
 class LessonClassyear(models.Model):
     is_teach = models.BooleanField(default=False)
     teach_date = models.DateField(auto_now=True)
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-
-    classyear = models.ForeignKey(Classyear, on_delete=models.CASCADE)
-
-   
     
+    lesson = models.ForeignKey(Lesson, on_delete = models.CASCADE)
+    classyear = models.ForeignKey(Classyear, on_delete = models.CASCADE)
+    
+    teach_date_schedule = models.DateField(blank=True, null=True)
+    SESSION_CHOICES = [
+        ('morning', 'Buổi sáng'),
+        ('afternoon', 'Buổi chiều'),
+    ]
+    session = models.CharField(max_length=15, choices=SESSION_CHOICES, blank=True, null=True)
+    ORDER_CHOICES = [
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5)
+    ]
+    order_schedule = models.IntegerField(choices=ORDER_CHOICES, null=True, blank=True)
+
     class Meta:
         unique_together = ('lesson', 'classyear')
         verbose_name = 'Giáo án thuộc lớp nào'
@@ -378,23 +391,3 @@ class SubjectClassyear(models.Model):
     def __str__(self):
         return '%s %s - %s' % (self.subject, self.classyear, self.teacher.full_name())
 
-
-    #lịch báo giảng
-    class LessonSchedule(models.Model):
-        lesson = models.ForeignKey(Lesson, on_delete = models.CASCADE)
-        classyear = models.ForeignKey(Classyear, on_delete = models.CASCADE)
-        
-        teach_date_schedule = models.DateField(blank=True, null=True)
-        SESSION_CHOICES = [
-            ('morning', 'Buổi sáng'),
-            ('afternoon', 'Buổi chiều'),
-        ]
-        session = models.CharField(max_length=15, choices=SESSION_CHOICES, blank=True, null=True)
-        ORDER_CHOICES = [
-            (1, 1),
-            (2, 2),
-            (3, 3),
-            (4, 4),
-            (5, 5)
-        ]
-        order_schedule = models.IntegerField(choices=ORDER_CHOICES, null=True, blank=True)

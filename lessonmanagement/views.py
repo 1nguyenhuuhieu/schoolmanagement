@@ -46,8 +46,8 @@ def lessondashboard(request):
     return render(request, 'lessondashboard.html', context)
 
 def alllessons(request):
-    teacher = request.user.teacher
-    context = {}
+    lesson_list = Lesson.objects.filter(teacher=request.user.teacher.id)
+    context = {'lesson_list': lesson_list}
     return render(request, 'all_lessons.html', context)
 
 def lessons_subject_level(request, subject, level):
@@ -136,4 +136,8 @@ def add_lesson_subject_level(request, subject, level):
         
 
 
-    
+
+def lessons_toyear(request, year):
+    context = {}
+
+    return render(request, 'lesson/lesson_toyear.html', context)
