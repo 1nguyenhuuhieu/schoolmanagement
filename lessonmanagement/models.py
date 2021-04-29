@@ -344,27 +344,7 @@ class LessonClassyear(models.Model):
 
     classyear = models.ForeignKey(Classyear, on_delete=models.CASCADE)
 
-    #lịch báo giảng
-    teach_date_schedule = models.DateField(blank=True, null=True)
-    
-    SESSION_CHOICES = [
-        ('morning', 'Buổi sáng'),
-        ('afternoon', 'Buổi chiều'),
-    ]
-
-    session = models.CharField(max_length=15, choices=SESSION_CHOICES, blank=True, null=True)
-
-
-    ORDER_CHOICES = [
-        (1, 1),
-        (2, 2),
-        (3, 3),
-        (4, 4),
-        (5, 5)
-    ]
-    order_schedule = models.IntegerField(choices=ORDER_CHOICES, null=True, blank=True)
-
-
+   
     
     class Meta:
         unique_together = ('lesson', 'classyear')
@@ -397,3 +377,24 @@ class SubjectClassyear(models.Model):
 
     def __str__(self):
         return '%s %s - %s' % (self.subject, self.classyear, self.teacher.full_name())
+
+
+    #lịch báo giảng
+    class LessonSchedule(models.Model):
+        lesson = models.ForeignKey(Lesson, on_delete = models.CASCADE)
+        classyear = models.ForeignKey(Classyear, on_delete = models.CASCADE)
+        
+        teach_date_schedule = models.DateField(blank=True, null=True)
+        SESSION_CHOICES = [
+            ('morning', 'Buổi sáng'),
+            ('afternoon', 'Buổi chiều'),
+        ]
+        session = models.CharField(max_length=15, choices=SESSION_CHOICES, blank=True, null=True)
+        ORDER_CHOICES = [
+            (1, 1),
+            (2, 2),
+            (3, 3),
+            (4, 4),
+            (5, 5)
+        ]
+        order_schedule = models.IntegerField(choices=ORDER_CHOICES, null=True, blank=True)
