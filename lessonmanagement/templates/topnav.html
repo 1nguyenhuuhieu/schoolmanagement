@@ -35,6 +35,13 @@
             </ul>
 
             <ul class="navbar-nav  mb-2 mb-lg-0">
+              {% if request.user.is_staff %}
+              <li class="nav-item">
+                <a class="nav-link"  href="{% url 'admin:index' %}">
+                  <button class="btn btn-sm btn-danger">Quản Lý Trường Học</button>
+                </a>
+              </li>
+              {% endif %}
               <li class="nav-item">
                 <a class="nav-link"  href="#"><i class="far fa-bell"></i></a>
               </li>
@@ -42,18 +49,26 @@
                 <a class="nav-link" href="#"><i class="fas fa-plus"></i></a>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <btn class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+                  {% if request.user.teacher.avatar %}
                   <img src="{% if request.user.teacher.avatar %}{{ request.user.teacher.avatar.url }} {% endif %}" class="rounded-circle" alt="" height="25px">
-                </a>
+                  {% else %}
+                  {{ request.user.username }}
+                  {% endif %}
+
+                  {{ request.user.teacher.full_name }}
+
+                </btn>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 
                     <li class="dropdown-item disabled text-muted">{{ request.user }} / {{request.user.teacher.full_name}}</li>
-                    <li><a class="dropdown-item" href="#"><i class="far fa-user me-2"></i>Quản lý tài khoản</a></li>
+                    <li><a class="dropdown-item" href="{% url 'profile' %}" ><i class="far fa-user me-2"></i>Trang cá nhân</a></li>
                     <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="#">Xem thông báo</a></li>
                   <li><a class="dropdown-item" href="#">Giáo án của bạn</a></li>
                   <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
+                  <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
                 </ul>
               </li>
             </ul>

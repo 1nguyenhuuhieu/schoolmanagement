@@ -1,0 +1,50 @@
+{% extends 'clean.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container bg-light">
+    <div class="row justify-content-center">
+        <div class="col-4 mt-5 text-center" style="height:100vh">
+
+            <img src="{% static 'imgs/logo_thcsanhson.png'%}" alt="" height="100px" class="mb-4 mt-5">
+
+
+
+            {% if form.errors %}
+            <p class="text-danger">Tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại</p>
+            {% endif %}
+            
+            {% if next %}
+            {% if user.is_authenticated %}
+              <p>Your account doesn't have access to this page. To proceed,
+              please login with an account that has access.</p>
+            {% else %}
+              <h5>Trang đăng nhập cho giáo viên</h5>
+            {% endif %}
+            {% endif %}
+            
+            <form method="post" action="{% url 'login' %}" class="mt-3">
+                {% csrf_token %}
+                <table>
+                  <tr>
+                    <td>{{ form.username.label_tag }}</td>
+                    <td>{{ form.username }}</td>
+                  </tr>
+                  <tr>
+                    <td>{{ form.password.label_tag }}</td>
+                    <td>{{ form.password }}</td>
+                  </tr>
+                </table>
+
+                <button type="submit" class="btn btn-lg btn-primary mt-3"> Đăng nhập</button>
+                <input type="hidden" name="next" value="{{ next }}" />
+              </form>
+            
+                </div>
+            </div>
+
+            </div>
+
+
+
+  {% endblock %}

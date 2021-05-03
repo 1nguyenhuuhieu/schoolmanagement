@@ -8,6 +8,8 @@ from django.shortcuts import redirect
 
 from django.db.models import Count
 
+from django.contrib.auth.decorators import login_required
+
 
 now = datetime.now()
 
@@ -31,16 +33,34 @@ def class_level_def(year):
         return year
 
 
+@login_required
+def profile(request):
+    context = {}
+    return render(request, 'profile.html', context)
+
+
+@login_required
+def teacher(request, teacher_id):
+    try:
+        teacher = Teacher.objects.get(user__id = teacher_id)
+        context = {'teacher': teacher}
+        return render(request, 'teacher/teacher.html', context )
+    except:
+        raise Http404("Lesson does not exist")
+
+@login_required
 def index(request):
-    news = News.objects.all()[:3].annotate(Count('viewer'))
+    teacher = request.user.teacher
+    news = News.objects.all()[:5].annotate(Count('viewer'))
+    countlesson = Lesson.objects.filter(teacher=teacher.id).count()
+    context = {}
+
+    if countlesson:
+        context['countlesson'] = countlesson
+
     if news:
-        context = {
-            'news': news
-        }
+        context['news'] = news
     
-    else:
-        context = {
-        }
 
     return render(request, 'index.html', context)
 

@@ -9,13 +9,15 @@
       <div class="col-lg-12 p-0 ">
         <div class="card rounded-15 shadow-sm" >
           <div class="row g-0">
+            {% if teacher.avatar %}
             <div class="col-lg-3 d-flex align-items-center justify-content-center p-4">
               <img src="{{ teacher.avatar.url }}"  class="img-fluid rounded-circle" alt="...">
             </div>
+            {% endif %}
             <div class="col d-flex align-items-center py-2 ">
 
               <div class="card-body py-0 ">
-                <h5 class="card-title " ><a href="#" class="text-decoration-none">{{ teacher.full_name }} </a>  <small class="text-muted"> {{ teacher.get_education_level_display }} {{ teacher.main_subject }}.</small></h5>
+                <h5 class="card-title " ><a href="{% url 'profile' %}" class="text-decoration-none">{{ teacher.full_name }} </a>  <small class="text-muted"> {{ teacher.get_education_level_display }} {{ teacher.main_subject }}. <a href="#" class="text-decoration-none link-dark"><i class="far fa-edit ms-1"></i></a> </small></h5>
                 <hr class="text-muted my-2">
                 <div class="card-text m-0 pb-0">
                   <ul class="list-unstyled text-muted  m-0">
@@ -46,16 +48,16 @@
 
       <div class="col-12 p-4">
 
-          <h5>Tin mới</h5>
+          <h5>Tin mới từ ban giám hiệu</h5>
           <hr class="text-muted">
           
           {% for new in news %}
           
           <div class="d-flex align-items-center mb-3">
-            <img src="{{ teacher.avatar.url }}" alt="" class="rounded-circle" height="40px">
+            <img src="{{ new.creater.avatar.url }}" alt="" class="rounded-circle" height="40px">
             <div class="ms-2">
               <p class="m-0">
-                <a href="#" class="text-decoration-none m-0"> {{ new.creater.full_name }}</a> 
+                <a href="{% url 'teacher' new.creater.id %}" class="text-decoration-none m-0"> {{ new.creater.full_name }}</a> 
               </p>
             <small class="text-muted m-0">{{ new.upload_time|naturaltime }} / {{ new.upload_time|date:"SHORT_DATE_FORMAT" }} / Đã xem: {{ new.viewer.count }} </small>
             </div>
@@ -90,46 +92,6 @@
   {% endif %}
 </div>
 
-
-
-<div class="row justify-content-center mt-5">
-
-
-    <div class="col-3">
-        <div class="card" >
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>
-    </div>
-
-    <div class="col-3">
-        <div class="card" >
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>
-    </div>
-
-
-    <div class="col-3">
-        <div class="card" >
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>
-    </div>
-
-</div>
 
 {% endwith %}
 {% endblock %}

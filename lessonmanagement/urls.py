@@ -6,6 +6,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name="index"),
+    path('profile/', views.profile, name="profile"),
     path('lessondashboard/', views.lessondashboard, name="lessondashboard"),
     path('lessons/<int:year>/', views.lessons_toyear, name="lessons_toyear"),
     path('lessons/', views.alllessons, name="alllessons"),
@@ -15,6 +16,8 @@ urlpatterns = [
     path('lesson/<int:id>/', views.lesson, name="lesson"),
     path('lesson/add/', views.addlesson, name="addlesson"),
     path('lessons/add/<str:subject>/<int:level>/', views.add_lesson_subject_level, name="add_lesson_subject_level"),
+
+    path('teacher/<int:teacher_id>/', views.teacher, name='teacher'),
 
 
     

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load humanize %}
+{% load lessonmanagement_extras %}
+
+<div class="row mt-lg-5 mt-4">
+    <div class="col-lg-4">
+        <div class="d-flex flex-column  align-items-center">
+        {% if teacher.avatar %}
+
+        <img src="{{ teacher.avatar.url }}" alt="Ảnh đại diện của {{ request.user.username }}" class="img-fluid rounded-circle ">
+
+
+            
+
+
+
+
+        {% else %}
+        <h4 class="text-danger">Chưa có ảnh đại diện</h4>
+
+        {% endif %}
+    </div>
+    
+
+
+        
+
+    
+        
+    </div>
+    <div class="col">
+        <h4>Trang cá nhân của</h4>
+            <h1> {{ teacher.full_name }}</h1>
+           
+        <hr>
+            <h5 class="text-muted">Thông tin cá nhân</h5>
+            <ul class="list-unstyled">
+                <li><i class="far fa-user fa-fw me-2 text-muted"></i> {{ teacher.full_name }}<li>
+                <li><i class="fas fa-venus-mars fa-fw me-2 text-muted"></i> {{ teacher.get_sex_display }}<li>
+                <li><i class="fas fa-birthday-cake fa-fw me-2 text-muted"></i> {{ teacher.birth_date|date:"SHORT_DATE_FORMAT" }}<li>
+                <li><i class="fas fa-mobile-alt fa-fw me-2 text-muted"></i> <a href="tel:{{ teacher.zalo_number }}" class="text-decoration-none"> {{ teacher.zalo_number }}</a><li>
+                </ul>
+
+        <hr>
+        <h5 class="text-muted">Thông tin công việc</h5>
+
+        <ul class="list-unstyled">
+            <li><i class="fas fa-graduation-cap fa-fw me-2 text-muted"></i> {{ teacher.get_education_level_display }} {{ teacher.main_subject}} </li>
+                {% if teacher.managers.school %}
+                <li>
+                  <i class="fas fa-school fa-fw me-2 text-muted"></i> {{ teacher.managers.school.get_role_display }} <a href="#" class="text-decoration-none"> {{ teacher.managers.school.school.title }}</a>.
+                </li>
+                {% endif %}
+                <i class="fas fa-user-friends  fa-fw me-2 text-muted"></i> {{ teacher.managers.subject.get_role_display }}<a href="#" class="text-decoration-none"> Tổ {{ teacher.managers.subject.subject.title }}</a>. {% if teacher.managers.group%}{{ teacher.managers.group.get_role_display }} <a href="#" class="text-decoration-none">Bộ môn {{ teacher.managers.group.group.title }}</a>.{% endif %}</li>
+              {% if teacher.managers.class %}
+              <li><i class="fas fa-users fa-fw me-2 text-muted"></i> Chủ nhiệm lớp <a href="#" class="text-decoration-none"> {{ teacher.managers.class }}</a>.</li>
+              {% endif %}
+
+              {% if teacher.subject_classyear_list %}
+              <li><i class="fas fa-chalkboard-teacher fa-fw me-2 text-muted"></i>
+                {% for i in teacher.subject_classyear_list %}
+                <a href="{% url 'lessons_subject_level' i.subject__title|slugify i.classyear__startyear %}" class="text-decoration-none">{{ i.subject__title }} {{ i.classyear__startyear|classlevel }}</a>
+                {% if not forloop.last %},{% else %}
+                .
+                {% endif %}
+                {% endfor %}
+            </li>
+            {% endif %}
+        </ul>
+
+
+    </div>
+</div>
+
+{% endblock %}
