@@ -1,5 +1,5 @@
-
-
+{% load humanize %}
+{% load static %}
     {% if news %}
     <div class="row justify-content-center rounded-15 shadow-sm bg-white border">
 
@@ -11,7 +11,13 @@
           {% for new in news %}
           
           <div class="d-flex align-items-center mb-3">
-            <img src="{{ new.creater.avatar.url }}" alt="" class="rounded-circle" height="40px">
+            <img src="
+            {% if new.creater.avatar %}
+            {{ new.creater.avatar.url }}
+            {% else %}
+            {% static 'imgs/no-avatar.png' %}
+            {% endif %}
+            " alt="" class="rounded-circle" height="45px">
             <div class="ms-2">
               <p class="m-0">
                 <a href="{% url 'teacher' new.creater.id %}" class="text-decoration-none m-0"> {{ new.creater.full_name }}</a> 

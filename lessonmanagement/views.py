@@ -11,6 +11,8 @@ from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 
 
+from django.core.files.storage import FileSystemStorage
+
 now = datetime.now()
 
 
@@ -51,7 +53,7 @@ def teacher(request, teacher_id):
 @login_required
 def index(request):
     teacher = request.user.teacher
-    news = News.objects.all()[:5].annotate(Count('viewer'))
+    news = News.objects.order_by('-upload_time')[:5].annotate(Count('viewer'))
     countlesson = Lesson.objects.filter(teacher=teacher.id).count()
     context = {}
 
@@ -130,6 +132,7 @@ def addlesson(request):
 
     return render(request, 'add_lesson.html', context)
 
+@login_required
 def add_lesson_subject_level(request, subject, level):
     teacher = request.user.teacher.id
     q2 = Lesson.objects.filter(teacher=teacher).filter(subject__subject_slug = subject).filter(level = level)
@@ -155,10 +158,28 @@ def add_lesson_subject_level(request, subject, level):
             'new_number_lesson': new_number_lesson,
             'classyear_title_list': classyear_title_list,
             'last_lesson': last_lesson,
-            'subject_classyear': q1
+            'subject_classyear': q1,
+            'subject':subject,
+            'classyear': level_to_startyear(level)
         }
     except:
          return redirect('addlesson')
+
+    if request.method == 'POST' and request.FILES['file_lesson']:
+        subject = request.POST['subject']
+        classyear = request.POST['classyear']
+        start_lesson = request.POST['start_lesson']
+        count_lesson = request.POST['count_lesson']
+        title = request.POST['title_lesson']
+        lesson = request.FILES['file_lesson']
+
+        fs = FileSystemStorage()
+        fs.save(lesson.name, lesson)
+
+        print(start_lesson)
+        print(count_lesson)
+        print(title)
+        print(lesson)
 
  
     return render(request, 'lesson/add_lesson_subject.html', context)

@@ -54,25 +54,28 @@
 
                   {% if request.path == '/profile/' %}
                   <a href="{% url 'profile' %}" class="nav-link btn btn-light text-dark btn-sm">
+                    <img src="
                     {% if request.user.teacher.avatar %}
-                    <img src="{% if request.user.teacher.avatar %}{{ request.user.teacher.avatar.url }} {% endif %}" class="rounded-circle" alt="" height="25px">
+                    {{ request.user.teacher.avatar.url }}
                     {% else %}
-                    {{ request.user.username }}
+                    {% static 'imgs/no-avatar.png' %}
                     {% endif %}
-  
+                    " class="rounded-circle" alt="" height="25px">
                     {{ request.user.teacher.full_name }}
-  
                   </a>
                   <button type="button" class="btn  btn-sm btn-light text-dark dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="visually-hidden">Toggle Dropdown</span>
                   </button>
                   {% else %}
                   <a href="{% url 'profile' %}" class="nav-link btn btn-dark btn-sm">
+                    <img src="
                     {% if request.user.teacher.avatar %}
-                    <img src="{% if request.user.teacher.avatar %}{{ request.user.teacher.avatar.url }} {% endif %}" class="rounded-circle" alt="" height="25px">
+                    {{ request.user.teacher.avatar.url }}
                     {% else %}
-                    {{ request.user.username }}
+                    {% static 'imgs/no-avatar.png' %}
                     {% endif %}
+                    " class="rounded-circle" alt="" height="25px">
+                  
   
                     {{ request.user.teacher.full_name }}
   

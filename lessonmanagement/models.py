@@ -288,7 +288,7 @@ class Teacher(models.Model):
 #Giáo án
 class Lesson(models.Model):
     title = models.CharField(max_length=200)
-    upload_time = models.DateTimeField( blank=True, null=True)
+    upload_time = models.DateTimeField(auto_now_add=True ,blank=True, null=True)
     LEVEL_CHOICES = [
         (6, 6),
         (7, 7),
@@ -403,7 +403,7 @@ class News(models.Model):
     viewer = models.ManyToManyField(Teacher, blank=True, null=True)
 
     class Meta:
-        ordering = ['-upload_time']
+        ordering = ['upload_time']
 
     def __str__(self):
         return self.title
