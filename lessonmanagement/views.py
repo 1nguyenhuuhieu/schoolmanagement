@@ -160,26 +160,34 @@ def add_lesson_subject_level(request, subject, level):
             'last_lesson': last_lesson,
             'subject_classyear': q1,
             'subject':subject,
-            'classyear': level_to_startyear(level)
+            'level': level
         }
     except:
          return redirect('addlesson')
 
     if request.method == 'POST' and request.FILES['file_lesson']:
         subject = request.POST['subject']
-        classyear = request.POST['classyear']
+        try:
+            subject_save = SubjectClassyear.objects.filter(teacher=teacher).filter(subject__subject_slug = subject).order_by('subject__title').values('subject__title').distinct()
+            print(subject_save)
+        except:
+            raise Http404('fuck wrong')
+        level_save = request.POST['level']
         start_lesson = request.POST['start_lesson']
         count_lesson = request.POST['count_lesson']
         title = request.POST['title_lesson']
         lesson = request.FILES['file_lesson']
+        upload_time = now
+        description_lesson = request.POST['description_lesson']
 
-        fs = FileSystemStorage()
-        fs.save(lesson.name, lesson)
 
-        print(start_lesson)
-        print(count_lesson)
-        print(title)
-        print(lesson)
+        teacher_location = 'lessons/' + str(request.user.username)
+
+        fs = FileSystemStorage(location=teacher_location)
+        # lesson_file =  fs.save(lesson.name, lesson)
+
+
+        print(level_save)
 
  
     return render(request, 'lesson/add_lesson_subject.html', context)

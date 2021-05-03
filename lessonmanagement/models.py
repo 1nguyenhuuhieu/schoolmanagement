@@ -304,6 +304,7 @@ class Lesson(models.Model):
     cout_number_lesson = models.IntegerField(help_text="Bài giảng này trong bao nhiêu tiết")
 
     classyear = models.ManyToManyField(Classyear, through="LessonClassyear")
+    
     #Kiểm tra giáo án
     STATUS_CHOICES = [
     ('pending', 'Chờ duyệt'),
