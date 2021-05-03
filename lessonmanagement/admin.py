@@ -64,3 +64,7 @@ class SubjectClassyearAdmin(admin.ModelAdmin):
 @admin.register(SchoolManager)
 class SchoolManagerAdmin(admin.ModelAdmin):
     pass
+
+@admin.register(News)
+class NewsAdmin(admin.ModelAdmin):
+    pass

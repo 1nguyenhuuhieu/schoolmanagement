@@ -6,6 +6,8 @@ from django.utils.text import slugify
 from django.http import Http404
 from django.shortcuts import redirect
 
+from django.db.models import Count
+
 
 now = datetime.now()
 
@@ -30,9 +32,16 @@ def class_level_def(year):
 
 
 def index(request):
-    context = {
-    }
+    news = News.objects.all()[:3].annotate(Count('viewer'))
+    if news:
+        context = {
+            'news': news
+        }
     
+    else:
+        context = {
+        }
+
     return render(request, 'index.html', context)
 
 

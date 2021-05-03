@@ -1,61 +1,97 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
 {% with teacher=request.user.teacher %}
+{% load humanize %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="row justify-content-center mt-lg-5 mt-3 p-0 mb-4">
+      <div class="col-lg-12 p-0 ">
+        <div class="card rounded-15 shadow-sm" >
+          <div class="row g-0">
+            <div class="col-lg-3 d-flex align-items-center justify-content-center p-4">
+              <img src="{{ teacher.avatar.url }}"  class="img-fluid rounded-circle" alt="...">
+            </div>
+            <div class="col d-flex align-items-center py-2 ">
 
-
-
-<div class="row justify-content-center mt-5">
-
-    <div class="col-lg-9">
-        <div class="card mb-5 rounded-15 shadow-sm" >
-            <div class="row g-0">
-              <div class="col-5">
-                <img src="{% static 'imgs/welcome.png' %}"  class="img-fluid" alt="...">
-              </div>
-              <div class="col">
-                <div class="card-body">
-                  <h5 class="card-title">Xin chào</h5>
-                  <div class="d-flex align-items-center"> <h4 class="me-2" ><a href="#" class="text-decoration-none">{{ teacher.full_name }} </a></h4><span class="text-muted"> {{ teacher.get_education_level_display }} <a href="#" class="text-decoration-none">{{ teacher.main_subject }}</a>.</span></div>
-                  <h6 class="text-muted">  {% if teacher.managers.school %}{{ teacher.managers.school.get_role_display }} <a href="#" class="text-decoration-none"> {{ teacher.managers.school.school.title }}</a>.{% endif %}</h6>
-                  <p class="card-text">
-                    <ul class="list-unstyled text-muted">
-                      <li>  <i class="fas fa-user-friends  fa-fw me-2 text-muted"></i>{{ teacher.managers.subject.get_role_display }}<a href="#" class="text-decoration-none"> Tổ {{ teacher.managers.subject.subject.title }}</a>. {% if teacher.managers.group%}{{ teacher.managers.group.get_role_display }} <a href="#" class="text-decoration-none">Bộ môn {{ teacher.managers.group.group.title }}</a>.{% endif %}</li>
-                      {% if teacher.managers.class %} <li><i class="fas fa-users fa-fw me-2 text-muted"></i>Chủ nhiệm lớp <a href="#" class="text-decoration-none"> {{ teacher.managers.class }}</a>. </li>{% endif %}
-                    </ul>
-                </p>  
-                  <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+              <div class="card-body py-0 ">
+                <h5 class="card-title " ><a href="#" class="text-decoration-none">{{ teacher.full_name }} </a>  <small class="text-muted"> {{ teacher.get_education_level_display }} {{ teacher.main_subject }}.</small></h5>
+                <hr class="text-muted my-2">
+                <div class="card-text m-0 pb-0">
+                  <ul class="list-unstyled text-muted  m-0">
+                    <li>
+                      {% if teacher.managers.school %}
+                      <li>
+                        <i class="fas fa-school fa-fw me-2 text-muted"></i>{{ teacher.managers.school.get_role_display }} <a href="#" class="text-decoration-none"> {{ teacher.managers.school.school.title }}</a>.
+                      </li>
+                      {% endif %}
+                      <i class="fas fa-user-friends  fa-fw me-2 text-muted"></i>{{ teacher.managers.subject.get_role_display }}<a href="#" class="text-decoration-none"> Tổ {{ teacher.managers.subject.subject.title }}</a>. {% if teacher.managers.group%}{{ teacher.managers.group.get_role_display }} <a href="#" class="text-decoration-none">Bộ môn {{ teacher.managers.group.group.title }}</a>.{% endif %}</li>
+                    {% if teacher.managers.class %}
+                    <li><i class="fas fa-users fa-fw me-2 text-muted"></i>Chủ nhiệm lớp <a href="#" class="text-decoration-none"> {{ teacher.managers.class }}</a>.</li>
+                    {% endif %}
+                  </ul>
                 </div>
               </div>
+
             </div>
           </div>
+        </div>
+      </div>
     </div>
 
-    <div class="col-lg-9">
-        <h4>Thông báo từ ban giám hiệu</h4>
-        <div class="rounded-15 shadow-sm bg-white border mt-4 p-4">
-            <h6>Thông báo đổi giờ làm việc từ mùa đông sang mùa hè</h6>  
-            <p class="text-muted text-truncate" >HCDC tối 1/5 thông báo cách ly tập trung 14 ngày những người từ thôn Hoàng Các và Nại Khê, xã Tiền Tiến, huyện Phù Cừ, tỉnh Hưng Yên.
+    
 
-                Như vậy, TP HCM hiện cách ly người từ ba thôn của xã Tiền Tiến ở Hưng Yên, bao gồm cả thôn Hoàng Xá trong thông báo trước đó. Thành phố sẽ giám sát người rời các địa phương này từ ngày 29/4.
-                
-                TP HCM cũng đang áp dụng cách ly tập trung, xét nghiệm nCoV người rời xã Đạo Lý, huyện Lý Nhân, tỉnh Hà Nam từ ngày 22/4. Đây là những khu vực đang thực hiện phong toả, cách ly y tế theo chỉ thị số 16.</p>
+    {% if news %}
+    <div class="row justify-content-center rounded-15 shadow-sm bg-white border">
 
-                <div class="f-flex align-items-center">
-                    <img src="{{ teacher.avatar.url }}" alt="" class="rounded-circle" height="25px"> <a href="#" class="text-decoration-none m-0"> {{ teacher.full_name }}</a> 
-                </div>
+      <div class="col-12 p-4">
 
+          <h5>Tin mới</h5>
+          <hr class="text-muted">
           
-            
-            
-
-            <hr>
-     
+          {% for new in news %}
+          
+          <div class="d-flex align-items-center mb-3">
+            <img src="{{ teacher.avatar.url }}" alt="" class="rounded-circle" height="40px">
+            <div class="ms-2">
+              <p class="m-0">
+                <a href="#" class="text-decoration-none m-0"> {{ new.creater.full_name }}</a> 
+              </p>
+            <small class="text-muted m-0">{{ new.upload_time|naturaltime }} / {{ new.upload_time|date:"SHORT_DATE_FORMAT" }} / Đã xem: {{ new.viewer.count }} </small>
+            </div>
         </div>
 
-    </div>
+
+
+              <h6> <a href="#" class="text-decoration-none link-dark"> {{ new.title }}</a> </h6>  
+              <p class="text-muted text-truncate" >
+                {{ new.content }}
+              </p>
+
+                
+
+                  <hr class="text-muted">
+
+              {% endfor %}
+
+              
+  
+            
+   
+             
+                <a href="#" class="text-decoration-none">Xem tất cả <i class="fas fa-arrow-right ms-2"></i></a>
+
+              
+      </div>
+
+
+
+  </div>
+  {% endif %}
 </div>
+
+
+
 <div class="row justify-content-center mt-5">
 
 
