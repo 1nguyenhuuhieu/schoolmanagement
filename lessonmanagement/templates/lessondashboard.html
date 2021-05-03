@@ -21,7 +21,13 @@
                 <div class="card mb-4 rounded-15 shadow-sm">
                   <div class="row g-0">
                     <div class="col-1 p-2 d-flex align-items-center">
-                      <img src="{% static 'imgs/math.jpeg' %}"  class="img-fluid rounded-circle" alt="">
+                      <img src="
+                      {% if i.subject.cover %}
+                      {{ i.subject.cover.url }}
+                      {% else %}
+                      {% static 'imgs/no-image.png' %}
+                      {% endif %}
+                      "  class="img-fluid" alt="">
                     </div>
                     <div class="col-11">
                       <div class="card-body">
@@ -32,18 +38,18 @@
                         <a href="{% url 'lessons_subject_level' i.subject.title|slugify i.start_year_level %}" class="text-decoration-none">{{ i.subject.title }} {{ i.level }}</a>{% if i.display_classyear %}({% for j in i.display_classyear %}{{j}}{%if forloop.last %}{% else %},{% endif %}{% endfor %}) {% endif %} / Tiết {{ i.start_number_lesson}} {% if i.cout_number_lesson > 1 %} - {{ i.start_number_lesson|add:i.cout_number_lesson }} {% endif %}
                       </span>
                       <small class="text-muted">
-    {{ i.upload_time|naturaltime }} vào lúc {{ i.upload_time }}</small>
+    {{ i.upload_time|naturaltime }} / {{ i.upload_time|date:"SHORT_DATE_FORMAT" }}</small>
                         <hr class="my-2">
                         {% if i.status == "pending" %}
                         <span class="badge bg-warning text-dark rounded-pill" style="width: 105px;"><i class="far fa-clock me-1"></i>Chờ duyệt</span>
                         {% elif i.status == "acept" %}
                         <span class="badge bg-success  rounded-pill" style="width: 105px;"><i class="fas fa-check me-1"></i>Đã duyệt</span> <small class="text-muted">bởi<a href="#" class="text-decoration-none"> {{ i.checker.full_name }}</a> 
                       
-                          {{ i.upload_time|naturaltime}} vào lúc {{ i.check_date }}</small>  
+                          {{ i.upload_time|naturaltime}} / {{ i.check_date|date:"SHORT_DATE_FORMAT" }}</small>  
                          {% elif i.status == "deny" %}
                          <span class="badge bg-danger  rounded-pill" style="width: 105px;"><i class="fas fa-times me-1"></i>Bị từ chối</span> <small class="text-muted">bởi<a href="#" class="text-decoration-none"> {{ i.checker.full_name }}</a> 
                         
-    {{ i.upload_time|naturaltime}} vào lúc {{ i.check_date }}</small> 
+    {{ i.upload_time|naturaltime}} / {{ i.check_date|date:"SHORT_DATE_FORMAT" }}</small> 
                         {% endif %} 
                       </div>
                     </div>
