@@ -30,6 +30,8 @@
     <!-- google charts -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
 
 
 
@@ -43,6 +45,8 @@
 
       {% block content %}
       {% endblock %}
+      {% include 'footer_withsidebar.html' %}
+
     </div>
 
 

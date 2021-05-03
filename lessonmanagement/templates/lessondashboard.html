@@ -14,27 +14,7 @@
             </nav>
           </div>
           <h5 class="mb-4"><i class="fas fa-chart-bar fa-fw me-2"></i>Thống Kê Giáo Án Của Tôi</h5>
-          <div class="card mb-5 rounded-15 shadow-sm" >
-            <div class="row g-0">
-              <div class="col-md-5">
-                <img src="{% static 'imgs/welcome.png' %}"  class="img-fluid" alt="...">
-              </div>
-              <div class="col">
-                <div class="card-body">
-                  <h5 class="card-title">Xin chào</h5>
-                  <div class="d-flex align-items-center"> <h4 class="me-2" ><a href="#" class="text-decoration-none">{{ teacher.full_name }} </a></h4><span class="text-muted"> {{ teacher.get_education_level_display }} <a href="#" class="text-decoration-none">{{ teacher.main_subject }}</a>.</span></div>
-                  <h6 class="text-muted">  {% if teacher.managers.school %}{{ teacher.managers.school.get_role_display }} <a href="#" class="text-decoration-none"> {{ teacher.managers.school.school.title }}</a>.{% endif %}</h6>
-                  <p class="card-text">
-                    <ul class="list-unstyled text-muted">
-                      <li>  <i class="fas fa-user-friends  fa-fw me-2 text-muted"></i>{{ teacher.managers.subject.get_role_display }}<a href="#" class="text-decoration-none"> Tổ {{ teacher.managers.subject.subject.title }}</a>. {% if teacher.managers.group%}{{ teacher.managers.group.get_role_display }} <a href="#" class="text-decoration-none">Bộ môn {{ teacher.managers.group.group.title }}</a>.{% endif %}</li>
-                      {% if teacher.managers.class %} <li><i class="fas fa-users fa-fw me-2 text-muted"></i>Chủ nhiệm lớp <a href="#" class="text-decoration-none"> {{ teacher.managers.class }}</a>. </li>{% endif %}
-                    </ul>
-                </p>  
-                  <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
-                </div>
-              </div>
-            </div>
-          </div>
+          <hr>
               <h6 class="mb-3  ">Giáo án vừa thêm</h6>
                 {% for i in teacher.latest_lesson %}
                 <div class="card mb-4 rounded-15 shadow-sm">
