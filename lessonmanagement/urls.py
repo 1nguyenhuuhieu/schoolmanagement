@@ -17,6 +17,7 @@ urlpatterns = [
     path('lesson/edit/<int:lesson_id>/', views.edit_lesson, name="edit_lesson"),
     path('lesson/add/', views.addlesson, name="addlesson"),
     path('lessons/add/<str:subject>/<int:level>/', views.add_lesson_subject_level, name="add_lesson_subject_level"),
+    path('schedule/add_lesson/<int:lesson_id>/', views.add_lesson_schedule, name = 'add_lesson_schedule'),
 
     path('teacher/<int:teacher_id>/', views.teacher, name='teacher'),
 

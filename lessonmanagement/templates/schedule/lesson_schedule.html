@@ -11,7 +11,7 @@
     </tr>
     <tr>
         <th scope="row">Ngày dạy</th>
-        <td>{{ i.teach_date_schedule|date:"D" }}. Tuần {{ i.teach_date_schedule|date:"W" }}. {{ i.teach_date_schedule }}. {% if  i.teach_date_schedule > now %} <span class="badge bg-danger">{{ i.teach_date_schedule|timeuntil }} nữa</span> {% endif %} </td>
+        <td>{{ i.teach_date_schedule|date:"D" }}. Tuần {{ i.teach_date_schedule|date:"W" }}. {{ i.teach_date_schedule }}.  <span class="badge bg-danger">{{ i.teach_date_schedule|timeuntil }}</span></td>
     </tr>
     <tr>
         <th scope="row">Buổi</th>

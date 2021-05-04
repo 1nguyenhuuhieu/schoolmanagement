@@ -205,11 +205,81 @@ def edit_lesson(request, lesson_id):
     try:
         lesson = Lesson.objects.filter(teacher=request.user.teacher.id).get(id=lesson_id)
         context = {'lesson': lesson}
+        if request.method == "POST":
+            title = request.POST['title_lesson']
+            start_lesson = request.POST['start_lesson']
+            count_lesson = request.POST['count_lesson']
+            description_lesson = request.POST['description_lesson']
+
+            lesson.title = title
+            lesson.start_number_lesson = start_lesson
+            lesson.cout_number_lesson = count_lesson
+            lesson.description = description_lesson
+            lesson.status = 'pending'
+            lesson.edit_time = now
+            lesson.save()
+
+            if bool(request.FILES.get('file_lesson', False)) == True:
+                lesson_file_form = request.FILES['file_lesson']
+                teacher_location = 'lessons/' + str(request.user.username)
+                fs = FileSystemStorage(location=teacher_location)
+                lesson_file =  fs.save(lesson_file_form.name, lesson_file_form)
+                lesson_path =  teacher_location + '/' + fs.get_valid_name(lesson_file)
+                lesson.lesson_path = lesson_path
+                lesson.save()
+
+            return redirect('lesson', id=lesson.id, permanent=True)
+
         return render(request, 'lesson/edit_lesson.html', context)
+    
     except:
         raise Http404("fuck wrong")
+
+
+
+
+
 
 def lessons_toyear(request, year):
     context = {}
 
     return render(request, 'lesson/lesson_toyear.html', context)
+
+
+# lịch báo giảng
+
+# thêm giáo án vào lịch báo giảng
+def add_lesson_schedule(request, lesson_id):
+    try:
+        lesson = Lesson.objects.filter(teacher=request.user.teacher.id).get(id = lesson_id)
+        classyear_list = SubjectClassyear.objects.filter(teacher=request.user.teacher.id).filter(subject__title = lesson.subject.title).filter(classyear__startyear = level_to_startyear(lesson.level))
+
+        schedule_list = LessonClassyear.objects.filter(lesson__teacher=request.user.teacher.id).filter(lesson__id = lesson_id).order_by('-id')
+
+
+
+        if request.method == "POST":
+
+            classyear_form = request.POST['classyear']
+            classyear = Classyear.objects.get(id = classyear_form)
+            schedule_date = request.POST['schedule_date']
+            session_schedule = request.POST['session']
+            order_schedule = request.POST['order']
+
+            new_schedule = LessonClassyear(is_teach=False, lesson=lesson, classyear=classyear, session=session_schedule, order_schedule=order_schedule, teach_date_schedule=schedule_date )
+
+            new_schedule.save()
+
+
+            if 'quit' in request.POST:
+                return redirect('lesson', id=lesson_id, permanent=True)
+            if 'continue' in request.POST:
+                return redirect('add_lesson_schedule', lesson_id=lesson_id, permanent=True)
+           
+
+
+        context = {'lesson': lesson, 'classyear_list': classyear_list, 'schedule_list': schedule_list,}
+
+        return render(request, 'schedule/add_lesson_schedule.html', context)
+    except:
+        raise Http404("fuck")

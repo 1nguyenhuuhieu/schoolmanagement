@@ -290,6 +290,7 @@ class Lesson(models.Model):
     title = models.CharField(max_length=200)
     lesson_path = models.FileField(blank=True, null=True)
     upload_time = models.DateTimeField(blank=True, null=True)
+    edit_time = models.DateTimeField(blank=True, null=True)
     LEVEL_CHOICES = [
         (6, 6),
         (7, 7),
@@ -343,7 +344,7 @@ class Lesson(models.Model):
 #Giáo án thuộc lớp học nào
 class LessonClassyear(models.Model):
     is_teach = models.BooleanField(default=False)
-    teach_date = models.DateField(auto_now=True)
+    teach_date = models.DateField(blank=True, null=True)
     
     lesson = models.ForeignKey(Lesson, on_delete = models.CASCADE)
     classyear = models.ForeignKey(Classyear, on_delete = models.CASCADE)
@@ -364,7 +365,6 @@ class LessonClassyear(models.Model):
     order_schedule = models.IntegerField(choices=ORDER_CHOICES, null=True, blank=True)
 
     class Meta:
-        unique_together = ('lesson', 'classyear')
         verbose_name = 'Lịch báo giảng'
         verbose_name_plural = 'Lịch báo giảng'
     
