@@ -1,0 +1,23 @@
+{% load humanize %}
+<table class="table table-bordered">
+    <tr>
+        <th scope="row">Tên giáo án</th>
+        <td>{{ lesson.title }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Tiết</th>
+        <td>{{ lesson.start_number_lesson }} - {{ lesson.start_number_lesson|add:lesson.cout_number_lesson }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Ngày dạy</th>
+        <td>{{ i.teach_date_schedule|date:"D" }}. Tuần {{ i.teach_date_schedule|date:"W" }}. {{ i.teach_date_schedule }}. <span class="badge bg-danger">{{ i.teach_date_schedule|timeuntil }} nữa</span>  </td>
+    </tr>
+    <tr>
+        <th scope="row">Buổi</th>
+        <td>{{ i.get_session_display }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Tiết</th>
+        <td>{{ i.order_schedule }}</td>
+    </tr>
+</table>
