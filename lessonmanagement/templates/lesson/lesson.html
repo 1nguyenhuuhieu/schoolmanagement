@@ -3,25 +3,68 @@
 {% block content %}
 {% include 'breadcrumb/breadcrumb_lesson.html' %}
 
-<h5><i class="fas fa-book text-muted me-2"></i> {{ lesson.title }} <small class="text-muted">{{ lesson.subject.title }} {{ lesson.level }}  / Tiết {{ lesson.start_number_lesson }} - {{ lesson.start_number_lesson|add:lesson.cout_number_lesson }}</small> </h5>
-<hr>
 
-<div class="d-flex align-items-center">
+
+
+<h5 class="mb-3"><i class="fas fa-book text-muted me-2"></i> {{ lesson.title }} <small class="text-muted">{{ lesson.subject.title }} {{ lesson.level }}  / Tiết {{ lesson.start_number_lesson }} - {{ lesson.start_number_lesson|add:lesson.cout_number_lesson }}</small> </h5>
+<div class="d-flex align-items-center mb-3">
     <img src="
     {% if request.user.teacher.avatar %}
     {{ request.user.teacher.avatar.url }}
     {% else %}
     {% endif %}
-    " alt="" width="40px" class="rounded-circle me-2">
+    " alt="" width="20px" class="rounded-circle me-2">
 
     <div>
-        <h6 class="m-0">{{ request.user.teacher.full_name }}</h6>
-        <p class="text-muted m-0">{{ lesson.upload_time|naturaltime }} / {{ lesson.upload_time|date:"SHORT_DATE_FORMAT"}}</p>
+        <small class="m-0 fw-bolder">{{ request.user.teacher.full_name }}</small>
+        <small class="text-muted m-0"> / {{ lesson.upload_time|naturaltime }} / {{ lesson.upload_time|date:"SHORT_DATE_FORMAT"}}</small>
 
     </div>
 </div>
 
+
+
+
+
+{% if lesson.description %}
 <hr>
+<p>
+    Mô tả: {{ lesson.description }}
+</p>
+{% endif %}
+
+
+
+
+<hr>
+
+
+{% if lesson.status == 'pending' %}
+<span class="badge bg-warning text-dark rounded-pill">{{ lesson.get_status_display }}</span>
+{% elif lesson.status == 'acept' %}
+<span class="badge bg-success text-white rounded-pill">{{ lesson.get_status_display }}</span> bởi <a href="#" class="text-decoration-none">{{ lesson.checker }} </a> / {{ lesson.check_date|naturaltime }}
+
+{% else %}
+<span class="badge bg-danger text-white rounded-pill">{{ lesson.get_status_display }}</span> bởi <a href="#" class="text-decoration-none">{{ lesson.checker }} </a> / {{ lesson.check_date|naturaltime }}
+{% endif %}
+
+{% if lesson.note_checker %}
+<p class="mt-3">Ghi chú: {{ lesson.note_checker }}</p>
+{% endif %}
+
+<hr>
+{% if not lesson.classyear_list %}
+<h5 class="text-danger">Giáo án này chưa được lên lịch báo giảng</h5>
+<a href="#" class="btn btn-danger"><i class="far fa-calendar-check me-2"></i>Thêm lịch báo giảng</a>
+
+{% else %}
+{% endif %}
+<hr>
+<a href="#" class="btn btn-outline-success me-3"><i class="far fa-eye me-2"></i>Xem</a>
+
+<a href="#" class="btn btn-outline-success"><i class="fas fa-download me-2"></i>Tải về</a>
+
+
 
 
 

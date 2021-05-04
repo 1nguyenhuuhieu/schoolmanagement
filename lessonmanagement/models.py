@@ -22,9 +22,9 @@ def class_level_def(year):
 #lấy niên khoá từ class level
 def school_year_def(upload_time):
     if (upload_time.month < 9):
-        return now.year -1
+        return upload_time.year -1
     else:
-        return now.year
+        return upload_time.year
 
 #lấy năm vào trường của lớp từ level
 def level_to_startyear(level):
@@ -334,6 +334,9 @@ class Lesson(models.Model):
         else:
             return school_year_def(self.upload_time) - self.level + 7
 
+    # giáo án này lên lịch cho những lớp
+    def classyear_list(self):
+        return LessonClassyear.objects.filter(lesson=self.id)
     def __str__(self):
         return '%s - %s' % (self.title, self.level)
 

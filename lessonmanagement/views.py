@@ -67,7 +67,7 @@ def index(request):
     return render(request, 'index.html', context)
 
 
-    
+@login_required    
 def lessondashboard(request):
     teacher = request.user.teacher
     #lấy tiết đã dạy hiện tại để tính thời lượng giảng dạy
@@ -76,27 +76,31 @@ def lessondashboard(request):
     }
     return render(request, 'lessondashboard.html', context)
 
+@login_required
 def alllessons(request):
-    lesson_list = Lesson.objects.filter(teacher=request.user.teacher.id)
+    lesson_list = Lesson.objects.filter(teacher=request.user.teacher.id).order_by('upload_time')
     context = {'lesson_list': lesson_list}
     return render(request, 'all_lessons.html', context)
 
+@login_required
 def lessons_subject_level(request, subject, level):
+    year = int(now.year)
+
+    if now.month > 9:
+        start_date = datetime(year, 9, 1)
+    else:
+        start_date = datetime(year -1, 9, 1)
+
+
+    # giáo án phù hợp với môn học và lớp học, giáo viên, niên khóa hiện tại
+    lessons = Lesson.objects.filter(teacher=request.user.teacher.id).filter(subject__subject_slug = subject).filter(level=level).filter(upload_time__gte = start_date)
     
-    #id của những giáo án phù hợp với môn học và lớp học, giáo viên
-    lesson_id_list_dict = list(LessonClassyear.objects.filter(lesson__subject__subject_slug = subject).filter(classyear__startyear = level).filter(lesson__teacher = request.user.teacher.id).values('lesson__id').distinct())
 
     #sử dụng cho đường dẫn tới các lớp cụ thể
     classyear_list = LessonClassyear.objects.filter(lesson__subject__subject_slug = subject).filter(classyear__startyear = level).filter(lesson__teacher = request.user.teacher.id).values('classyear__title').distinct()
 
-    lesson_id_list = []
-    for i in lesson_id_list_dict:
-        lesson_id_list.append(i['lesson__id'])
-    
-    #danh sách giáo án với subject và startyear tương ứng
-    lesson_list = Lesson.objects.filter(id__in = lesson_id_list)
     context = {
-        'lesson_list':lesson_list, 'classyear_list':classyear_list, 'subject':subject, 'level':level
+        'lesson_list':lessons, 'classyear_list':classyear_list, 'subject':subject, 'level':level
 
     }
     return render(request, 'lessons.html', context)
