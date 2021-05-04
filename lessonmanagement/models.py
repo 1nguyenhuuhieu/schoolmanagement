@@ -365,8 +365,8 @@ class LessonClassyear(models.Model):
 
     class Meta:
         unique_together = ('lesson', 'classyear')
-        verbose_name = 'Giáo án thuộc lớp nào'
-        verbose_name_plural = 'Giáo án thuộc lớp nào'
+        verbose_name = 'Lịch báo giảng'
+        verbose_name_plural = 'Lịch báo giảng'
     
     def __str__(self):
         return '%s %s %s' % (self.lesson, self.classyear, self.is_teach)

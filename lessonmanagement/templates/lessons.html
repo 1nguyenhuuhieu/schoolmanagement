@@ -15,7 +15,7 @@
                   <div class="btn-group btn-group-sm me-3">
                     <a href="#" class="btn btn-outline-success active " aria-current="page">Toàn bộ</a>
                     {% for i in classyear_list %}
-                    <a href="{{ i.classyear__title|slugify }}" class="btn btn-outline-success">{{ lesson_list.0.level }}{{ i.classyear__title}}</a>
+                    <a href="{{ i.classyear__title|slugify }}" class="btn btn-outline-success">{{ lesson_list.0.level }}{{ i.classyear.title }}</a>
                     {% endfor %}
                   </div>
             <button class="btn btn-success btn-sm"><i class="fas fa-plus me-2"></i>Thêm giáo án</button>

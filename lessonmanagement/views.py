@@ -38,7 +38,7 @@ def class_level_def(year):
 @login_required
 def profile(request):
     context = {}
-    return render(request, 'profile.html', context)
+    return render(request, 'profile/profile.html', context)
 
 
 @login_required
@@ -97,7 +97,10 @@ def lessons_subject_level(request, subject, level):
     
 
     #sử dụng cho đường dẫn tới các lớp cụ thể
-    classyear_list = LessonClassyear.objects.filter(lesson__subject__subject_slug = subject).filter(classyear__startyear = level).filter(lesson__teacher = request.user.teacher.id).values('classyear__title').distinct()
+    lessons_id = lessons.values('id')
+    
+    classyear_list = LessonClassyear.objects.filter(lesson__id__in = lessons_id )
+    print(classyear_list)
 
     context = {
         'lesson_list':lessons, 'classyear_list':classyear_list, 'subject':subject, 'level':level
@@ -118,7 +121,7 @@ def emptylesson(request):
 def lesson(request, id):
     try:
         lesson = Lesson.objects.filter(teacher=request.user.teacher.id).get(id = id)
-        return render(request, 'lesson/lesson.html', {'lesson': lesson})
+        return render(request, 'lesson/lesson_detail.html', {'lesson': lesson})
 
 
     except Lesson.DoesNotExist:
@@ -197,7 +200,14 @@ def add_lesson_subject_level(request, subject, level):
     return render(request, 'lesson/add_lesson_subject.html', context)
         
 
-
+@login_required
+def edit_lesson(request, lesson_id):
+    try:
+        lesson = Lesson.objects.filter(teacher=request.user.teacher.id).get(id=lesson_id)
+        context = {'lesson': lesson}
+        return render(request, 'lesson/edit_lesson.html', context)
+    except:
+        raise Http404("fuck wrong")
 
 def lessons_toyear(request, year):
     context = {}

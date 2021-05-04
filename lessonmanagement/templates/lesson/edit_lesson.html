@@ -1,0 +1,126 @@
+{% extends 'base_clean.html' %}
+{% block content %}
+{% with teacher=request.user.teacher %}
+{% load lessonmanagement_extras %}
+{% load humanize %}
+<div class="row justify-content-center ">
+  <div class="col-4 border-bottom">
+    <h2 class="mt-5 text-center"><i class="fas fa-wrench me-2"></i>Sửa Giáo Án</h2>
+    <p class="text-center text-muted"><i class="far fa-lightbulb me-2"></i>Giáo án chỉ có thể được thêm vào <a href="#" class="text-decoration-none">lịch báo giảng</a> khi đã được duyệt.<a href="#" class="text-decoration-none"> Xem thêm</a></p>
+  </div>
+</div>
+<div class="row pt-5 justify-content-center">
+  <div class="col-6">
+      <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate >
+        {% csrf_token %}
+        <div class="row">
+
+            <div>
+                
+            
+    <span class="badge bg-danger text-white rounded-pill">{{ lesson.get_status_display }}</span> bởi 
+    <a href="#" class="text-decoration-none">{{ lesson.checker }} </a> / {{ lesson.check_date|naturaltime }}
+    <p>{{ lesson.note_checker }}</p>
+
+            </div>
+            <hr class="my-3">
+
+
+
+          <h4 class="mb-4">Thông tin giáo án</h4>
+          <div class="col-4">
+            <label for="subjectLevel" class="form-label">Môn học</label>
+            <div id="subjectLevel">
+              <button class="btn btn-dark  w-100" type="button"  aria-expanded="false" disabled>{{lesson.subject.title}} {{lesson.level}}</button>
+            </div>
+          </div>
+        <div class="col-4">
+          <label for="startLesson" class="form-label">Tiết số</label>
+          <input type="number" class="form-control" id="startLesson" name="start_lesson"
+          value = {{ lesson.start_number_lesson }} required >
+          <div class="invalid-feedback">
+            Phải chọn tiết số mấy
+          </div>
+
+        </div>
+        <div class="col-4">
+          <label for="countLesson" class="form-label">Số tiết</label>
+          
+          <div id="countLesson">
+          <select class="form-select"  name="count_lesson">
+            <option selected>{{ lesson.cout_number_lesson }}</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+
+        </div>
+  
+        <div class="col-12">
+          <label for="titleLesson" class="form-label mt-4">Tên giáo án</label>
+          <div class="input-group" >
+            <span class="input-group-text" id="basic-addon1"><i class="fas fa-book me-2"></i></span>
+            <input type="text" id="titleLesson" name='title_lesson' class="form-control" aria-label="Username" aria-describedby="basic-addon1" required value="{{ lesson.title }}" placeholder >
+            <div class="invalid-feedback">
+             Yêu cầu điền tên của giáo án
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <label for="fileLesson" class="form-label mt-4">File giáo án</label>
+          <input class="form-control" type="file" id="fileLesson" name="file_lesson"  required>
+          <div class="form-text">File giáo án tải lên nên là định dạng pptx.</div>
+          <div class="invalid-feedback">
+            Yêu cầu tải file lên
+          </div>
+
+        </div>
+
+        <div class="col-12">
+
+          <label for="descriptionLesson" class="form-label mt-4">Tóm tắt nội dung bài giảng</label>
+          <textarea class="form-control" id="descriptionLesson" rows="3" name="description_lesson">{{ lesson.description }}</textarea>
+          <div class="form-text">Giáo án nên có phần tóm tắt để người quản lý tiện theo dõi</div>
+
+
+          <hr class="my-4">
+
+        </div>
+        <div class="col-12 d-flex justify-content-center">
+  <button type="submit" class="btn btn-lg btn-warning mb-4 w-50">Cập nhật giáo án</button>
+
+        </div>
+</div>
+      </form>
+
+      <script>
+(function () {
+  'use strict'
+  var forms = document.querySelectorAll('.needs-validation')
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+      </script>
+  </div>
+
+<div class="row justify-content-center">
+  <div class="col-10">
+    {% include 'footer_withsidebar.html' %}
+  </div>
+</div>
+</div>
+  {% endwith %}
+{% endblock %}

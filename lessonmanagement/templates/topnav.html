@@ -16,13 +16,14 @@
               <li class="nav-item">
                 <a class="nav-link " href="#">Lịch báo giảng</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link " href="#">Tin</a>
+              </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Dropdown
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-   
-                    
                   <li><a class="dropdown-item" href="#">Action</a></li>
                   <li><a class="dropdown-item" href="#">Another action</a></li>
                   <li><hr class="dropdown-divider"></li>
@@ -33,7 +34,6 @@
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
               </li>
             </ul>
-
             <ul class="navbar-nav  mb-2 mb-lg-0">
               {% if request.user.is_staff %}
               <li class="nav-item">
@@ -48,10 +48,8 @@
               <li class="nav-item">
                 <a class="nav-link" href="#"><i class="fas fa-plus"></i></a>
               </li>
-
               <li class="nav-item">
                 <div class="btn-group">
-
                   {% if request.path == '/profile/' %}
                   <a href="{% url 'profile' %}" class="nav-link btn btn-light text-dark btn-sm">
                     <img src="
@@ -75,18 +73,12 @@
                     {% static 'imgs/no-avatar.png' %}
                     {% endif %}
                     " class="rounded-circle" alt="" height="25px">
-                  
-  
                     {{ request.user.teacher.full_name }}
-  
                   </a>
                   <button type="button" class="btn  btn-sm btn-dark dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="visually-hidden">Toggle Dropdown</span>
                   </button>
                   {% endif %}
-
-
-
                   <ul class="dropdown-menu dropdown-menu-end">
                     <li class="dropdown-item disabled text-muted">{{ request.user }} / {{request.user.teacher.full_name}}</li>
                     <li><a class="dropdown-item" href="{% url 'profile' %}" ><i class="far fa-user me-2"></i>Trang cá nhân</a></li>
@@ -98,15 +90,8 @@
                     <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
                   </ul>
                 </div>
-  
-
               </li>
             </ul>
-
-            
           </div>
-
-    
-
         </div>
       </nav>
