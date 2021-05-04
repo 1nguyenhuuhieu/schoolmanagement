@@ -110,15 +110,17 @@ def lesson_classyear(request, subject, level, title):
 def emptylesson(request):
     return render(request, 'no_lesson.html', {})
 
+@login_required
 def lesson(request, id):
     try:
         lesson = Lesson.objects.filter(teacher=request.user.teacher.id).get(id = id)
+        return render(request, 'lesson/lesson.html', {'lesson': lesson})
+
 
     except Lesson.DoesNotExist:
         raise Http404("Lesson does not exist")
     
-    return render(request, 'lesson.html', {'lesson': lesson})
-
+    
 def addlesson(request):
 
     try:
@@ -166,28 +168,26 @@ def add_lesson_subject_level(request, subject, level):
          return redirect('addlesson')
 
     if request.method == 'POST' and request.FILES['file_lesson']:
+        title = request.POST['title_lesson']
         subject = request.POST['subject']
-        try:
-            subject_save = SubjectClassyear.objects.filter(teacher=teacher).filter(subject__subject_slug = subject).order_by('subject__title').values('subject__title').distinct()
-            print(subject_save)
-        except:
-            raise Http404('fuck wrong')
+        subject_save = Subject.objects.get(subject_slug = subject)
         level_save = request.POST['level']
         start_lesson = request.POST['start_lesson']
         count_lesson = request.POST['count_lesson']
-        title = request.POST['title_lesson']
-        lesson = request.FILES['file_lesson']
-        upload_time = now
         description_lesson = request.POST['description_lesson']
 
-
+        lesson = request.FILES['file_lesson']
         teacher_location = 'lessons/' + str(request.user.username)
-
         fs = FileSystemStorage(location=teacher_location)
-        # lesson_file =  fs.save(lesson.name, lesson)
+        lesson_file =  fs.save(lesson.name, lesson)
+        lesson_path =  teacher_location + '/' + fs.get_valid_name(lesson_file)
+
+        new_lesson = Lesson(title=title, upload_time = now, level = level_save, description = description_lesson, teacher = request.user.teacher, subject = subject_save, start_number_lesson = start_lesson, cout_number_lesson = count_lesson, lesson_path = lesson_path  )
+        new_lesson.save()
 
 
-        print(level_save)
+
+        
 
  
     return render(request, 'lesson/add_lesson_subject.html', context)

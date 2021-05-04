@@ -1,0 +1,35 @@
+{% extends 'base_withsidebar.html' %}
+{% load humanize %}
+{% block content %}
+{% include 'breadcrumb/breadcrumb_lesson.html' %}
+
+<h5><i class="fas fa-book text-muted me-2"></i> {{ lesson.title }} <small class="text-muted">{{ lesson.subject.title }} {{ lesson.level }}  / Tiết {{ lesson.start_number_lesson }} - {{ lesson.start_number_lesson|add:lesson.cout_number_lesson }}</small> </h5>
+<hr>
+
+<div class="d-flex align-items-center">
+    <img src="
+    {% if request.user.teacher.avatar %}
+    {{ request.user.teacher.avatar.url }}
+    {% else %}
+    {% endif %}
+    " alt="" width="40px" class="rounded-circle me-2">
+
+    <div>
+        <h6 class="m-0">{{ request.user.teacher.full_name }}</h6>
+        <p class="text-muted m-0">{{ lesson.upload_time|naturaltime }} / {{ lesson.upload_time|date:"SHORT_DATE_FORMAT"}}</p>
+
+    </div>
+</div>
+
+<hr>
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

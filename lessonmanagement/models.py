@@ -288,7 +288,8 @@ class Teacher(models.Model):
 #Giáo án
 class Lesson(models.Model):
     title = models.CharField(max_length=200)
-    upload_time = models.DateTimeField(auto_now_add=True ,blank=True, null=True)
+    lesson_path = models.FileField(blank=True, null=True)
+    upload_time = models.DateTimeField(blank=True, null=True)
     LEVEL_CHOICES = [
         (6, 6),
         (7, 7),
@@ -298,7 +299,6 @@ class Lesson(models.Model):
     level = models.IntegerField(choices=LEVEL_CHOICES)
     description = models.CharField(max_length=200, null=True, blank=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     start_number_lesson = models.IntegerField(help_text="Bài giảng này ở tiết số mấy")
     cout_number_lesson = models.IntegerField(help_text="Bài giảng này trong bao nhiêu tiết")
