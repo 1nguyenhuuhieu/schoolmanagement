@@ -99,7 +99,8 @@ def lessons_subject_level(request, subject, level):
     #sử dụng cho đường dẫn tới các lớp cụ thể
     lessons_id = lessons.values('id')
     
-    classyear_list = LessonClassyear.objects.filter(lesson__id__in = lessons_id )
+    classyear_list = SubjectClassyear.objects.filter(teacher=request.user.teacher.id).filter(subject__subject_slug = subject).filter(classyear__startyear = level_to_startyear(level) )
+
     print(classyear_list)
 
     context = {
