@@ -5,16 +5,7 @@
           {% load lessonmanagement_extras %}
           {% load humanize %}
           {% with teacher=request.user.teacher %}
-          <h1 class="mt-4"> Lịch báo giảng tuần này: {% now "W" %} </h1>
-          <hr>
-
-          {% if schedule %}
-         {% for i in schedule %}
-         {{ i.teach_date_schedule|date:"d" }} ++
-         <br>
-         {% endfor %}
-          {% endif %}
-
+          <h1 class="mt-4"> Lịch báo giảng tuần này: Tuần {% now "W" %} </h1>
           <hr>
 
           {% include 'schedule/table_schedule_all.html' %}

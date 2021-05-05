@@ -376,6 +376,9 @@ class LessonClassyear(models.Model):
     #     self.week = self.teach_date_schedule.isocalendar()[1]
     #     super().save(*args, **kwargs)
 
+    def dayofweek(self):
+        return self.teach_date_schedule.day
+
     
     def __str__(self):
         return '%s %s %s' % (self.lesson, self.classyear, self.is_teach)

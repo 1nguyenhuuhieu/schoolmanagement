@@ -1,5 +1,7 @@
+
+
 <h4 class="mb-3">Buổi sáng</h4>
-<table class="table table-bordered bg-white">
+<table class="table table-bordered bg-white shadow-sm">
     <thead>
       <tr>
         <th scope="col">Tiết</th>
@@ -15,12 +17,21 @@
       <tr>
        
         <th scope="row">1</th>
-        <td> <small> <span class="badge bg-primary">Tiết 32</span> <span class="badge bg-danger">Toán học 6A</span><a href="#" class="text-decoration-none link-dark "> Hai giả thiết nguyên nhân dương tính nCoV sau 14 ngày cách ly</a></small></td>
-        <td> <small> <span class="badge bg-primary">Tiết 32</span> <span class="badge bg-danger">Toán học 6A</span><a href="#" class="text-decoration-none link-dark "> Hai giả thiết nguyên nhân dương tính nCoV sau 14 ngày cách ly</a></small></td>
-        <td> <small> <span class="badge bg-primary">Tiết 32</span> <span class="badge bg-danger">Toán học 6A</span><a href="#" class="text-decoration-none link-dark "> Hai giả thiết nguyên nhân dương tính nCoV sau 14 ngày cách ly</a></small></td>
-        <td> <small> <span class="badge bg-primary">Tiết 32</span> <span class="badge bg-danger">Toán học 6A</span><a href="#" class="text-decoration-none link-dark "> Hai giả thiết nguyên nhân dương tính nCoV sau 14 ngày cách ly</a></small></td>
-        <td> <small> <span class="badge bg-primary">Tiết 32</span> <span class="badge bg-danger">Toán học 6A</span><a href="#" class="text-decoration-none link-dark "> Hai giả thiết nguyên nhân dương tính nCoV sau 14 ngày cách ly</a></small></td>
-        <td> <small> <span class="badge bg-primary">Tiết 32</span> <span class="badge bg-danger">Toán học 6A</span><a href="#" class="text-decoration-none link-dark "> Hai giả thiết nguyên nhân dương tính nCoV sau 14 ngày cách ly</a></small></td>
+
+        {% for i in weekday_list %}
+                    <td> 
+                    {% for j in schedule %}
+                      {% if i == j.dayofweek %}
+                      <small> <span class="badge bg-primary">Tiết 32</span> <span class="badge bg-danger">Toán học 6A</span><a href="#" class="text-decoration-none link-dark "> Hai giả thiết nguyên nhân dương tính nCoV sau 14 ngày cách ly</a></small>
+               
+                            {% endif %}
+                                
+                    {% endfor %}
+                    </td>
+
+
+        {% endfor %}
+
 
       </tr>
       <tr>

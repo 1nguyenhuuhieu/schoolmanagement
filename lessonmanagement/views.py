@@ -278,7 +278,9 @@ def schedule(request):
     now_week = now.isocalendar()[1]
     schedule = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = 2020, week=now_week)
 
-    context = {'schedule': schedule}
+    weekday_list = [3,4,5,6,7,8]
+
+    context = {'schedule': schedule, 'weekday_list': weekday_list}
     return render(request, 'schedule/schedule.html', context)
 # thêm giáo án vào lịch báo giảng
 def add_lesson_schedule(request, lesson_id):
@@ -308,7 +310,6 @@ def add_lesson_schedule(request, lesson_id):
             q = LessonClassyear.objects.get(pk = new_schedule.id)
             week = q.teach_date_schedule.isocalendar()[1]
 
-            print(week)
 
             new_schedule.week = week
             new_schedule.save()
