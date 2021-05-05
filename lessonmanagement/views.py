@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import *
 from django.contrib.auth.models import User
-from datetime import datetime
+import datetime
 from django.utils.text import slugify
 from django.http import Http404
 from django.shortcuts import redirect
@@ -18,14 +18,14 @@ from django.core.files.storage import FileSystemStorage
 
 #đổi từ class level sang năm vào trường của một lớp
 def level_to_startyear(level):
-    now = datetime.now()
+    now = datetime.datetime.now()
     if now.month < 9:
         return (now.year + 5 - level)
     else:
         return (now.year + 6 - level)
 
 def class_level_def(year):
-    now = datetime.now()
+    now = datetime.datetime.now()
     i = 0
     if (now.month < 9):
         i =  (now.year - year) + 5
@@ -35,6 +35,18 @@ def class_level_def(year):
         return i
     else:
         return year
+
+
+# năm bắt đầu của niên khóa hiện tại
+def current_schoolyear():
+    now = datetime.datetime.now()
+    year = now.year
+    month = now.month
+
+    if month > 9:
+        return year
+    else:
+        return year -1
 
 
 @login_required
@@ -86,13 +98,13 @@ def alllessons(request):
 
 @login_required
 def lessons_subject_level(request, subject, level):
-    now = datetime.now()
+    now = datetime.datetime.now()
     year = int(now.year)
 
     if now.month > 9:
-        start_date = datetime(year, 9, 1)
+        start_date = datetime.datetime(year, 9, 1)
     else:
-        start_date = datetime(year -1, 9, 1)
+        start_date = datetime.datetime(year -1, 9, 1)
 
 
     # giáo án phù hợp với môn học và lớp học, giáo viên, niên khóa hiện tại
@@ -147,7 +159,7 @@ def addlesson(request):
 
 @login_required
 def add_lesson_subject_level(request, subject, level):
-    now = datetime.now()
+    now = datetime.datetime.now()
     teacher = request.user.teacher.id
     q2 = Lesson.objects.filter(teacher=teacher).filter(subject__subject_slug = subject).filter(level = level)
     try:
@@ -194,7 +206,10 @@ def add_lesson_subject_level(request, subject, level):
         lesson_file =  fs.save(lesson.name, lesson)
         lesson_path =  teacher_location + '/' + fs.get_valid_name(lesson_file)
 
-        new_lesson = Lesson(title=title, upload_time = now, level = level_save, description = description_lesson, teacher = request.user.teacher, subject = subject_save, start_number_lesson = start_lesson, cout_number_lesson = count_lesson, lesson_path = lesson_path  )
+        year = Schoolyear.objects.get(start_date__year = current_schoolyear())
+
+
+        new_lesson = Lesson(title=title, upload_time = now, level = level_save, description = description_lesson, teacher = request.user.teacher, subject = subject_save, start_number_lesson = start_lesson, cout_number_lesson = count_lesson, lesson_path = lesson_path, schoolyear=year  )
         new_lesson.save()
 
         return redirect('lesson', id=new_lesson.id, permanent=True )
@@ -209,7 +224,7 @@ def add_lesson_subject_level(request, subject, level):
 
 @login_required
 def edit_lesson(request, lesson_id):
-    now = datetime.now()
+    now = datetime.datetime.now()
     
     try:
         lesson = Lesson.objects.filter(teacher=request.user.teacher.id).get(id=lesson_id)
@@ -257,12 +272,15 @@ def lessons_toyear(request, year):
 
 # lịch báo giảng
 
-# thêm giáo án vào lịch báo giảng
 def schedule(request):
-    schedule = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = 2020)
-    print(schedule.dates('teach_date_schedule', 'week'))
+
+    now = datetime.datetime.now()
+    now_week = now.isocalendar()[1]
+    schedule = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = 2020, week=now_week)
+
     context = {'schedule': schedule}
     return render(request, 'schedule/schedule.html', context)
+# thêm giáo án vào lịch báo giảng
 def add_lesson_schedule(request, lesson_id):
     try:
         lesson = Lesson.objects.filter(teacher=request.user.teacher.id).get(id = lesson_id)
@@ -280,9 +298,24 @@ def add_lesson_schedule(request, lesson_id):
             session_schedule = request.POST['session']
             order_schedule = request.POST['order']
 
+
+
+
             new_schedule = LessonClassyear(is_teach=False, lesson=lesson, classyear=classyear, session=session_schedule, order_schedule=order_schedule, teach_date_schedule=schedule_date )
 
             new_schedule.save()
+
+            q = LessonClassyear.objects.get(pk = new_schedule.id)
+            week = q.teach_date_schedule.isocalendar()[1]
+
+            print(week)
+
+            new_schedule.week = week
+            new_schedule.save()
+
+            
+            
+
 
 
             if 'quit' in request.POST:

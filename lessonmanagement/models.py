@@ -353,6 +353,7 @@ class LessonClassyear(models.Model):
     classyear = models.ForeignKey(Classyear, on_delete = models.CASCADE)
     
     teach_date_schedule = models.DateField(blank=True, null=True)
+    week = models.IntegerField(blank=True, null=True)
     SESSION_CHOICES = [
         ('morning', 'Buổi sáng'),
         ('afternoon', 'Buổi chiều'),
@@ -370,6 +371,11 @@ class LessonClassyear(models.Model):
     class Meta:
         verbose_name = 'Lịch báo giảng'
         verbose_name_plural = 'Lịch báo giảng'
+        
+    # def save(self, *args, **kwargs):
+    #     self.week = self.teach_date_schedule.isocalendar()[1]
+    #     super().save(*args, **kwargs)
+
     
     def __str__(self):
         return '%s %s %s' % (self.lesson, self.classyear, self.is_teach)
