@@ -1,16 +1,24 @@
 {% load lessonmanagement_extras %}
 
-<h4 class="mb-3">Lịch báo giảng Tuần {% now "W" %} / Buổi sáng</h4>
+
+
 <table class="table table-bordered bg-white shadow-sm" id="myTable_morning">
     <thead>
       <tr>
         <th scope="col">Tiết</th>
-        <th scope="col">Thứ 2 <small class="text-dark fw-normal"> {{ monday.0|date:'SHORT_DATE_FORMAT' }}</small></th>
-        <th scope="col">Thứ 3 <small class="text-dark fw-normal"> {{ monday.0|plus_days:'1' }}</small></th>
-        <th scope="col">Thứ 4</th>
-        <th scope="col">Thứ 5</th>
-        <th scope="col">Thứ 6</th>
-        <th scope="col">Thứ 7</th>
+        {% for i in '234567'|make_list %}
+        <th scope="col">Thứ {{ i }} <small class="text-dark fw-normal">/
+          {% with j=i|add:-2%}
+          {% with newday=monday.0|plus_days:j %}
+
+          {{ newday|date:'SHORT_DATE_FORMAT' }}
+
+          {% endwith %}
+          {% endwith %}
+        </small></th>
+
+        {% endfor %}
+
       </tr>
     </thead>
     <tbody>
