@@ -1,12 +1,12 @@
+{% load lessonmanagement_extras %}
 
-
-<h4 class="mb-3">Buổi sáng</h4>
-<table class="table table-bordered bg-white shadow-sm">
+<h4 class="mb-3">Lịch báo giảng Tuần {% now "W" %} / Buổi sáng</h4>
+<table class="table table-bordered bg-white shadow-sm" id="myTable_morning">
     <thead>
       <tr>
         <th scope="col">Tiết</th>
-        <th scope="col">Thứ 2</th>
-        <th scope="col">Thứ 3</th>
+        <th scope="col">Thứ 2 <small class="text-dark fw-normal"> {{ monday.0|date:'SHORT_DATE_FORMAT' }}</small></th>
+        <th scope="col">Thứ 3 <small class="text-dark fw-normal"> {{ monday.0|plus_days:'1' }}</small></th>
         <th scope="col">Thứ 4</th>
         <th scope="col">Thứ 5</th>
         <th scope="col">Thứ 6</th>
@@ -17,141 +17,81 @@
       <tr>
        
         <th scope="row">1</th>
-
-        {% for i in weekday_list %}
-                    <td> 
-                    {% for j in schedule %}
-                      {% if i == j.dayofweek %}
-                      <small> <span class="badge bg-primary">Tiết 32</span> <span class="badge bg-danger">Toán học 6A</span><a href="#" class="text-decoration-none link-dark "> Hai giả thiết nguyên nhân dương tính nCoV sau 14 ngày cách ly</a></small>
-               
-                            {% endif %}
-                                
-                    {% endfor %}
-                    </td>
-
-
-        {% endfor %}
-
-
+       
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
       <tr>
        
         <th scope="row">2</th>
        
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
       <tr>
        
         <th scope="row">3</th>
        
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
       <tr>
        
         <th scope="row">4</th>
        
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
       <tr>
        
         <th scope="row">5</th>
        
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
     </tbody>
   </table>
 
+{% for i in schedule_morning %}
 
 
+  <script>
 
+    window.onload = changeContent()
+    function changeContent()
+{
 
-  <h4 class="mb-3 mt-4">Buổi chiều</h4>
-<table class="table table-bordered bg-white">
-    <thead>
-      <tr>
-        <th scope="col">Tiết</th>
-        <th scope="col">Thứ 2</th>
-        <th scope="col">Thứ 3</th>
-        <th scope="col">Thứ 4</th>
-        <th scope="col">Thứ 5</th>
-        <th scope="col">Thứ 6</th>
-        <th scope="col">Thứ 7</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-       
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-      </tr>
-      <tr>
-       
-        <th scope="row">2</th>
-       
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-      </tr>
-      <tr>
-       
-        <th scope="row">3</th>
-       
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-      </tr>
-      <tr>
-       
-        <th scope="row">4</th>
-       
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-      </tr>
-      <tr>
-       
-        <th scope="row">5</th>
-       
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-      </tr>
-    </tbody>
-  </table>
+// tiết mấy
+rn = {{ i.order_schedule }};
+
+// Thứ mấy
+cn = {{ i.dayofweek|add:"-2" }};
+// Nội dung
+content = " <small> <a href='#'><span class='badge bg-primary me-2'>{{ i.lesson.subject.title }} {{ i.lesson.level }} {{i.classyear.title}} </span></a><span class='badge bg-success me-2'>Tiết {{ i.lesson.start_number_lesson }} - {{ i.lesson.start_number_lesson|add:i.lesson.cout_number_lesson}} </span><a href='#' class='text-decoration-none link-dark'>{{ i.lesson.title }}</a>   </small>";  
+var x=document.getElementById('myTable_morning').rows[parseInt(rn,10)].cells;
+x[parseInt(cn,10)].innerHTML=content;
+}
+  </script>
+
+  {% endfor %}
+

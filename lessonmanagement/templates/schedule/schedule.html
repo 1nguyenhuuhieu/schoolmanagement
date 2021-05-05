@@ -5,7 +5,11 @@
           {% load lessonmanagement_extras %}
           {% load humanize %}
           {% with teacher=request.user.teacher %}
-          <h1 class="mt-4"> Lịch báo giảng tuần này: Tuần {% now "W" %} </h1>
+          <h3 class="mt-4 mb-4"><i class="far fa-calendar-check me-2"></i>Lịch báo giảng của {{ request.user.teacher.full_name }}</h3>
+
+          <button class="btn btn-outline-primary me-2"><i class="fas fa-step-backward me-2"></i>Tuần trước</button>
+          <button class="btn btn-primary me-2">Tuần {% now "W" %} <small>(tuần này)</small> </button>
+          <button class="btn btn-outline-primary">Tuần sau<i class="fas fa-step-forward ms-2"></i></button>
           <hr>
 
           {% include 'schedule/table_schedule_all.html' %}

@@ -1,10 +1,10 @@
-from datetime import datetime
+import datetime
 from django import template
 register = template.Library()
 
 @register.filter
 def classlevel(value):
-    now = datetime.now()
+    now = datetime.datetime.now()
     i = 0
     if (now.month < 9):
         i =  (now.year - value) + 5
@@ -17,8 +17,13 @@ def classlevel(value):
 
 @register.filter
 def schoolyear(value):
-    now = datetime.now()
+    now = datetime.datetime.now()
     if (now.month < 9):
         return now.year -1
     else:
         return now.year
+
+
+@register.filter
+def plus_days(value, days):
+    return value + datetime.timedelta(days=days)

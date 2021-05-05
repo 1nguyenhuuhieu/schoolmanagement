@@ -369,6 +369,7 @@ class LessonClassyear(models.Model):
     order_schedule = models.IntegerField(choices=ORDER_CHOICES, null=True, blank=True)
 
     class Meta:
+        unique_together = ('teach_date_schedule', 'session', 'order_schedule')
         verbose_name = 'Lịch báo giảng'
         verbose_name_plural = 'Lịch báo giảng'
         
