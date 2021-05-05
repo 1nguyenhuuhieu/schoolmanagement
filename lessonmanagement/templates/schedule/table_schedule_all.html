@@ -95,7 +95,7 @@ rn = {{ i.order_schedule }};
 // Thứ mấy
 cn = {{ i.dayofweek|add:"-2" }};
 // Nội dung
-content = " <small> <a href='#'><span class='badge bg-primary me-2'>{{ i.lesson.subject.title }} {{ i.lesson.level }} {{i.classyear.title}} </span></a><span class='badge bg-success me-2'>Tiết {{ i.lesson.start_number_lesson }} - {{ i.lesson.start_number_lesson|add:i.lesson.cout_number_lesson}} </span><a href='#' class='text-decoration-none link-dark'><br>{{ i.lesson.title }}</a>   </small>";  
+content = " <small> <a href='#'><span class='badge bg-primary me-2'>{{ i.lesson.subject.title }} {{ i.lesson.level }} {{i.classyear.title}} </span></a><span class='badge bg-success me-2'>Tiết {{ i.lesson.start_number_lesson }} - {{ i.lesson.start_number_lesson|add:i.lesson.cout_number_lesson}} </span><br><a href='{% url 'lesson' i.lesson.id %}' class='text-decoration-none link-dark'>{{ i.lesson.title }}</a>   </small>";  
 var x=document.getElementById('myTable_morning').rows[parseInt(rn,10)].cells;
 x[parseInt(cn,10)].innerHTML=content;
 }
