@@ -18,7 +18,7 @@
                     <a href="{{ i.classyear__title|slugify }}" class="btn btn-outline-success">{{ lesson_list.0.level }}{{ i.classyear.title }}</a>
                     {% endfor %}
                   </div>
-            <button class="btn btn-success btn-sm"><i class="fas fa-plus me-2"></i>Thêm giáo án</button>
+            <a href="{% url 'add_lesson_subject_level' lesson_list.0.subject.title|slugify   lesson_list.0.level %}" class="btn btn-success btn-sm"><i class="fas fa-plus me-2"></i>Thêm giáo án</a>
 
 
             

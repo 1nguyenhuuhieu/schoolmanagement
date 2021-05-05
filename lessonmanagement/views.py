@@ -13,17 +13,19 @@ from django.contrib.auth.decorators import login_required
 
 from django.core.files.storage import FileSystemStorage
 
-now = datetime.now()
+
 
 
 #đổi từ class level sang năm vào trường của một lớp
 def level_to_startyear(level):
+    now = datetime.now()
     if now.month < 9:
         return (now.year + 5 - level)
     else:
         return (now.year + 6 - level)
 
 def class_level_def(year):
+    now = datetime.now()
     i = 0
     if (now.month < 9):
         i =  (now.year - year) + 5
@@ -84,6 +86,7 @@ def alllessons(request):
 
 @login_required
 def lessons_subject_level(request, subject, level):
+    now = datetime.now()
     year = int(now.year)
 
     if now.month > 9:
@@ -144,6 +147,7 @@ def addlesson(request):
 
 @login_required
 def add_lesson_subject_level(request, subject, level):
+    now = datetime.now()
     teacher = request.user.teacher.id
     q2 = Lesson.objects.filter(teacher=teacher).filter(subject__subject_slug = subject).filter(level = level)
     try:
@@ -193,6 +197,8 @@ def add_lesson_subject_level(request, subject, level):
         new_lesson = Lesson(title=title, upload_time = now, level = level_save, description = description_lesson, teacher = request.user.teacher, subject = subject_save, start_number_lesson = start_lesson, cout_number_lesson = count_lesson, lesson_path = lesson_path  )
         new_lesson.save()
 
+        return redirect('lesson', id=new_lesson.id, permanent=True )
+
 
 
         
@@ -203,6 +209,8 @@ def add_lesson_subject_level(request, subject, level):
 
 @login_required
 def edit_lesson(request, lesson_id):
+    now = datetime.now()
+    
     try:
         lesson = Lesson.objects.filter(teacher=request.user.teacher.id).get(id=lesson_id)
         context = {'lesson': lesson}
@@ -250,6 +258,11 @@ def lessons_toyear(request, year):
 # lịch báo giảng
 
 # thêm giáo án vào lịch báo giảng
+def schedule(request):
+    schedule = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = 2020)
+    print(schedule.dates('teach_date_schedule', 'week'))
+    context = {'schedule': schedule}
+    return render(request, 'schedule/schedule.html', context)
 def add_lesson_schedule(request, lesson_id):
     try:
         lesson = Lesson.objects.filter(teacher=request.user.teacher.id).get(id = lesson_id)

@@ -1,0 +1,22 @@
+
+          {% extends 'base.html' %}
+          {% load static %}
+          {% block content %}
+          {% load lessonmanagement_extras %}
+          {% load humanize %}
+          {% with teacher=request.user.teacher %}
+          <h1> test </h1>
+          <hr>
+
+          {% if schedule %}
+         {% for i in schedule %}
+         {{i}} ------ Tuần: {{ i.teach_date_schedule|date:"W" }}
+         <br>
+         {% endfor %}
+          {% endif %}
+
+          <hr>
+
+          {% include 'schedule/table_schedule_all.html' %}
+          {% endwith %}
+           {% endblock %}

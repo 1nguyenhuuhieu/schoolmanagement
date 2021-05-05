@@ -10,9 +10,12 @@ class ClassyearManagerInline(admin.TabularInline):
     model = ClassyearManager
     extra = 1
 
+class SchoolManagerInline(admin.TabularInline):
+    model = SchoolManager
+
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
-    pass
+    inlines = [SchoolManagerInline,]
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'group' )
@@ -67,4 +70,8 @@ class SchoolManagerAdmin(admin.ModelAdmin):
 
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Schoolyear)
+class SchoolyearAdmin(admin.ModelAdmin):
     pass

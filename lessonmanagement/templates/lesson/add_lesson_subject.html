@@ -84,7 +84,17 @@
 
         </div>
         <div class="col-12 d-flex justify-content-center">
-  <button type="submit" class="btn btn-lg btn-success mb-4 w-50">Thêm giáo án</button>
+
+          <button onclick="goBack()" class="btn btn-lg btn-outline-danger mb-4 me-2"><i class="fas fa-times me-2"></i>Huỷ</button>
+
+        <script>
+        function goBack() {
+          window.history.back();
+        }
+        </script>
+
+
+  <button type="submit" class="btn btn-lg btn-success mb-4 w-50"><i class="fas fa-plus me-2"></i>Thêm giáo án</button>
 
         </div>
 </div>

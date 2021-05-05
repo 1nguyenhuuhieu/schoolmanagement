@@ -304,6 +304,8 @@ class Lesson(models.Model):
     start_number_lesson = models.IntegerField(help_text="Bài giảng này ở tiết số mấy")
     cout_number_lesson = models.IntegerField(help_text="Bài giảng này trong bao nhiêu tiết")
 
+    schoolyear = models.ForeignKey("Schoolyear", on_delete=models.CASCADE, blank=True, null=True)
+
     classyear = models.ManyToManyField(Classyear, through="LessonClassyear")
     
     #Kiểm tra giáo án
@@ -323,6 +325,7 @@ class Lesson(models.Model):
         verbose_name = "Giáo Án"
         verbose_name_plural = "Giáo Án"
         ordering = ["-upload_time"]
+
 
     #niên khoá hiện tại
     def school_year(self):
@@ -376,6 +379,9 @@ class SubjectClassyear(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     classyear = models.ForeignKey(Classyear, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    schoolyear = models.ForeignKey("Schoolyear", on_delete=models.CASCADE, blank=True, null=True)
+
+    
 
     #update mỗi khi teacher chọn is_teach tại LessonClassyear
     current_lesson = models.IntegerField(blank=True, null=True)
@@ -411,3 +417,23 @@ class News(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Schoolyear(models.Model):
+    start_date = models.DateField(help_text="Ngày bắt đầu năm học",  unique_for_year='start_date' )
+    end_date = models.DateField(blank=True, null=True)
+
+    spring_start = models.DateTimeField(help_text="Giờ mùa hè. Buổi sáng bắt đầu từ ngày nào, mấy giờ", blank=True, null=True) 
+
+    winter_start = models.DateTimeField(help_text="Giờ mùa đông. Buổi sáng bắt đầu từ ngày nào, mấy giờ", blank=True, null=True) 
+
+    class Meta:
+        verbose_name = "Năm học"
+        verbose_name_plural = "Năm học"
+       
+
+    def __str__(self):
+        return '%s - %s' % (self.start_date.year, self.start_date.year + 1)
+
+
+
