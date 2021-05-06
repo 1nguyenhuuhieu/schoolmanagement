@@ -4,8 +4,10 @@
 {% with teacher=request.user.teacher %}
 <div class="row justify-content-center">
   <div class="col-lg-6">
+    {% include 'home/banner.html' %}
     {% include 'home/profile.html' %}
     {% include 'home/news.html' %}
+</div>
 </div>
 {% endwith %}
 {% endblock %}

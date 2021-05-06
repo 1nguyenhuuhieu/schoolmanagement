@@ -13,8 +13,8 @@
                     <div class="col-lg-4 ps-5">
                             <h4>Tuần {{ w }} {% now 'W' as current_week %} {% if w == current_week|add:0 %} <small class="text-muted">Tuần này</small>  {% endif %}</h4>
                         {% now "W" as now_week %}
-                        <a href="{% url 'schedule' w|add:-1 %}" class=" btn btn-secondary me-2 border "><i class="fas fa-step-backward me-2"></i>Tuần trước</a>
-                        <a href="{% url 'schedule' w|add:1 %}" class=" btn btn-secondary me-2 border ">Tuần sau<i class="fas fa-step-forward ms-2"></i></a>
+                        <a href="{% url 'schedule' w|add:-1 %}" class=" btn btn-primary me-2 border "><i class="fas fa-step-backward me-2"></i>Tuần trước</a>
+                        <a href="{% url 'schedule' w|add:1 %}" class=" btn btn-primary me-2 border ">Tuần sau<i class="fas fa-step-forward ms-2"></i></a>
                     </div>
                     <div class="col-lg-4">
                         <form method="POST">
@@ -25,7 +25,7 @@
                                     </label>
                                 <div class="col-9"><input type="date" class="form-control" name="search_date" id="search_date">
                                 </div>
-                                <div class="col"><button type="submit" name="search_date" class="btn btn-secondary">Tìm</button></div>
+                                <div class="col"><button type="submit" name="search_date" class="btn btn-primary">Tìm</button></div>
                             </div>
                         </form>
                     </div>
@@ -42,7 +42,7 @@
                             {% endfor %}
                         </datalist>
                             </div>
-                            <div class="col"><button type="submit" name="btnweek" class="btn btn-secondary">Tìm</button></div>
+                            <div class="col"><button type="submit" name="btnweek" class="btn btn-primary">Tìm</button></div>
                         </div>
                         </form>
                     </div>
