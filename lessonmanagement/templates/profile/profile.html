@@ -8,11 +8,33 @@
         <div class="d-flex flex-column  align-items-center">
         {% if teacher.avatar %}
         <img src="{{ teacher.avatar.url }}" alt="Ảnh đại diện của {{ request.user.username }}" class="img-fluid rounded-circle ">
-        <a href="#" class="btn btn-sm btn-outline-dark mt-3"><i class="far fa-edit me-1"></i>Thay đổi ảnh đại diện</a>
         {% else %}
         <h4 class="text-danger">Chưa có ảnh đại diện</h4>
-        <a href="#" class="btn btn-sm btn-danger mt-3"><i class="fas fa-upload me-1"></i>Tải lên ảnh đại diện</a>
         {% endif %}
+
+            
+            <a class="btn btn-sm btn-outline-dark mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#update_avatar" aria-expanded="false" aria-controls="collapseExample">
+                <i class="far fa-edit me-1"></i>Thay đổi ảnh đại diện
+            </a>
+          <div class="collapse mt-4" id="update_avatar">
+            <div class="card card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <label for="avatar" class="form-label">Tải lên ảnh mới</label>
+                    <input class="form-control" type="file" id="avatar" name="avatar">
+
+                    <a class="btn btn-outline-primary mt-4" type="button" data-bs-toggle="collapse" data-bs-target="#update_avatar" aria-expanded="false" aria-controls="collapseExample">Hủy
+                    </a>
+
+                    <button type="submit" class="btn btn-primary ms-2 mt-4" name="btnavatar">Cập nhập ảnh đại diện</button>
+
+
+                </form>
+            </div>
+          </div>
+
+
     </div>
     </div>
     <div class="col">
@@ -22,8 +44,44 @@
             Tài khoản đăng nhập: {{ request.user.username }}
             </span>
     
-                <a  class="btn btn-sm btn-outline-danger mt-lg-0 mt-3 ms-lg-3" href="{% url 'change_password'%}" ><i class="fas fa-key me-2"></i>Thay đổi mật khẩu
+                <a  class="btn btn-sm btn-outline-danger mt-lg-0 mt-3 ms-lg-3" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePwd" aria-expanded="false" aria-controls="collapseExample" ><i class="fas fa-key me-2"></i>Thay đổi mật khẩu
                 </a>
+
+                <div class="collapse mt-3 mb-3" id="collapsePwd">
+                  <div class="card card-body">
+
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="changepassword" class="form-label">Mật khẩu mới</label>
+                        <input type="password" class="form-control" id="changepassword" name="new_password">
+                      </div>
+
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="showpwd" onclick="showPwd()">
+                        <label class="form-check-label" for="showpwd">Hiển thị mật khẩu</label>
+                      </div>
+
+                    <a href="#" class="btn btn-outline-danger me-2 mt-4" data-bs-toggle="collapse" data-bs-target="#collapsePwd">Hủy</a>
+                      <button type="submit" class="btn btn-danger mt-4" name="btnchangepassword">Thay đổi mật khẩu</button>
+                    </form>
+
+                    <script>
+                        function showPwd() {
+  var x = document.getElementById("changepassword");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+                    </script>
+
+                  </div>
+                </div>
+
+
 
             <h5>Thông tin cá nhân</h5>
             <ul class="list-unstyled">
@@ -32,11 +90,135 @@
                 <li><i class="fas fa-birthday-cake fa-fw me-2 text-muted"></i> {{ teacher.birth_date|date:"SHORT_DATE_FORMAT" }}<li>
                 <li><i class="fas fa-mobile-alt fa-fw me-2 text-muted"></i> <a href="tel:{{ teacher.zalo_number }}" class="text-decoration-none"> {{ teacher.zalo_number }}</a><li>
                 </ul>
-                <a href="#" class="btn btn-sm btn-success mt-2"><i class="far fa-edit me-1"></i>Thay đổi thông tin cá nhân</a>
+
+
+                <button class="btn btn-sm btn-success mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#changeprofile" aria-expanded="false" aria-controls="collapseExample">
+                    <i class="far fa-edit me-1"></i>Thay đổi thông tin cá nhân
+                  </button>
+
+                <div class="collapse mt-3" id="changeprofile">
+                  <div class="card card-body">
+                      <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label for="fname" class="form-label">Họ</label>
+                                    <input type="text" class="form-control" id="fname" name="fname" value="{{ teacher.firstname }}">
+                                  </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="mb-3">
+                                    <label for="lname" class="form-label">Tên</label>
+                                    <input type="text" class="form-control" id="lname" name="lname" value="{{ teacher.lastname }}">
+                                  </div>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label for="sex" class="form-label">Giới tính</label>
+                                <select class="form-select" aria-label="Default select example" id="sex" name="sex">
+                                    <option selected>{{ teacher.get_sex_display }}</option>
+                                    <option value="male">Nam</option>
+                                    <option value="female">Nữ</option>
+                                  </select>
+                            </div>
+
+                            <div class="col-lg-3">
+
+                          <div class="mb-3">
+                            <label for="birthdate" class="form-label">Ngày sinh</label>
+                            <input type="date" class="form-control" name="birthdate" value="{{ teacher.birth_date|date:'Y-m-d' }}">
+
+                           
+
+                        </div>
+
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label for="mobile" class="form-label">Số điện thoại</label>
+                                    <input type="text" class="form-control" value="{{ teacher.zalo_number }}" name="number">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <a class="btn btn-outline-success mt-4 me-2" type="button" data-bs-toggle="collapse" data-bs-target="#changeprofile" aria-expanded="false" aria-controls="collapseExample">
+                           Hủy
+                        </a>
+
+
+                <button class="btn btn-success mt-4" type="submit" name='changeprofile' >
+                    <i class="far fa-edit me-1"></i>Thay đổi thông tin cá nhân
+                  </button>
+
+        
+
+                      </form>
+                  </div>
+                </div>
+
+
         <hr>
         <h5 >Thông tin công việc</h5>
         <ul class="list-unstyled">
-            <li><i class="fas fa-graduation-cap fa-fw me-2 text-muted"></i> {{ teacher.get_education_level_display }} {{ teacher.main_subject}} <small>  <a href="#" class="btn btn-primary btn-sm ms-2">Thay đổi</a></small> </li>
+            <li><i class="fas fa-graduation-cap fa-fw me-2 text-muted"></i> {{ teacher.get_education_level_display }} {{ teacher.main_subject}} 
+                
+                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#change_education" aria-expanded="false" aria-controls="subject">
+                    Thay đổi
+                  </button>
+                <div class="collapse my-3" id="change_education">
+                  <div class="card card-body">
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-lg-3">
+
+                                <label for="education" class="form-label">Trình độ</label>
+                                <select name="education" id="education" class="form-select">
+                                    <option selected>{{ teacher.get_education_level_display}}</option>
+                                    <option value="inter">Trung Cấp</option>
+                                    <option value="college">Cao Đẳng</option>
+                                    <option value="university">Đại Học</option>
+                                    <option value="master">Thạc Sĩ</option>
+                                </select>
+                                
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="subject" class="form-label">Chuyên môn</label>
+                                <select name="subject" id="subject" class="form-select">
+                                    <option selected>{{ teacher.main_subject.title }}</option>
+                                    {% for i in list_subject %}
+                                    <option value="{{ i.id }}">{{ i.title }}</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <a class="btn btn-outline-success mt-4 me-2" type="button" data-bs-toggle="collapse" data-bs-target="#change_education" aria-expanded="false" aria-controls="collapseExample">
+                            Hủy
+                         </a>
+ 
+ 
+                 <button class="btn btn-success mt-4" type="submit" name='btnchangeeducation' >
+                     Thay đổi
+                   </button>
+
+                    </form>
+                  </div>
+                </div>
+            
+            
+            </li>
                 {% if teacher.managers.school %}
                 <li>
                   <i class="fas fa-school fa-fw me-2 text-muted"></i> {{ teacher.managers.school.get_role_display }} <a href="#" class="text-decoration-none"> {{ teacher.managers.school.school.title }}</a>.

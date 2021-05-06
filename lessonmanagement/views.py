@@ -53,29 +53,98 @@ def current_schoolyear():
 
 @login_required
 def profile(request):
+
+    list_subject = Subject.objects.values('title', 'id')
+
+    if request.method == 'POST' and 'btnchangepassword' in request.POST:
+
+        new_password = request.POST['new_password']
+
+
+        current_user = User.objects.get(pk = request.user.id)
+        current_user.set_password(new_password)
+        current_user.save()
+        return redirect('profile', permanent=True)
+
+    if request.method == 'POST' and 'changeprofile' in request.POST:
+        
+        current_user = Teacher.objects.get(user = request.user)
+
+        fname = request.POST['fname']
+        lname = request.POST['lname']
+        birthdate = request.POST['birthdate']
+        sex = request.POST['sex']
+        number = request.POST['number']
+
+        current_user.firstname = fname
+        current_user.lastname = lname
+        current_user.birth_date = birthdate
+        current_user.zalo_number = number
+        current_user.sex = sex
+
+
+
+        current_user.save()
+
+
+
+
+        return redirect('profile', permanent=True)
+
+    if request.method == 'POST' and 'btnchangeeducation' in request.POST:
+
+        current_user = Teacher.objects.get(user = request.user)
+
+        main_subject = request.POST['subject']
+        education_level = request.POST['education']
+
+        subject = Subject.objects.get(pk = main_subject)
+        current_user.main_subject = subject
+        current_user.education_level = education_level
+        current_user.save()
+
+        return redirect('profile', permanent=True)
+    
+    if request.method == 'POST' and 'btnavatar' in request.POST and request.FILES['avatar']:
+
+        current_user = Teacher.objects.get(user = request.user)
+
+
+        lesson = request.FILES['avatar']
+
+        
+        teacher_location = 'media/avatar/' + str(request.user.username)
+       
+       
+        lesson_location =  teacher_location + '/'
+        lesson_location_withoutmedia = 'avatar/' + str(request.user.username) + '/'
+
+        fs = FileSystemStorage(location=lesson_location)
+
+        lesson_file =  fs.save(lesson.name.replace(" ", "_"), lesson)
+        lesson_path =  lesson_location_withoutmedia + fs.get_valid_name(lesson_file).replace(" ", "_")
+        current_user.avatar = lesson_path
+
+        current_user.save()
+        return redirect('profile', permanent=True)
+
+
+
+
+
+
+
+
+        
+
+
+
     
 
         
-    context = {}
+    context = {'list_subject': list_subject}
     return render(request, 'profile/profile.html', context)
 
-
-@login_required
-def change_password(request):
-    if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'Your password was successfully updated!')
-            return redirect('change_password')
-        else:
-            messages.error(request, 'Please correct the error below.')
-    else:
-        form = PasswordChangeForm(request.user)
-    return render(request, 'accounts/change_password.html', {
-        'form': form
-    })
 
 
 

@@ -22,7 +22,6 @@ urlpatterns = [
     path('schedule/add/<int:lesson_id>/', views.add_lesson_schedule, name = 'add_lesson_schedule'),
 
     path('teacher/<int:teacher_id>/', views.teacher, name='teacher'),
-    path(r'^password/$', views.change_password, name='change_password'),
 
 
     
