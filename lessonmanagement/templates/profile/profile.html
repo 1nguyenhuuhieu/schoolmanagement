@@ -7,7 +7,7 @@
     <div class="col-lg-4">
         <div class="d-flex flex-column  align-items-center">
         {% if teacher.avatar %}
-        <img src="{{ teacher.avatar.url }}" alt="Ảnh đại diện của {{ request.user.username }}" class="img-fluid rounded-circle ">
+        <img src="{{ teacher.avatar.url }}" alt="Ảnh đại diện của {{ request.user.username }}" class=" rounded-circle " height="300px">
         {% else %}
         <h4 class="text-danger">Chưa có ảnh đại diện</h4>
         {% endif %}

@@ -17,6 +17,8 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
 
+import os
+
 
 #đổi từ class level sang năm vào trường của một lớp
 def level_to_startyear(level):
@@ -53,6 +55,8 @@ def current_schoolyear():
 
 @login_required
 def profile(request):
+
+
 
     list_subject = Subject.objects.values('title', 'id')
 
