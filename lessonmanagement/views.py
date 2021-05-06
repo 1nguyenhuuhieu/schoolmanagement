@@ -377,29 +377,41 @@ def lessons_toyear(request, year):
 
 # lịch báo giảng
 
-def schedule(request):
+def schedule(request, w):
 
     now = datetime.datetime.now()
+    current_year = current_schoolyear()
     # lấy giáo án năm học hiện tại tương ứng với giáo viên
-    teacher_lesson = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = 2020)
+    teacher_lesson = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = current_year)
 
-    # lịch báo giảng của tuần này
+    # lịch báo giảng theo tuần w
     now_week = now.isocalendar()[1]
-    schedule_morning = teacher_lesson.filter(week=now_week, session='morning')
-    monday = schedule_morning.dates('teach_date_schedule','week')
+    schedule_morning = teacher_lesson.filter(week=w, session='morning')
 
-    #lấy tất cả các tuần có lịch báo giảng
-    monday_week_schedule = teacher_lesson.dates('teach_date_schedule','week')
+    if schedule_morning:
 
-    if request.method == "POST" and 'btnweek' in request.POST:
+        monday = schedule_morning.dates('teach_date_schedule','week')
 
-        week = request.POST['week_search']
-        print(week)
+        #lấy tất cả các tuần có lịch báo giảng
+        monday_week_schedule = teacher_lesson.dates('teach_date_schedule','week')
+
+        if request.method == "POST" and 'btnweek' in request.POST:
+
+            week = request.POST['week_search']
+            print(week)
+        
+
+        context = {'schedule_morning': schedule_morning,
+        'monday': monday,
+        'monday_week_schedule': monday_week_schedule,
+        'page_title': 'Lịch báo giảng Tuần '+str(w), 'w': w}
+        return render(request, 'schedule/schedule.html', context)
+    else:
+        raise Http404("fuck wrong")
+
+                
 
 
-
-    context = {'schedule_morning': schedule_morning, 'monday': monday, 'monday_week_schedule': monday_week_schedule}
-    return render(request, 'schedule/schedule.html', context)
 # thêm giáo án vào lịch báo giảng
 def add_lesson_schedule(request, lesson_id):
     try:
