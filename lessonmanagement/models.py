@@ -234,7 +234,7 @@ class Teacher(models.Model):
 
     #giáo án mới nhất phục vụ trang dashboard
     def latest_lesson(self):
-        return Lesson.objects.filter(teacher=self.user.teacher.id).order_by('-upload_time')[:5]
+        return Lesson.objects.filter(teacher=self.user.teacher.id).order_by('-upload_time')[:3]
 
     #chức danh phục vụ cho trang dashboard
     def managers(self):

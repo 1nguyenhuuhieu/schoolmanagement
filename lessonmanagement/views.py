@@ -380,14 +380,25 @@ def lessons_toyear(request, year):
 def schedule(request):
 
     now = datetime.datetime.now()
+    # lấy giáo án năm học hiện tại tương ứng với giáo viên
+    teacher_lesson = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = 2020)
+
+    # lịch báo giảng của tuần này
     now_week = now.isocalendar()[1]
-    schedule_morning = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = 2020, week=now_week, session='morning')
-   
+    schedule_morning = teacher_lesson.filter(week=now_week, session='morning')
     monday = schedule_morning.dates('teach_date_schedule','week')
 
+    #lấy tất cả các tuần có lịch báo giảng
+    monday_week_schedule = teacher_lesson.dates('teach_date_schedule','week')
+
+    if request.method == "POST" and 'btnweek' in request.POST:
+
+        week = request.POST['week_search']
+        print(week)
 
 
-    context = {'schedule_morning': schedule_morning, 'monday': monday}
+
+    context = {'schedule_morning': schedule_morning, 'monday': monday, 'monday_week_schedule': monday_week_schedule}
     return render(request, 'schedule/schedule.html', context)
 # thêm giáo án vào lịch báo giảng
 def add_lesson_schedule(request, lesson_id):
