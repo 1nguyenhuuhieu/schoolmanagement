@@ -2,6 +2,8 @@ import datetime
 from django import template
 register = template.Library()
 
+
+
 @register.filter
 def classlevel(value):
     now = datetime.datetime.now()
@@ -27,3 +29,8 @@ def schoolyear(value):
 @register.filter
 def plus_days(value, days):
     return value + datetime.timedelta(days=days)
+
+
+@register.simple_tag
+def base_page_title():
+    return 'test'

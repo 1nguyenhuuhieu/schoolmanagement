@@ -21,8 +21,10 @@
             <span class="text-muted">
             Tài khoản đăng nhập: {{ request.user.username }}
             </span>
-            <a href="#" class="btn btn-sm btn-outline-danger mt-lg-0 mt-3 ms-lg-3"><i class="fas fa-key me-2"></i>Thay đổi mật khẩu</a>
-        <hr>
+    
+                <a  class="btn btn-sm btn-outline-danger mt-lg-0 mt-3 ms-lg-3" href="{% url 'change_password'%}" ><i class="fas fa-key me-2"></i>Thay đổi mật khẩu
+                </a>
+
             <h5>Thông tin cá nhân</h5>
             <ul class="list-unstyled">
                 <li><i class="far fa-user fa-fw me-2 text-muted"></i> {{ teacher.full_name }}<li>
@@ -34,7 +36,7 @@
         <hr>
         <h5 >Thông tin công việc</h5>
         <ul class="list-unstyled">
-            <li><i class="fas fa-graduation-cap fa-fw me-2 text-muted"></i> {{ teacher.get_education_level_display }} {{ teacher.main_subject}} <small>  <a href="#" class="text-decoration-none">Thay đổi</a></small> </li>
+            <li><i class="fas fa-graduation-cap fa-fw me-2 text-muted"></i> {{ teacher.get_education_level_display }} {{ teacher.main_subject}} <small>  <a href="#" class="btn btn-primary btn-sm ms-2">Thay đổi</a></small> </li>
                 {% if teacher.managers.school %}
                 <li>
                   <i class="fas fa-school fa-fw me-2 text-muted"></i> {{ teacher.managers.school.get_role_display }} <a href="#" class="text-decoration-none"> {{ teacher.managers.school.school.title }}</a>.

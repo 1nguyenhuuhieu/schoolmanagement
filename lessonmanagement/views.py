@@ -13,6 +13,8 @@ from django.contrib.auth.decorators import login_required
 
 from django.core.files.storage import FileSystemStorage
 
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 
@@ -51,8 +53,30 @@ def current_schoolyear():
 
 @login_required
 def profile(request):
+    
+
+        
     context = {}
     return render(request, 'profile/profile.html', context)
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('change_password')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'accounts/change_password.html', {
+        'form': form
+    })
+
 
 
 @login_required
@@ -69,7 +93,8 @@ def index(request):
     teacher = request.user.teacher
     news = News.objects.order_by('-upload_time')[:5].annotate(Count('viewer'))
     countlesson = Lesson.objects.filter(teacher=teacher.id).count()
-    context = {}
+    page_title = 'Trang chủ'
+    context = {'page_title': page_title }
 
     if countlesson:
         context['countlesson'] = countlesson
@@ -92,7 +117,7 @@ def lessondashboard(request):
 
 @login_required
 def alllessons(request):
-    lesson_list = Lesson.objects.filter(teacher=request.user.teacher.id).order_by('upload_time')
+    lesson_list = Lesson.objects.filter(teacher=request.user.teacher.id).order_by('-upload_time')
     context = {'lesson_list': lesson_list}
     return render(request, 'all_lessons.html', context)
 
@@ -201,10 +226,17 @@ def add_lesson_subject_level(request, subject, level):
         description_lesson = request.POST['description_lesson']
 
         lesson = request.FILES['file_lesson']
-        teacher_location = 'lessons/' + str(request.user.username)
-        fs = FileSystemStorage(location=teacher_location)
-        lesson_file =  fs.save(lesson.name, lesson)
-        lesson_path =  teacher_location + '/' + fs.get_valid_name(lesson_file)
+        teacher_location = 'media/lessons/' + str(request.user.username)
+       
+       
+        lesson_location =  teacher_location + '/'
+        lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
+
+        fs = FileSystemStorage(location=lesson_location)
+
+        lesson_file =  fs.save(lesson.name.replace(" ", "_"), lesson)
+        lesson_path =  lesson_location_withoutmedia + fs.get_valid_name(lesson_file).replace(" ", "_")
+
 
         year = Schoolyear.objects.get(start_date__year = current_schoolyear())
 
@@ -245,7 +277,7 @@ def edit_lesson(request, lesson_id):
 
             if bool(request.FILES.get('file_lesson', False)) == True:
                 lesson_file_form = request.FILES['file_lesson']
-                teacher_location = 'lessons/' + str(request.user.username)
+                teacher_location = 'media/lessons/' + str(request.user.username)
                 fs = FileSystemStorage(location=teacher_location)
                 lesson_file =  fs.save(lesson_file_form.name, lesson_file_form)
                 lesson_path =  teacher_location + '/' + fs.get_valid_name(lesson_file)

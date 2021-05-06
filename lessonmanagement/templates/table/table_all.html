@@ -4,6 +4,7 @@
             <th>Môn học</th>
             <th>Tiết</th>
             <th>Tên giáo án</th>
+            <th>Ngày thêm</th>
             
             <th>Năm học</th>
             <th>Trạng thái</th>
@@ -23,7 +24,9 @@
 
             <td><a href="{% url 'lesson' lesson.id %}" class="text-decoration-none">{{ lesson.title }}  </a></td>
 
-            <td class="text-muted" >{{ lesson.school_year }}-{{ lesson.school_year|add:"1" }}</td>
+            <td> {{ lesson.upload_time|date:"SHORT_DATE_FORMAT"}}</td>
+
+            <td class="text-muted" >{{ lesson.schoolyear }}</td>
             <td>                    {% if lesson.status == "pending" %}
                 <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i class="far fa-clock me-1"></i>{{ lesson.get_status_display}}</span>
                 {% elif lesson.status == "acept" %}
