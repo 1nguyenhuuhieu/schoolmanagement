@@ -1,11 +1,21 @@
 {% load lessonmanagement_extras %}
+<style>
+  table td:hover {
+    background-color: rgba(0,0,0,.075);
+    cursor: pointer;
+}
 
 
+</style>
 
-<table class="table table-bordered bg-white shadow-sm" id="myTable_morning">
+
+<div class="table-responsive">
+
+<table class="table table-bordered  bg-white shadow-sm" id= '{{ session }}'>
+  <caption><i class="far fa-lightbulb me-2"></i>Chọn trực tiếp giáo án trong bảng để điều chỉnh lịch báo giảng</caption>
     <thead>
       <tr>
-        <th scope="col">Tiết</th>
+        <th scope="col">#</th>
         {% for i in '234567'|make_list %}
         <th scope="col">Thứ {{ i }} <small class="text-dark fw-normal">/
           {% with j=i|add:-2%}
@@ -80,7 +90,16 @@
     </tbody>
   </table>
 
-{% for i in schedule_morning %}
+</div>
+
+
+{% if session == 'morning' %}
+{% with schedule=schedule_morning %}
+
+
+
+
+{% for i in schedule %}
 
 
   <script>
@@ -95,11 +114,61 @@ rn = {{ i.order_schedule }};
 // Thứ mấy
 cn = {{ i.dayofweek|add:"-2" }};
 // Nội dung
-content = " <small> <a href='#'><span class='badge bg-primary me-2'>{{ i.lesson.subject.title }} {{ i.lesson.level }} {{i.classyear.title}} </span></a><span class='badge bg-success me-2'>Tiết {{ i.lesson.start_number_lesson }} - {{ i.lesson.start_number_lesson|add:i.lesson.cout_number_lesson}} </span><br><a href='{% url 'lesson' i.lesson.id %}' class='text-decoration-none link-dark'>{{ i.lesson.title }}</a>   </small>";  
-var x=document.getElementById('myTable_morning').rows[parseInt(rn,10)].cells;
+content = "<small><span class='badge bg-primary me-2'>{{ i.lesson.subject.title }} {{ i.lesson.level }} {{i.classyear.title}} </span><span class='badge bg-success me-2'>Tiết {{ i.lesson.start_number_lesson }} - {{ i.lesson.start_number_lesson|add:i.lesson.cout_number_lesson}} </span><br>{{ i.lesson.title }}</small>";  
+var x=document.getElementById('{{ session }}').rows[parseInt(rn,10)].cells;
 x[parseInt(cn,10)].innerHTML=content;
+x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}"); 
 }
+
+
   </script>
 
   {% endfor %}
+
+  {% endwith %}
+
+
+  {% endif %}
+
+
+
+
+
+
+
+  <script>
+    $(document).ready(function(){
+
+$("td").click(function(){
+
+  
+
+  
+    
+
+    if ($(this).attr('name')){
+
+      var idLesson = $(this).attr('name');
+
+
+      window.location='/lesson/' + idLesson + '/';
+
+    }
+    else{
+
+      
+    var column = $(this).parent().children().index(this);
+    var row = $(this).parent().parent().children().index(this.parentNode);
+
+    window.location='/schedule/add/year/month/date/'+ column + '/' + row + '/';
+
+    }
+   
+
+
+  
+});
+
+});
+  </script>
 

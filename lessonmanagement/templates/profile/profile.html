@@ -3,7 +3,21 @@
 {% load humanize %}
 {% load lessonmanagement_extras %}
 {% with teacher=request.user.teacher %}
+
+
+<div class="row justify-content-center mt-4">
+  <div class="col-lg-5">
+    {% include 'notification/success.html' %}
+    
+      </div>
+    
+</div>
+
 <div class="row mt-lg-5 mt-4">
+
+  
+  
+
     <div class="col-lg-4">
         <div class="d-flex flex-column  align-items-center">
         {% if teacher.avatar %}

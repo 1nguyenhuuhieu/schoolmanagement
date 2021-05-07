@@ -12,6 +12,10 @@
 <div class="row pt-5 justify-content-center" >
 
     <div class="col-lg-6" >
+
+      {% include 'notification/success.html' %}
+
+      
         <h5 class="mb-1">{{ lesson.title }} <small class="text-muted">{{ lesson.subject.title }} {{ lesson.level }}  / Tiết {{ lesson.start_number_lesson }} - {{ lesson.start_number_lesson|add:lesson.cout_number_lesson }}</small></h5>
     <hr>
     

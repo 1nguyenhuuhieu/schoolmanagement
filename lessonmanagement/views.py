@@ -16,6 +16,8 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
+from django.contrib import messages
+
 
 import os
 
@@ -68,6 +70,8 @@ def profile(request):
         current_user = User.objects.get(pk = request.user.id)
         current_user.set_password(new_password)
         current_user.save()
+        messages.add_message(request, messages.SUCCESS, 'Cập nhập thông tin thành công.')
+
         return redirect('profile', permanent=True)
 
     if request.method == 'POST' and 'changeprofile' in request.POST:
@@ -89,6 +93,7 @@ def profile(request):
 
 
         current_user.save()
+        messages.add_message(request, messages.SUCCESS, 'Cập nhập thông tin thành công.')
 
 
 
@@ -106,6 +111,7 @@ def profile(request):
         current_user.main_subject = subject
         current_user.education_level = education_level
         current_user.save()
+        messages.add_message(request, messages.SUCCESS, 'Cập nhập thông tin thành công.')
 
         return redirect('profile', permanent=True)
     
@@ -130,27 +136,10 @@ def profile(request):
         current_user.avatar = lesson_path
 
         current_user.save()
+        messages.add_message(request, messages.SUCCESS, 'Cập nhập thông tin thành công.')
         return redirect('profile', permanent=True)
-
-
-
-
-
-
-
-
-        
-
-
-
-    
-
-        
     context = {'list_subject': list_subject}
     return render(request, 'profile/profile.html', context)
-
-
-
 
 @login_required
 def teacher(request, teacher_id):
@@ -317,6 +306,8 @@ def add_lesson_subject_level(request, subject, level):
         new_lesson = Lesson(title=title, upload_time = now, level = level_save, description = description_lesson, teacher = request.user.teacher, subject = subject_save, start_number_lesson = start_lesson, cout_number_lesson = count_lesson, lesson_path = lesson_path, schoolyear=year  )
         new_lesson.save()
 
+        messages.success(request, 'Vui lòng chờ giáo án của bạn được duyệt.')
+
         return redirect('lesson', id=new_lesson.id, permanent=True )
 
 
@@ -386,7 +377,11 @@ def schedule(request, w):
 
     # lịch báo giảng theo tuần w
     now_week = now.isocalendar()[1]
-    schedule_morning = teacher_lesson.filter(week=w, session='morning')
+   
+    schedule_all = teacher_lesson.filter(week=w)
+    schedule_morning =schedule_all.filter(session='morning')
+    schedule_afternoon = schedule_all.filter(session='afternoon')
+
 
     if schedule_morning:
 
@@ -443,6 +438,9 @@ def add_lesson_schedule(request, lesson_id):
 
             new_schedule.week = week
             new_schedule.save()
+
+            messages.success(request, 'Lịch báo giảng đã được thêm.')
+
 
             
             

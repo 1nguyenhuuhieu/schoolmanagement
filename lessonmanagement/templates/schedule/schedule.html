@@ -6,15 +6,15 @@
           {% load humanize %}
           {% load lessonmanagement_extras %}
           {% with teacher=request.user.teacher %}
-            <h4 class="mt-5 mb-5 text-center"><i class="far fa-calendar-check me-3"></i>Lịch báo giảng của {{ request.user.teacher.full_name }} <small class="text-muted">Năm học {{ schedule_morning.0.lesson.schoolyear }}</small> </h4>
-           <div class="card rounded shadow-sm py-3">
+            <h4 class="mt-4 mb-4 text-center"><i class="far fa-calendar-check me-3"></i>Lịch báo giảng của {{ request.user.teacher.full_name }} <small class="text-muted">Năm học {{ schedule_morning.0.lesson.schoolyear }}</small> </h4>
+           <div class="card rounded shadow-sm py-2 bg-info bg-gradient border-0 mb-3">
             <div class="card-body">
                 <div class="row justify-content-center align-items-end">
                     <div class="col-lg-4 ps-5">
-                            <h4>Tuần {{ w }} {% now 'W' as current_week %} {% if w == current_week|add:0 %} <small class="text-muted">Tuần này</small>  {% endif %}</h4>
+                            <h4>Tuần {{ w }} {% now 'W' as current_week %} {% if w == current_week|add:0 %} -  <small class="text-dark">Tuần này</small>  {% endif %}</h4>
                         {% now "W" as now_week %}
-                        <a href="{% url 'schedule' w|add:-1 %}" class=" btn btn-primary me-2 border "><i class="fas fa-step-backward me-2"></i>Tuần trước</a>
-                        <a href="{% url 'schedule' w|add:1 %}" class=" btn btn-primary me-2 border ">Tuần sau<i class="fas fa-step-forward ms-2"></i></a>
+                        <a href="{% url 'schedule' w|add:-1 %}" class=" btn btn-light me-2  "><i class="fas fa-step-backward me-2"></i>Tuần trước</a>
+                        <a href="{% url 'schedule' w|add:1 %}" class=" btn btn-light me-2  ">Tuần sau<i class="fas fa-step-forward ms-2"></i></a>
                     </div>
                     <div class="col-lg-4">
                         <form method="POST">
@@ -25,7 +25,7 @@
                                     </label>
                                 <div class="col-9"><input type="date" class="form-control" name="search_date" id="search_date">
                                 </div>
-                                <div class="col"><button type="submit" name="search_date" class="btn btn-primary">Tìm</button></div>
+                                <div class="col"><button type="submit" name="search_date" class="btn btn-light">Tìm</button></div>
                             </div>
                         </form>
                     </div>
@@ -42,14 +42,41 @@
                             {% endfor %}
                         </datalist>
                             </div>
-                            <div class="col"><button type="submit" name="btnweek" class="btn btn-primary">Tìm</button></div>
+                            <div class="col"><button type="submit" name="btnweek" class="btn btn-light">Tìm</button></div>
                         </div>
                         </form>
                     </div>
                 </div>
             </div>
            </div>
-            <h3 class="mt-4 mb-4 text-center">Buổi sáng</h3>
-          {% include 'schedule/table_schedule_all.html' %}
+            <!-- <h3 class="mt-4 mb-4 text-center">Buổi sáng</h3> -->
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Tất cả</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Buổi sáng</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Buổi chiều</button>
+                </li>
+              </ul>
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+          {% include 'schedule/table_schedule.html' with session="all" %}
+
+                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+          {% include 'schedule/table_schedule.html' with session="morning" %}
+
+                </div>
+                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+          {% include 'schedule/table_schedule.html' with session="afternoon" %}
+
+                </div>
+              </div>
+
+
           {% endwith %}
            {% endblock %}

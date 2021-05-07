@@ -4,6 +4,10 @@
 {% load lessonmanagement_extras %}
 {% block content %}
 {% include 'breadcrumb/breadcrumb_lesson.html' %}
+
+
+{% include 'notification/success.html' %}
+      
 <div class="bg-white rounded-15 shadow-sm p-4 border">
     <h5 class="mb-1">{{ lesson.title }} <small class="text-muted">{{ lesson.subject.title }} {{ lesson.level }}  / Tiết {{ lesson.start_number_lesson }} - {{ lesson.start_number_lesson|add:lesson.cout_number_lesson }}</small></h5>
     <div class="d-flex align-items-center mb-3">
