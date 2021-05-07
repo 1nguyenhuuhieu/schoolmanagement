@@ -5,39 +5,30 @@
 
 
 {% load static %}
-<div class="row mt-5  align-items-end">
-    <div class="col-lg-2"></div>
-    <div class="col-lg-5 text-end pb-3">
-        <h4 >Hệ Thống Quản Lý Trường Học Kim Nhan</h4>
-        <h1 class="display-1 text-primary">Xin chào {{ request.user.teacher.lastname }}!</h1>
-        <p class="lead text-muted">Bây giờ là {% now 'P' %} {% now 'D' %} {% now "DATE_FORMAT" %}.</p>
+<div class="row mt-5  align-items-center justify-content-center">
+    <div class="col-lg-8 text-end pb-3">
+        <h4 class="mb-5">Hệ Thống Quản Lý Trường Học Kim Nhan</h4>
+        <h1 class="display-6 text-danger fw-bolder"> {{ error }}!</h1>
+        <p class="lead fw-bolder">Lí do: {{ cause }}.</p>
 
-        <figure class="text-end">
-            <blockquote class="blockquote">
-                {% now "H" as current_hour %}
 
-                {% if current_hour|add:0 < 12 %}
-                Chúc bạn có một ngày mới làm việc hiệu quả và tràn đầy niềm vui.
-                {% elif current_hour|add:0 < 18 %}
-                Nhiệt độ đang nóng lên, hãy nhớ uống đủ nước để cơ thể luôn khỏe mạnh nhé.
-                {% else %}
-                Đừng làm việc quá sức nhé, chúc bạn có một đêm ngon giấc.
-                {% endif %}
+        
+          <button onclick="goBack()" class="btn btn-lg btn-outline-primary ms-2"><i class="fas fa-arrow-left me-2"></i>Quay lại</button>
+          <a href="{% url 'index' %}" class="btn btn-lg btn-primary ms-2"><i class="fas fa-home me-2"></i>Trang chủ</a>
 
-            </blockquote>
-            <figcaption class="blockquote-footer">
-          Cô trợ lý áo hồng tại  <cite title="Source Title">Hệ thống quản lý trường học Kim Nhan</cite>
-            </figcaption>
-          </figure>
 
-          <i class="far fa-lightbulb me-1"></i> Hãy để tôi chỉ cho bạn một số mẹo sử dụng
-          <button class="btn btn btn-outline-primary ms-2">Xem hướng dẫn <i class="fas fa-arrow-right ms-2"></i></button>
+          <script>
+          function goBack() {
+            window.history.back();
+          }
+          </script>
+  
 
 
     </div>
 
-    <div class="col-2 d-none d-lg-block">
-        <img src="{% static 'imgs/teacher.png' %}" alt="" class="img-fluid">
+    <div class="col-4 d-none d-lg-block">
+        <img src="{% static 'imgs/notfound.png' %}" alt="" class="img-fluid">
     </div>
 </div>
 

@@ -19,11 +19,7 @@
         {% for i in '234567'|make_list %}
         <th scope="col">Thứ {{ i }} <small class="text-dark fw-normal">/
           {% with j=i|add:-2%}
-          {% with newday=monday.0|plus_days:j %}
-
-          {{ newday|date:'SHORT_DATE_FORMAT' }}
-
-          {% endwith %}
+        
           {% endwith %}
         </small></th>
 

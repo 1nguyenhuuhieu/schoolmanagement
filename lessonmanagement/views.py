@@ -381,10 +381,31 @@ def schedule(request, year, week):
     
     # năm trong URL có thoả mãn niên khoá đã mở
     if year in list_schoolyear or (year-1) in list_schoolyear:
+        
+        # lấy giáo án thuộc năm học <year> tương ứng với <week>
+        naive_schoolyear = 0
+        # tuần hiện tại là < tháng 9
+        if week < 36:
+            naive_schoolyear = year - 1
+        else:
+            naive_schoolyear = year
+        lessons = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = naive_schoolyear)
+        
+        # lịch báo giảng của tuần thứ <week> và năm <naive_schoolyear> lấy theo URL
+        schedule_all = lessons.filter(week=week)
+        schedule_morning =schedule_all.filter(session='morning')
+        schedule_afternoon = schedule_all.filter(session='afternoon')
+
+
+
+
+
         context = {
         'now_school_year':now_school_year,
         'week': week,
-        'year': year
+        'year': year,
+        'schedule_morning': schedule_morning,
+        'schedule_afternoon': schedule_afternoon,
 
         }
         return render(request, 'schedule/schedule.html', context)
@@ -392,58 +413,13 @@ def schedule(request, year, week):
         return redirect ('emptyschedule')
 
 
+# không tìm thấy lịch báo giảng với năm học đã cho từ URL
 def emptyschedule(request):
     context = {
-        'error':'Không tìm thấy lịch báo giảng phù hợp'
-        'cause':'Năm học này không tồn tại trên hệ thống'
+        'error':'Không tìm thấy lịch báo giảng phù hợp',
+        'cause':'Năm học này không tồn tại trên hệ thống',
     }
     return render(request, 'error/notfound.html' , context )
-
-
-    
-
-
-
-
-    # lấy giáo án thuộc năm học hiện tại tương ứng với giáo viên
-    # teacher_lesson = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = now_school_year)
-
-  
-    # # lịch báo giảng của tuần thứ week lấy ở URL
-    # schedule_all = teacher_lesson.filter(week=week)
-    # schedule_morning =schedule_all.filter(session='morning')
-    # schedule_afternoon = schedule_all.filter(session='afternoon')
-
-
-
-    # nếu tuần <week> có lịch báo giảng
-    # if schedule_all:
-
-    #     monday = schedule_all.dates('teach_date_schedule','week')
-
-        #lấy tất cả các tuần có lịch báo giảng
-    #     monday_week_schedule = teacher_lesson.dates('teach_date_schedule','week')
-
-    #     if request.method == "POST" and 'btnweek' in request.POST:
-
-    #         week = request.POST['week_search']
-        
-
-    #     context = {'schedule_morning': schedule_morning,
-    #     'schedule_afternoon': schedule_afternoon,
-    #     'monday': monday,
-    #     'monday_week_schedule': monday_week_schedule,
-    #     'page_title': 'Lịch báo giảng Tuần '+str(week), 'w': week}
-    #     return render(request, 'schedule/schedule.html', context)
-
-
-    # else:
-
-
-        
-
-                
-
 
 # thêm giáo án vào lịch báo giảng
 def add_lesson_schedule(request, lesson_id):

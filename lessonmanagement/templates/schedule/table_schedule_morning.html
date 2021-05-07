@@ -4,13 +4,8 @@
     background-color: rgba(0,0,0,.075);
     cursor: pointer;
 }
-
-
 </style>
-
-
 <div class="table-responsive">
-
 <table class="table table-bordered  bg-white shadow-sm" id= 'morning_table'>
   <caption><i class="far fa-lightbulb me-2"></i>Chọn trực tiếp giáo án trong bảng để điều chỉnh lịch báo giảng</caption>
     <thead>
@@ -19,23 +14,15 @@
         {% for i in '234567'|make_list %}
         <th scope="col">Thứ {{ i }} <small class="text-dark fw-normal">/
           {% with j=i|add:-2%}
-          {% with newday=monday.0|plus_days:j %}
-
-          {{ newday|date:'SHORT_DATE_FORMAT' }}
-
-          {% endwith %}
+            {{ j }}
           {% endwith %}
         </small></th>
-
         {% endfor %}
-
       </tr>
     </thead>
     <tbody>
       <tr>
-       
         <th scope="row">1</th>
-       
         <td></td>
         <td></td>
         <td></td>
@@ -44,9 +31,7 @@
         <td></td>
       </tr>
       <tr>
-       
         <th scope="row">2</th>
-       
         <td></td>
         <td></td>
         <td></td>
@@ -55,9 +40,7 @@
         <td></td>
       </tr>
       <tr>
-       
         <th scope="row">3</th>
-       
         <td></td>
         <td></td>
         <td></td>
@@ -66,9 +49,7 @@
         <td></td>
       </tr>
       <tr>
-       
         <th scope="row">4</th>
-       
         <td></td>
         <td></td>
         <td></td>
@@ -77,9 +58,7 @@
         <td></td>
       </tr>
       <tr>
-       
         <th scope="row">5</th>
-       
         <td></td>
         <td></td>
         <td></td>
@@ -89,21 +68,13 @@
       </tr>
     </tbody>
   </table>
-
 </div>
 
-
-
-
 {% for i in schedule_morning %}
-
-
   <script>
-
     window.onload = changeContent()
     function changeContent()
 {
-
 // tiết mấy
 rn = {{ i.order_schedule }};
 
@@ -117,7 +88,6 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
 }
   </script>
   {% endfor %}
-
   <script>
     $(document).ready(function(){
       $("#morning_table").find("td").click(function(){
@@ -128,8 +98,6 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
     else{
     var column = $(this).parent().children().index(this);
     var row = $(this).parent().parent().children().index(this.parentNode);
-
-    
     var schoolyear = {{ schedule_morning.0.lesson.schoolyear.start_date.year|add:0 }}
     var month = {{ schedule_morning.0.lesson.schoolyear.start_date.year|add:0 }}
     var year = {{ schedule_morning.0.lesson.schoolyear.start_date.year|add:0 }}
@@ -137,15 +105,8 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
     window.location='/schedule/add/' + schoolyear +'/month/date/'+ column + '/' + row + '/';
     }
    
-
-
-  
 });
-
 });
-  
-
-
   </script>
 
 
