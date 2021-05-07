@@ -368,18 +368,51 @@ def lessons_toyear(request, year):
 
 # lịch báo giảng
 
-def schedule(request, nowyear, week):
+def schedule(request, year, week):
 
     now = datetime.datetime.now()
     now_school_year = current_schoolyear()
+
+    # danh sách các niên khoá đã mở cho vào list
+    schoolyear = Schoolyear.objects.dates('start_date', 'year')
+    list_schoolyear = []
+    for i in schoolyear:
+        list_schoolyear.append(i.year)
+    
+    # năm trong URL có thoả mãn niên khoá đã mở
+    if year in list_schoolyear or (year-1) in list_schoolyear:
+        context = {
+        'now_school_year':now_school_year,
+        'week': week,
+        'year': year
+
+        }
+        return render(request, 'schedule/schedule.html', context)
+    else:
+        return redirect ('emptyschedule')
+
+
+def emptyschedule(request):
+    context = {
+        'error':'Không tìm thấy lịch báo giảng phù hợp'
+        'cause':'Năm học này không tồn tại trên hệ thống'
+    }
+    return render(request, 'error/notfound.html' , context )
+
+
+    
+
+
+
+
     # lấy giáo án thuộc năm học hiện tại tương ứng với giáo viên
-    teacher_lesson = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = now_school_year)
+    # teacher_lesson = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = now_school_year)
 
   
-    # lịch báo giảng của tuần thứ week lấy ở URL
-    schedule_all = teacher_lesson.filter(week=week)
-    schedule_morning =schedule_all.filter(session='morning')
-    schedule_afternoon = schedule_all.filter(session='afternoon')
+    # # lịch báo giảng của tuần thứ week lấy ở URL
+    # schedule_all = teacher_lesson.filter(week=week)
+    # schedule_morning =schedule_all.filter(session='morning')
+    # schedule_afternoon = schedule_all.filter(session='afternoon')
 
 
 
@@ -406,8 +439,7 @@ def schedule(request, nowyear, week):
 
     # else:
 
-    context = {}
-    return render(request, 'schedule/schedule.html', context)
+
         
 
                 

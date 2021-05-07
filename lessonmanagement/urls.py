@@ -20,7 +20,9 @@ urlpatterns = [
     # lịch báo giảng
     
     
-    path('schedule/<int:nowyear>/<int:week>/', views.schedule, name = 'schedule'),
+    path('schedule/<int:year>/<int:week>/', views.schedule, name = 'schedule'),
+    path('emptyschedule/', views.emptyschedule, name = 'emptyschedule'),
+
     
     
     path('schedule/add/<int:lesson_id>/', views.add_lesson_schedule, name = 'add_lesson_schedule'),
