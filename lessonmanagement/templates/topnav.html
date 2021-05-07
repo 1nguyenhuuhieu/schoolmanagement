@@ -41,13 +41,7 @@
               </li>
             </ul>
             <ul class="navbar-nav  mb-2 mb-lg-0">
-              {% if request.user.is_staff %}
-              <li class="nav-item">
-                <a class="nav-link"  href="{% url 'admin:index' %}">
-                  <i class="fas fa-school"></i>
-                </a>
-              </li>
-              {% endif %}
+
               <li class="nav-item">
                 <a class="nav-link"  href="#"><i class="far fa-bell"></i></a>
               </li>
@@ -105,8 +99,23 @@
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
                   </ul>
+
+                  
                 </div>
               </li>
+
+
+              {% if request.user.is_staff %}
+              <li class="nav-item ms-2">
+                <a href="{% url 'admin:index' %}" class="nav-link btn btn-danger text-white">
+               Quản Lý
+
+                </a>
+              
+              </li>
+              {% endif %}
+
+
             </ul>
           </div>
         </div>
