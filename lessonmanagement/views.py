@@ -395,6 +395,9 @@ def schedule(request, year, week):
         schedule_all = lessons.filter(week=week)
         schedule_morning =schedule_all.filter(session='morning')
         schedule_afternoon = schedule_all.filter(session='afternoon')
+        # lấy ngày thứ hai của năm <year> và tuần <week> from URL
+        d = '%s-W%s' % (year, week)
+        monday = datetime.datetime.strptime(d + '-1', "%Y-W%W-%w")
 
 
 
@@ -406,6 +409,7 @@ def schedule(request, year, week):
         'year': year,
         'schedule_morning': schedule_morning,
         'schedule_afternoon': schedule_afternoon,
+        'monday': monday,
 
         }
         return render(request, 'schedule/schedule.html', context)

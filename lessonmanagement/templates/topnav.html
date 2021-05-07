@@ -10,20 +10,27 @@
               <li class="nav-item">
                 <a class="nav-link {% if request.path == '/' %} active {% endif %}" aria-current="page" href="{% url 'index' %}">Trang Chủ</a>
               </li>
+
+
+              
               <li class="nav-item">
                 <a class="nav-link {% if 'lesson' in request.path %} active {% endif %}" href="{% url 'lessondashboard' %}">Giáo Án</a>
               </li>
-              <li class="nav-item">
+           
+
+              <li class="nav-item ">
                 {% now 'W' as w %}
                 {% now 'Y' as y %}
-                <a class="nav-link {% if 'schedule' in request.path %} active {% endif %} " href="{% url 'schedule' y w %}">Lịch báo giảng</a>
+                <a class="nav-link {% if 'schedule' in request.path %} active {% endif %}" href="{% url 'schedule' y w %}">
+                  Lịch báo giảng
+                </a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link " href="#">Tin</a>
-              </li>
+
+
+
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
+                <a class="nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-ellipsis-h"></i>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li><a class="dropdown-item" href="#">Action</a></li>
@@ -31,9 +38,6 @@
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="#">Something else here</a></li>
                 </ul>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
               </li>
             </ul>
             <ul class="navbar-nav  mb-2 mb-lg-0">
@@ -52,8 +56,8 @@
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <i class="fas fa-plus"></i>
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
+                <ul class="dropdown-menu dropdown-menu-end mt-lg-2" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="{% url 'addlesson' %}">Thêm Giáo án</a</li>
                   <li><a class="dropdown-item" href="#">Another action</a></li>
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="#">Something else here</a></li>
@@ -91,7 +95,7 @@
                     <span class="visually-hidden">Toggle Dropdown</span>
                   </button>
                   {% endif %}
-                  <ul class="dropdown-menu dropdown-menu-end">
+                  <ul class="dropdown-menu dropdown-menu-end mt-2">
                     <li class="dropdown-item disabled text-muted">{{ request.user }} / {{request.user.teacher.full_name}}</li>
                     <li><a class="dropdown-item" href="{% url 'profile' %}" ><i class="far fa-user me-2"></i>Trang cá nhân</a></li>
                     <li><hr class="dropdown-divider"></li>
