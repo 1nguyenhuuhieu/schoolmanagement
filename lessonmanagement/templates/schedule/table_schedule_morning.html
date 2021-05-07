@@ -11,7 +11,7 @@
 
 <div class="table-responsive">
 
-<table class="table table-bordered  bg-white shadow-sm" id= '{{ session }}'>
+<table class="table table-bordered  bg-white shadow-sm" id= 'morning_table'>
   <caption><i class="far fa-lightbulb me-2"></i>Chọn trực tiếp giáo án trong bảng để điều chỉnh lịch báo giảng</caption>
     <thead>
       <tr>
@@ -93,13 +93,9 @@
 </div>
 
 
-{% if session == 'morning' %}
-{% with schedule=schedule_morning %}
 
 
-
-
-{% for i in schedule %}
+{% for i in schedule_morning %}
 
 
   <script>
@@ -115,53 +111,30 @@ rn = {{ i.order_schedule }};
 cn = {{ i.dayofweek|add:"-2" }};
 // Nội dung
 content = "<small><span class='badge bg-primary me-2'>{{ i.lesson.subject.title }} {{ i.lesson.level }} {{i.classyear.title}} </span><span class='badge bg-success me-2'>Tiết {{ i.lesson.start_number_lesson }} - {{ i.lesson.start_number_lesson|add:i.lesson.cout_number_lesson}} </span><br>{{ i.lesson.title }}</small>";  
-var x=document.getElementById('{{ session }}').rows[parseInt(rn,10)].cells;
+var x=document.getElementById('morning_table').rows[parseInt(rn,10)].cells;
 x[parseInt(cn,10)].innerHTML=content;
 x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}"); 
 }
-
-
   </script>
-
   {% endfor %}
-
-  {% endwith %}
-
-
-  {% endif %}
-
-
-
-
-
-
 
   <script>
     $(document).ready(function(){
-
-$("td").click(function(){
-
-  
-
-  
-    
-
+      $("#morning_table").find("td").click(function(){
     if ($(this).attr('name')){
-
       var idLesson = $(this).attr('name');
-
-
       window.location='/lesson/' + idLesson + '/';
-
     }
     else{
-
-      
     var column = $(this).parent().children().index(this);
     var row = $(this).parent().parent().children().index(this.parentNode);
 
-    window.location='/schedule/add/year/month/date/'+ column + '/' + row + '/';
+    
+    var schoolyear = {{ schedule_morning.0.lesson.schoolyear.start_date.year|add:0 }}
+    var month = {{ schedule_morning.0.lesson.schoolyear.start_date.year|add:0 }}
+    var year = {{ schedule_morning.0.lesson.schoolyear.start_date.year|add:0 }}
 
+    window.location='/schedule/add/' + schoolyear +'/month/date/'+ column + '/' + row + '/';
     }
    
 
@@ -170,5 +143,10 @@ $("td").click(function(){
 });
 
 });
+  
+
+
   </script>
+
+
 

@@ -368,41 +368,47 @@ def lessons_toyear(request, year):
 
 # lịch báo giảng
 
-def schedule(request, w):
+def schedule(request, nowyear, week):
 
     now = datetime.datetime.now()
-    current_year = current_schoolyear()
-    # lấy giáo án năm học hiện tại tương ứng với giáo viên
-    teacher_lesson = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = current_year)
+    now_school_year = current_schoolyear()
+    # lấy giáo án thuộc năm học hiện tại tương ứng với giáo viên
+    teacher_lesson = LessonClassyear.objects.filter(lesson__teacher = request.user.teacher.id, lesson__schoolyear__start_date__year = now_school_year)
 
-    # lịch báo giảng theo tuần w
-    now_week = now.isocalendar()[1]
-   
-    schedule_all = teacher_lesson.filter(week=w)
+  
+    # lịch báo giảng của tuần thứ week lấy ở URL
+    schedule_all = teacher_lesson.filter(week=week)
     schedule_morning =schedule_all.filter(session='morning')
     schedule_afternoon = schedule_all.filter(session='afternoon')
 
 
-    if schedule_morning:
 
-        monday = schedule_morning.dates('teach_date_schedule','week')
+    # nếu tuần <week> có lịch báo giảng
+    # if schedule_all:
+
+    #     monday = schedule_all.dates('teach_date_schedule','week')
 
         #lấy tất cả các tuần có lịch báo giảng
-        monday_week_schedule = teacher_lesson.dates('teach_date_schedule','week')
+    #     monday_week_schedule = teacher_lesson.dates('teach_date_schedule','week')
 
-        if request.method == "POST" and 'btnweek' in request.POST:
+    #     if request.method == "POST" and 'btnweek' in request.POST:
 
-            week = request.POST['week_search']
-            print(week)
+    #         week = request.POST['week_search']
         
 
-        context = {'schedule_morning': schedule_morning,
-        'monday': monday,
-        'monday_week_schedule': monday_week_schedule,
-        'page_title': 'Lịch báo giảng Tuần '+str(w), 'w': w}
-        return render(request, 'schedule/schedule.html', context)
-    else:
-        raise Http404("fuck wrong")
+    #     context = {'schedule_morning': schedule_morning,
+    #     'schedule_afternoon': schedule_afternoon,
+    #     'monday': monday,
+    #     'monday_week_schedule': monday_week_schedule,
+    #     'page_title': 'Lịch báo giảng Tuần '+str(week), 'w': week}
+    #     return render(request, 'schedule/schedule.html', context)
+
+
+    # else:
+
+    context = {}
+    return render(request, 'schedule/schedule.html', context)
+        
 
                 
 
