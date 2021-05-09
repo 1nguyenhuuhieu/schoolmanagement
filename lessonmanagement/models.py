@@ -4,6 +4,7 @@ from datetime import datetime
 from django.conf import settings
 from django.db.models import F
 from django.utils.text import slugify
+from django.forms import ModelForm
 
 now = datetime.now()
 
@@ -58,8 +59,9 @@ class School(SchoolAbstract):
 
 #Môn học
 class Subject(SchoolAbstract):
-    group = models.ForeignKey("GroupSubject", related_name='subject123',on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Bộ môn')
+    group = models.ForeignKey("GroupSubject",on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Bộ môn')
     subject_slug = models.SlugField(max_length=50, null=True, blank=True)
+
     class Meta:
         verbose_name = "Môn học"
         verbose_name_plural = "Môn học"
@@ -67,6 +69,21 @@ class Subject(SchoolAbstract):
     def save(self, *args, **kwargs):
         self.subject_slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+class SubjectLesson(models.Model):
+    subject = models.ForeignKey(Subject, on_delete = models.CASCADE)
+    LEVEL_CHOICES = [
+        (6, 6),
+        (7, 7),
+        (8, 8),
+        (9, 9)
+    ]
+    level = models.IntegerField(choices=LEVEL_CHOICES, verbose_name='Khối')
+    total_lesson = models.IntegerField(verbose_name='Tổng số tiết')
+    week_lesson = models.IntegerField(verbose_name='Số tiết mỗi tuần')
+    def __str__(self):
+        return '%s - %s' %(self.subject, self.level)
+
 
 #Bộ môn
 class GroupSubject(SchoolAbstract):
@@ -76,9 +93,9 @@ class GroupSubject(SchoolAbstract):
 
 #Abstract for: SubjectTeacher, ClassyearManager, GroupSubjectManager, SchoolManager
 class MembershipAbstract(models.Model):
-    teacher = models.ForeignKey("Teacher", on_delete=models.CASCADE)
-    startdate = models.DateField(blank=True, null=True)
-    enddate = models.DateField(blank=True, null=True)
+    teacher = models.ForeignKey("Teacher", on_delete=models.CASCADE, verbose_name='Giáo viên')
+    startdate = models.DateField(blank=True, null=True, verbose_name='Ngày bắt đầu')
+    enddate = models.DateField(blank=True, null=True, verbose_name='Ngày kết thúc')
     is_active = models.BooleanField(default=True, blank=True, verbose_name="Có hiệu lực không", help_text="Không: Nếu giáo viên đã nghỉ hưu hoặc thôi việc")
 
     class Meta:
@@ -94,6 +111,7 @@ class SubjectTeacher(MembershipAbstract):
     ]
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     class Meta:
+        
         verbose_name = "Thành Viên/Quản lý Môn học"
         verbose_name_plural = "Thành Viên/Quản lý Môn học"
     def __str__(self):
@@ -114,7 +132,6 @@ class ClassyearManager(MembershipAbstract):
 class GroupSubjectManager(MembershipAbstract):
     group = models.ForeignKey(GroupSubject, on_delete=models.CASCADE)
     ROLE_CHOICES = [
-    ('member','Thành viên'), 
     ('submanager', 'Phó bộ môn'),
     ('manager', 'Trưởng bộ môn'),
     ]
@@ -133,7 +150,7 @@ class SchoolManager(MembershipAbstract):
     ('manager', 'Hiệu trưởng'),
     ('member', 'Khác')
     ]
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, verbose_name='Vị trí')
     class Meta:
         verbose_name = "Quản lý trường học "
         verbose_name_plural = "Quản lý trường học"
@@ -149,7 +166,7 @@ class Classyear(models.Model):
     ('D', 'D')
     ]
     title = models.CharField(verbose_name="Tên lớp", max_length=1, choices=TITLE_CHOICES)
-    startyear = models.IntegerField()
+    startyear = models.IntegerField(verbose_name='Năm nhập học')
 
     @property
     def is_learning(self):
@@ -387,29 +404,35 @@ class LessonClassyear(models.Model):
 #Môn học cụ thể cho lớp cụ thể
 class SubjectClassyear(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    classyear = models.ForeignKey(Classyear, on_delete=models.CASCADE)
+    classyear = models.ManyToManyField(Classyear)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    schoolyear = models.ForeignKey("Schoolyear", on_delete=models.CASCADE, blank=True, null=True)
+    schoolyear = models.ForeignKey("Schoolyear", on_delete=models.CASCADE)
+
+
+
 
     
 
     #update mỗi khi teacher chọn is_teach tại LessonClassyear
     current_lesson = models.IntegerField(blank=True, null=True)
 
-    total_lesson = models.IntegerField(blank=True,verbose_name="Tổng số tiết dạy", null=True)
     is_teach_now = models.BooleanField(default=True, verbose_name="Trạng thái hiệu lực")
 
     #update when current_lesson change
     edit_time = models.DateTimeField(auto_now=True, blank=True, null=True)
 
+    def classyear_list(self):
+        return ', '.join(classyear.__str__() for classyear in self.classyear.all())
+
 
     class Meta:
         verbose_name = "Phân công giảng dạy"
         verbose_name_plural = "Phân công giảng dạy"
-        ordering = ('subject__title', '-classyear__startyear')
+        # ordering = ('subject__title', '-classyear__startyear')
+        unique_together = ('subject', 'teacher')
 
     def __str__(self):
-        return '%s %s - %s' % (self.subject, self.classyear, self.teacher.full_name())
+        return '%s : %s - %s' % (self.subject, self.classyear_list(), self.teacher.full_name())
 
 
 
@@ -444,6 +467,3 @@ class Schoolyear(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.start_date.year, self.start_date.year + 1)
-
-
-

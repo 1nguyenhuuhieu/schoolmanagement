@@ -5,24 +5,17 @@ import datetime
 from django.utils.text import slugify
 from django.http import Http404
 from django.shortcuts import redirect
-
 from django.db.models import Count
-
 from django.contrib.auth.decorators import login_required
-
-
 from django.core.files.storage import FileSystemStorage
-
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-
 from django.contrib import messages
-
-
+from .forms import *
 import os
 
 
-#đổi từ class level sang năm vào trường của một lớp
+# đổi từ class level sang năm vào trường của một lớp
 def level_to_startyear(level):
     now = datetime.datetime.now()
     if now.month < 9:
@@ -42,17 +35,41 @@ def class_level_def(year):
     else:
         return year
 
-
 # năm bắt đầu của niên khóa hiện tại
 def current_schoolyear():
     now = datetime.datetime.now()
     year = now.year
     month = now.month
-
     if month > 9:
         return year
     else:
         return year -1
+
+# TRANG CHỦ
+@login_required
+def index(request):
+    try:
+        teacher = request.user.teacher
+        news = News.objects.order_by('-upload_time')[:5].annotate(Count('viewer'))
+        countlesson = Lesson.objects.filter(teacher=teacher.id).count()
+        page_title = 'Trang chủ'
+        context = {'page_title': page_title }
+        if countlesson:
+            context['countlesson'] = countlesson
+        if news:
+            context['news'] = news
+        return render(request, 'index.html', context)
+    except:
+        return redirect('create_profile')
+
+
+# tạo hồ sơ giáo viên lần đầu
+@login_required
+def create_profile(request):
+    form = SubjectForm()
+    context = {'form': form}
+    return render(request, 'profile/create_profile.html', context)
+
 
 
 @login_required
@@ -117,6 +134,7 @@ def profile(request):
     
     if request.method == 'POST' and 'btnavatar' in request.POST and request.FILES['avatar']:
 
+
         current_user = Teacher.objects.get(user = request.user)
 
 
@@ -138,7 +156,13 @@ def profile(request):
         current_user.save()
         messages.add_message(request, messages.SUCCESS, 'Cập nhập thông tin thành công.')
         return redirect('profile', permanent=True)
-    context = {'list_subject': list_subject}
+
+
+
+
+    
+    context = {'list_subject': list_subject,
+    }
     return render(request, 'profile/profile.html', context)
 
 @login_required
@@ -150,22 +174,7 @@ def teacher(request, teacher_id):
     except:
         raise Http404("Lesson does not exist")
 
-@login_required
-def index(request):
-    teacher = request.user.teacher
-    news = News.objects.order_by('-upload_time')[:5].annotate(Count('viewer'))
-    countlesson = Lesson.objects.filter(teacher=teacher.id).count()
-    page_title = 'Trang chủ'
-    context = {'page_title': page_title }
 
-    if countlesson:
-        context['countlesson'] = countlesson
-
-    if news:
-        context['news'] = news
-    
-
-    return render(request, 'index.html', context)
 
 
 @login_required    
@@ -477,3 +486,14 @@ def add_lesson_schedule(request, lesson_id):
         return render(request, 'schedule/add_lesson_schedule.html', context)
     except:
         raise Http404("fuck")
+
+
+@login_required
+def manager(request):
+    try:
+        currentuser = SubjectTeacher.objects.filter(teacher = request.user.id, role='manager').values('subject')
+        member = SubjectTeacher.objects.filter(subject__id__in = currentuser)
+        context = {'member':member}
+        return render(request, 'manager/manager.html', context)
+    except:
+        raise Http404('d')

@@ -4,6 +4,8 @@ from .models import *
 class SubjectTeacherInline(admin.TabularInline):
     model = SubjectTeacher
     extra = 2
+class SubjectInline(admin.TabularInline):
+    model = Subject
 class SubjectClassyearInline(admin.TabularInline):
     model = SubjectClassyear
 class ClassyearManagerInline(admin.TabularInline):
@@ -12,6 +14,9 @@ class ClassyearManagerInline(admin.TabularInline):
 
 class SchoolManagerInline(admin.TabularInline):
     model = SchoolManager
+
+class GroupSubjectManagerInline(admin.TabularInline):
+    model = GroupSubjectManager
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
@@ -26,22 +31,24 @@ class SubjectAdmin(admin.ModelAdmin):
 @admin.register(GroupSubject)
 class SchoolAdmin(admin.ModelAdmin):
     list_display = ( 'title', )
+    inlines = [SubjectInline, GroupSubjectManagerInline]
     
 @admin.register(SubjectTeacher)
 class SubjectTeacherAdmin(admin.ModelAdmin):
     date_hierarchy = 'startdate'
     list_display = ('subject','teacher','role', 'is_active')
     list_filter = ('subject','role', 'is_active')
-    
+@admin.register(Classyear)
+class ClassyearAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'is_learning', 'class_level')
+    inlines = [ClassyearManagerInline]    
 @admin.register(ClassyearManager)
 class ClassyearManagerAdmin(admin.ModelAdmin):
     pass
 @admin.register(GroupSubjectManager)
 class GroupSubjectManagerAdmin(admin.ModelAdmin):
     pass
-@admin.register(Classyear)
-class ClassyearAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'is_learning', 'class_level')
+
 
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
@@ -61,7 +68,6 @@ class LessonClassyearAdmin(admin.ModelAdmin):
     pass
 @admin.register(SubjectClassyear)
 class SubjectClassyearAdmin(admin.ModelAdmin):
-    list_display = ('classyear', 'subject', 'teacher','is_teach_now')
     list_filter = ('classyear', 'subject__title', 'is_teach_now')
 
 @admin.register(SchoolManager)
@@ -74,4 +80,8 @@ class NewsAdmin(admin.ModelAdmin):
 
 @admin.register(Schoolyear)
 class SchoolyearAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(SubjectLesson)
+class SubjectLessonAdmin(admin.ModelAdmin):
     pass
