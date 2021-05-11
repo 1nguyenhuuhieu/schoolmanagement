@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'lessonmanagement',
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'import_export'
 ]
 
 MIDDLEWARE = [

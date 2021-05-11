@@ -1,4 +1,6 @@
 from django.contrib import admin
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 from .models import *
 
 class SubjectTeacherInline(admin.TabularInline):
@@ -18,15 +20,24 @@ class SchoolManagerInline(admin.TabularInline):
 class GroupSubjectManagerInline(admin.TabularInline):
     model = GroupSubjectManager
 
+
+class SubjectResource(resources.ModelResource):
+
+    class Meta:
+        model = Subject
+
+
+
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
     inlines = [SchoolManagerInline,]
 @admin.register(Subject)
-class SubjectAdmin(admin.ModelAdmin):
+class SubjectAdmin(ImportExportModelAdmin):
     list_display = ('title', 'group' )
     list_filter = ('group', )
     exclude = ('subject_slug',)
     inlines = [SubjectTeacherInline, SubjectClassyearInline]
+    resource_class = SubjectResource
 
 @admin.register(GroupSubject)
 class SchoolAdmin(admin.ModelAdmin):
@@ -85,3 +96,4 @@ class SchoolyearAdmin(admin.ModelAdmin):
 @admin.register(SubjectLesson)
 class SubjectLessonAdmin(admin.ModelAdmin):
     pass
+
