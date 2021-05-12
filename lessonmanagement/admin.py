@@ -21,12 +21,6 @@ class GroupSubjectManagerInline(admin.TabularInline):
     model = GroupSubjectManager
 
 
-class SubjectResource(resources.ModelResource):
-
-    class Meta:
-        model = Subject
-
-
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
@@ -37,7 +31,6 @@ class SubjectAdmin(ImportExportModelAdmin):
     list_filter = ('group', )
     exclude = ('subject_slug',)
     inlines = [SubjectTeacherInline, SubjectClassyearInline]
-    resource_class = SubjectResource
 
 @admin.register(GroupSubject)
 class SchoolAdmin(admin.ModelAdmin):
