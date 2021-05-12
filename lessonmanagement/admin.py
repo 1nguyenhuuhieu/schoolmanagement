@@ -21,16 +21,27 @@ class GroupSubjectManagerInline(admin.TabularInline):
     model = GroupSubjectManager
 
 
+class ClassyearResource(resources.ModelResource):
+
+    class Meta:
+        model = Classyear
+
+
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
     inlines = [SchoolManagerInline,]
 @admin.register(Subject)
-class SubjectAdmin(ImportExportModelAdmin):
+class SubjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'group' )
     list_filter = ('group', )
     exclude = ('subject_slug',)
     inlines = [SubjectTeacherInline, SubjectClassyearInline]
+  
+@admin.register(SubjectLevel)
+class SubjectLevel(admin.ModelAdmin):
+    pass
+  
 
 @admin.register(GroupSubject)
 class SchoolAdmin(admin.ModelAdmin):
@@ -43,9 +54,10 @@ class SubjectTeacherAdmin(admin.ModelAdmin):
     list_display = ('subject','teacher','role', 'is_active')
     list_filter = ('subject','role', 'is_active')
 @admin.register(Classyear)
-class ClassyearAdmin(admin.ModelAdmin):
+class ClassyearAdmin(ImportExportModelAdmin):
     list_display = ('__str__', 'is_learning', 'class_level')
     inlines = [ClassyearManagerInline]    
+    resource_class = ClassyearResource
 @admin.register(ClassyearManager)
 class ClassyearManagerAdmin(admin.ModelAdmin):
     pass

@@ -1,15 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime
+import datetime
 from django.conf import settings
 from django.db.models import F
 from django.utils.text import slugify
 from django.forms import ModelForm
 
-now = datetime.now()
+
 
 #lấy class level từ năm bắt đầu vào trường
 def class_level_def(year):
+    now = datetime.datetime.now()
     i = 0
     if (now.month < 9):
         i =  (now.year - year) + 5
@@ -29,6 +30,8 @@ def school_year_def(upload_time):
 
 #lấy năm vào trường của lớp từ level
 def level_to_startyear(level):
+    now = datetime.datetime.now()
+
     if now.month < 9:
         return (now.year + 5 - level)
     else:
@@ -233,6 +236,7 @@ class Teacher(models.Model):
 
     #niên khóa hiện tại
     def schoolyear(self):
+        now = datetime.datetime.now()
         if now.month < 9:
             return ('%s - %s') % (now.year - 1, now.year)
         else:
@@ -318,9 +322,8 @@ class Lesson(models.Model):
     description = models.CharField(max_length=200, null=True, blank=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    start_number_lesson = models.IntegerField(help_text="Bài giảng này ở tiết số mấy")
-    cout_number_lesson = models.IntegerField(help_text="Bài giảng này trong bao nhiêu tiết")
-
+    number_lesson = models.IntegerField(help_text="Bài giảng số mấy")
+ 
     schoolyear = models.ForeignKey("Schoolyear", on_delete=models.CASCADE, blank=True, null=True)
 
     classyear = models.ManyToManyField(Classyear, through="LessonClassyear")
@@ -342,6 +345,7 @@ class Lesson(models.Model):
         verbose_name = "Giáo Án"
         verbose_name_plural = "Giáo Án"
         ordering = ["-upload_time"]
+        unique_together = ['level', 'subject', 'number_lesson']
 
 
     #niên khoá hiện tại
@@ -360,6 +364,23 @@ class Lesson(models.Model):
         return LessonClassyear.objects.filter(lesson=self.id)
     def __str__(self):
         return '%s - %s' % (self.title, self.level)
+
+# chương trình giảng dạy
+class SubjectLevel(models.Model):
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    
+    LEVEL_CHOICES = [
+        (6, 6),
+        (7, 7),
+        (8, 8),
+        (9, 9)
+    ]
+    level = models.IntegerField(choices=LEVEL_CHOICES)
+    number_lesson = models.IntegerField()
+    title = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return '%s - %s' % (self.subject, self.level)
 
 #Giáo án thuộc lớp học nào
 class LessonClassyear(models.Model):
@@ -407,30 +428,16 @@ class SubjectClassyear(models.Model):
     classyear = models.ManyToManyField(Classyear)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     schoolyear = models.ForeignKey("Schoolyear", on_delete=models.CASCADE)
-
-
-
-
-    
-
-    #update mỗi khi teacher chọn is_teach tại LessonClassyear
-    current_lesson = models.IntegerField(blank=True, null=True)
-
     is_teach_now = models.BooleanField(default=True, verbose_name="Trạng thái hiệu lực")
-
     #update when current_lesson change
     edit_time = models.DateTimeField(auto_now=True, blank=True, null=True)
-
     def classyear_list(self):
         return ', '.join(classyear.__str__() for classyear in self.classyear.all())
-
-
     class Meta:
         verbose_name = "Phân công giảng dạy"
         verbose_name_plural = "Phân công giảng dạy"
         # ordering = ('subject__title', '-classyear__startyear')
         unique_together = ('subject', 'teacher')
-
     def __str__(self):
         return '%s : %s - %s' % (self.subject, self.classyear_list(), self.teacher.full_name())
 

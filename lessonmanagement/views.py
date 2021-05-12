@@ -257,76 +257,51 @@ def addlesson(request):
 def add_lesson_subject_level(request, subject, level):
     now = datetime.datetime.now()
     teacher = request.user.teacher.id
-    q2 = Lesson.objects.filter(teacher=teacher).filter(subject__subject_slug = subject).filter(level = level)
+    q2 = Lesson.objects.filter(teacher=teacher, subject__subject_slug = subject, level = level)
     try:
-        latest_lesson = q2.latest('start_number_lesson')
-        new_number_lesson = latest_lesson.start_number_lesson + latest_lesson.cout_number_lesson
+        latest_lesson = q2.latest('number_lesson')
+        print(q2)
+        new_number_lesson = latest_lesson.number_lesson + 1
     except:
         new_number_lesson = 1
-      
     try:
-
-        q1 = SubjectClassyear.objects.filter(teacher = teacher).filter(subject__subject_slug=subject).filter(classyear__startyear = level_to_startyear(level))
-        subject_classyear_list = q1.latest('id')
-
-        subject_level_title = subject_classyear_list.subject.title + ' ' + str(level)
-        classyear_title_list = ', '.join(str(class_level_def(i.classyear.startyear)) + i.classyear.title for i in q1)
-
-        last_lesson = q2.order_by('-upload_time')[:5]
-       
-        context = {
-            'subject_classyear_list': subject_classyear_list,
-            'subject_level_title': subject_level_title,
-            'new_number_lesson': new_number_lesson,
-            'classyear_title_list': classyear_title_list,
-            'last_lesson': last_lesson,
-            'subject_classyear': q1,
-            'subject':subject,
-            'level': level
-        }
+        q1 = SubjectClassyear.objects.filter(teacher = teacher).filter(subject__subject_slug = subject).filter(classyear__startyear = level_to_startyear(level))
+        subject_title = Subject.objects.get(subject_slug = subject)
+        if q1:
+            try:
+                new_title_lesson = SubjectLevel.objects.get(subject__subject_slug = subject, level = level, number_lesson = new_number_lesson ).title
+                context['new_title_lesson'] = new_title_lesson
+            except:
+                context = {
+                    'subject':subject,
+                    'level': level,
+                    'subject_title': subject_title,
+                    'new_number_lesson': new_number_lesson,
+                }
     except:
          return redirect('addlesson')
-
     if request.method == 'POST' and request.FILES['file_lesson']:
         title = request.POST['title_lesson']
         subject = request.POST['subject']
         subject_save = Subject.objects.get(subject_slug = subject)
         level_save = request.POST['level']
         start_lesson = request.POST['start_lesson']
-        count_lesson = request.POST['count_lesson']
+       
         description_lesson = request.POST['description_lesson']
-
         lesson = request.FILES['file_lesson']
         teacher_location = 'media/lessons/' + str(request.user.username)
-       
-       
         lesson_location =  teacher_location + '/'
         lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
-
         fs = FileSystemStorage(location=lesson_location)
-
         lesson_file =  fs.save(lesson.name.replace(" ", "_"), lesson)
         lesson_path =  lesson_location_withoutmedia + fs.get_valid_name(lesson_file).replace(" ", "_")
-
-
         year = Schoolyear.objects.get(start_date__year = current_schoolyear())
-
-
-        new_lesson = Lesson(title=title, upload_time = now, level = level_save, description = description_lesson, teacher = request.user.teacher, subject = subject_save, start_number_lesson = start_lesson, cout_number_lesson = count_lesson, lesson_path = lesson_path, schoolyear=year  )
+        new_lesson = Lesson(title=title, upload_time = now, level = level_save, description = description_lesson, teacher = request.user.teacher, subject = subject_save, number_lesson = start_lesson,  lesson_path = lesson_path, schoolyear=year  )
         new_lesson.save()
-
         messages.success(request, 'Vui lòng chờ giáo án của bạn được duyệt.')
-
         return redirect('lesson', id=new_lesson.id, permanent=True )
-
-
-
-        
-
- 
     return render(request, 'lesson/add_lesson_subject.html', context)
-        
-
+    
 @login_required
 def edit_lesson(request, lesson_id):
     now = datetime.datetime.now()
