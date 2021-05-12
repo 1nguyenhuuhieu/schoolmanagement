@@ -17,6 +17,12 @@
 
   <h5>Chọn môn học để thêm giáo án</h5>
 
+{% for i in subject_lesson %}
+
+{{ i }}
+<br>
+{% endfor %}
+
   <small class="text-muted"><i class="far fa-lightbulb me-2 fa-fw"></i>Danh sách này được hiển thị dựa trên sự phân công giảng dạy từ <a href="#" class="text-decoration-none">ban giám hiệu nhà trường.</a></small>
   <br>
   <small class="text-muted fst-italic"><i class="fas fa-history me-2 fa-fw"></i>Giáo án tải lên gần nhất cách đây: {{ lesson_latest.upload_time|timesince }} <a href="#" class="text-decoration-none">{{ lesson_latest.title }}</a> </small>
@@ -48,6 +54,18 @@
               <h5 class="card-title"><i class="fas fa-book fa-fw me-2 text-muted"></i> 
                 {{ i.grouper }} {{ j.grouper|classlevel }}
                 </h5>
+              <hr>
+              <ul class="m-0">
+                <li>Tiến độ <a href="#" class="text-decoration-none">{{ j.list.0.subject__group__title }}</a></li>
+                <li>Tuần này </li>
+                <li>Dạy các lớp  
+                  {% for k in j.list %}
+                  <a href="#" class="text-decoration-none">{{ k.classyear__startyear|classlevel }}{{ k.classyear__title }}{% if forloop.last %}{% else %},{% endif %}
+                  </a>
+                  {% endfor %}
+                </li>
+                <li>Năm học {{ teacher.schoolyear }} </li>
+              </ul>
               <hr>
                 <p class="card-text m-0">
                 <ul class="m-0">

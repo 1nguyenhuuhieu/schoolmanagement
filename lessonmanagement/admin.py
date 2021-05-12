@@ -26,6 +26,14 @@ class ClassyearResource(resources.ModelResource):
     class Meta:
         model = Classyear
 
+class SubjectLevelResource(resources.ModelResource):
+    class Meta:
+        model = SubjectLevel
+
+class SubjectLessonResource(resources.ModelResource):
+    class Meta:
+        model = SubjectLesson
+
 
 
 @admin.register(School)
@@ -39,8 +47,9 @@ class SubjectAdmin(admin.ModelAdmin):
     inlines = [SubjectTeacherInline, SubjectClassyearInline]
   
 @admin.register(SubjectLevel)
-class SubjectLevel(admin.ModelAdmin):
-    pass
+class SubjectLevel(ImportExportModelAdmin):
+    list_filter = ('subject', 'level')
+    resource_class = SubjectLevelResource
   
 
 @admin.register(GroupSubject)
@@ -99,6 +108,6 @@ class SchoolyearAdmin(admin.ModelAdmin):
     pass
 
 @admin.register(SubjectLesson)
-class SubjectLessonAdmin(admin.ModelAdmin):
-    pass
+class SubjectLessonAdmin(ImportExportModelAdmin):
+     resource_class = SubjectLessonResource
 

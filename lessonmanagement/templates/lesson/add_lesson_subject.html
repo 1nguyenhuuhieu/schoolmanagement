@@ -30,10 +30,11 @@
           </div>
         <div class="col">
           <label for="startLesson" class="form-label">Bài giảng số</label>
-          <input type="number" class="form-control" id="startLesson" name="start_lesson"
-          value = {{ new_number_lesson }} required >
+          <input type="number" class="form-control" id="startLesson" name="start_lesson" min="{{ new_number_lesson }}" onchange="getLessonTitle()"
+          value = '{{ new_number_lesson }}' required >
+
           <div class="invalid-feedback">
-            Phải chọn tiết số mấy
+            Phải chọn bài giảng số mấy
           </div>
 
         </div>
@@ -42,12 +43,26 @@
           <label for="titleLesson" class="form-label mt-4">Tên giáo án</label>
           <div class="input-group" >
             <span class="input-group-text" id="basic-addon1"><i class="fas fa-book me-2"></i></span>
-            <input type="text" id="titleLesson" name='title_lesson' class="form-control" aria-label="Username" aria-describedby="basic-addon1" required value='{{ new_title_lesson }}' placeholder>
+            <input type="text" id="titleLesson" name='title_lesson' class="form-control" aria-label="Username" aria-describedby="basic-addon1" required  placeholder value="{{ current_title_lesson.title }}">
             <div class="invalid-feedback">
              Yêu cầu điền tên của giáo án
             </div>
           </div>
         </div>
+
+        <script>
+
+       
+
+          function getLessonTitle() {
+            var new_title = {{ new_title_lesson|safe }}
+            var x = document.getElementById("startLesson").value;
+
+ 
+            document.getElementById("titleLesson").value =  new_title[x-1].title ;
+          }
+
+        </script>
 
         <div class="col-12">
           <label for="fileLesson" class="form-label mt-4">File giáo án</label>
@@ -107,7 +122,7 @@
 
   <div class="col-4">
     {% if last_lesson %}
-    <h5 class="mb-4">Giáo án vừa tải lên trong {{ subject_level_title }}</h5>
+    <h5 class="mb-4">Giáo án vừa tải lên trong {{ subject_title }} {{ level }}</h5>
 
     <div class="list-group">
       {% for lesson in last_lesson %}
@@ -121,7 +136,7 @@
          </small>
         </div>
         <span class="badge bg-warning text-dark p-2 ms-2"  style="min-width: 100px;">
-          Tiết {{ lesson.start_number_lesson }} - {{ lesson.start_number_lesson|add:lesson.cout_number_lesson }}
+          Tiết {{ lesson.number_lesson }}
         </span>
       </a>
       {% endfor %}

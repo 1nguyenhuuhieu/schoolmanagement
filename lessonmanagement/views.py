@@ -12,6 +12,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
 from .forms import *
+from django.http import JsonResponse
 import os
 
 
@@ -240,13 +241,30 @@ def lesson(request, id):
         raise Http404("Lesson does not exist")
     
     
+@login_required
 def addlesson(request):
+    schoolyear = current_schoolyear() 
+    schoolyear = Schoolyear.objects.get(start_date__year = schoolyear)
+    teacher_id = request.user.teacher.id
+
+    # quy định số tiết mỗi tuần của từng môn học
+    list_subject = []
+    i = SubjectClassyear.objects.filter(teacher = teacher_id, schoolyear = schoolyear).order_by('subject').values('subject').distinct()
+    for j in i:
+        list_subject.append(j['subject'])
+    list_level = []
+    i = SubjectClassyear.objects.filter(teacher = teacher_id, schoolyear = schoolyear).order_by('classyear__startyear').values('classyear__startyear').distinct()
+    for j in i:
+        list_level.append(class_level_def(j['classyear__startyear']))
+   
+    q = SubjectLesson.objects.filter(subject__in = list_subject).filter(level__in = list_level)
+    context = {'subject_lesson': q}
+    
 
     try:
         lesson_latest = Lesson.objects.filter(teacher=request.user.teacher.id).latest('upload_time')
-        context = { 
-            'lesson_latest': lesson_latest
-        }
+        context['lesson_latest'] = lesson_latest
+       
     except:
         context = { 
         }
@@ -255,29 +273,31 @@ def addlesson(request):
 
 @login_required
 def add_lesson_subject_level(request, subject, level):
+    context = {'subject': subject,
+    'level': level}
     now = datetime.datetime.now()
     teacher = request.user.teacher.id
     q2 = Lesson.objects.filter(teacher=teacher, subject__subject_slug = subject, level = level)
     try:
         latest_lesson = q2.latest('number_lesson')
-        print(q2)
+        last_lesson = q2.all()[:5]
+        context['last_lesson'] = last_lesson
         new_number_lesson = latest_lesson.number_lesson + 1
     except:
         new_number_lesson = 1
+    context['new_number_lesson'] = new_number_lesson
     try:
         q1 = SubjectClassyear.objects.filter(teacher = teacher).filter(subject__subject_slug = subject).filter(classyear__startyear = level_to_startyear(level))
         subject_title = Subject.objects.get(subject_slug = subject)
-        if q1:
-            try:
-                new_title_lesson = SubjectLevel.objects.get(subject__subject_slug = subject, level = level, number_lesson = new_number_lesson ).title
-                context['new_title_lesson'] = new_title_lesson
-            except:
-                context = {
-                    'subject':subject,
-                    'level': level,
-                    'subject_title': subject_title,
-                    'new_number_lesson': new_number_lesson,
-                }
+        context['subject_title'] = subject_title
+        q_subject_level = SubjectLevel.objects.filter(subject__subject_slug = subject, level = level)
+        if q1 and q_subject_level:
+            current_title_lesson =q_subject_level.get(number_lesson = new_number_lesson)
+            new_title_lesson = list(SubjectLevel.objects.filter(subject__subject_slug = subject, level = level).values('number_lesson', 'title'))
+
+            context['new_title_lesson'] = new_title_lesson
+            context['current_title_lesson'] = current_title_lesson
+
     except:
          return redirect('addlesson')
     if request.method == 'POST' and request.FILES['file_lesson']:

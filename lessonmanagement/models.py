@@ -7,6 +7,12 @@ from django.utils.text import slugify
 from django.forms import ModelForm
 
 
+LEVEL_CHOICES = [
+        (6, 6),
+        (7, 7),
+        (8, 8),
+        (9, 9)
+    ]
 
 #lấy class level từ năm bắt đầu vào trường
 def class_level_def(year):
@@ -75,12 +81,6 @@ class Subject(SchoolAbstract):
 
 class SubjectLesson(models.Model):
     subject = models.ForeignKey(Subject, on_delete = models.CASCADE)
-    LEVEL_CHOICES = [
-        (6, 6),
-        (7, 7),
-        (8, 8),
-        (9, 9)
-    ]
     level = models.IntegerField(choices=LEVEL_CHOICES, verbose_name='Khối')
     total_lesson = models.IntegerField(verbose_name='Tổng số tiết')
     week_lesson = models.IntegerField(verbose_name='Số tiết mỗi tuần')
@@ -287,6 +287,7 @@ class Teacher(models.Model):
 
     #thống kê số lượng giáo án
     def count_lesson(self):
+        now = datetime.datetime.now()
         count = {}
         teacher = self.user.teacher.id
 
@@ -354,6 +355,7 @@ class Lesson(models.Model):
 
     #năm vào trường của lớp học của bài giảng
     def start_year_level(self):
+        now = datetime.datetime.now()
         if now.month < 9:
             return school_year_def(self.upload_time) - self.level + 6
         else:
@@ -380,7 +382,7 @@ class SubjectLevel(models.Model):
     title = models.CharField(max_length=100)
     
     def __str__(self):
-        return '%s - %s' % (self.subject, self.level)
+        return '%s %s - Tiết %s' % (self.subject, self.level , self.number_lesson)
 
 #Giáo án thuộc lớp học nào
 class LessonClassyear(models.Model):
@@ -433,6 +435,7 @@ class SubjectClassyear(models.Model):
     edit_time = models.DateTimeField(auto_now=True, blank=True, null=True)
     def classyear_list(self):
         return ', '.join(classyear.__str__() for classyear in self.classyear.all())
+
     class Meta:
         verbose_name = "Phân công giảng dạy"
         verbose_name_plural = "Phân công giảng dạy"
