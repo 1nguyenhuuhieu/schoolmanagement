@@ -247,18 +247,7 @@ def addlesson(request):
     schoolyear = Schoolyear.objects.get(start_date__year = schoolyear)
     teacher_id = request.user.teacher.id
 
-    # quy định số tiết mỗi tuần của từng môn học
-    list_subject = []
-    i = SubjectClassyear.objects.filter(teacher = teacher_id, schoolyear = schoolyear).order_by('subject').values('subject').distinct()
-    for j in i:
-        list_subject.append(j['subject'])
-    list_level = []
-    i = SubjectClassyear.objects.filter(teacher = teacher_id, schoolyear = schoolyear).order_by('classyear__startyear').values('classyear__startyear').distinct()
-    for j in i:
-        list_level.append(class_level_def(j['classyear__startyear']))
-   
-    q = SubjectLesson.objects.filter(subject__in = list_subject).filter(level__in = list_level)
-    context = {'subject_lesson': q}
+    context = {}
     
 
     try:
@@ -430,58 +419,30 @@ def emptyschedule(request):
     return render(request, 'error/notfound.html' , context )
 
 # thêm giáo án vào lịch báo giảng
+@login_required
 def add_lesson_schedule(request, lesson_id):
-    try:
-        lesson = Lesson.objects.filter(teacher=request.user.teacher.id).get(id = lesson_id)
-        classyear_list = SubjectClassyear.objects.filter(teacher=request.user.teacher.id).filter(subject__title = lesson.subject.title).filter(classyear__startyear = level_to_startyear(lesson.level))
-
-        schedule_list = LessonClassyear.objects.filter(lesson__teacher=request.user.teacher.id).filter(lesson__id = lesson_id).order_by('-id')
-
-
-
-        if request.method == "POST":
-
-            classyear_form = request.POST['classyear']
-            classyear = Classyear.objects.get(id = classyear_form)
-            schedule_date = request.POST['schedule_date']
-            session_schedule = request.POST['session']
-            order_schedule = request.POST['order']
-
-
-
-
-            new_schedule = LessonClassyear(is_teach=False, lesson=lesson, classyear=classyear, session=session_schedule, order_schedule=order_schedule, teach_date_schedule=schedule_date )
-
-            new_schedule.save()
-
-            q = LessonClassyear.objects.get(pk = new_schedule.id)
-            week = q.teach_date_schedule.isocalendar()[1]
-
-
-            new_schedule.week = week
-            new_schedule.save()
-
-            messages.success(request, 'Lịch báo giảng đã được thêm.')
-
-
-            
-            
-
-
-
-            if 'quit' in request.POST:
-                return redirect('lesson', id=lesson_id, permanent=True)
-            if 'continue' in request.POST:
-                return redirect('add_lesson_schedule', lesson_id=lesson_id, permanent=True)
-           
-
-
-        context = {'lesson': lesson, 'classyear_list': classyear_list, 'schedule_list': schedule_list,}
-
-        return render(request, 'schedule/add_lesson_schedule.html', context)
-    except:
-        raise Http404("fuck")
-
+    
+    if request.method == "POST":
+        classyear_form = request.POST['classyear']
+        classyear = Classyear.objects.get(id = classyear_form)
+        schedule_date = request.POST['schedule_date']
+        session_schedule = request.POST['session']
+        order_schedule = request.POST['order']
+        new_schedule = LessonClassyear(is_teach=False, lesson=lesson, classyear=classyear, session=session_schedule, order_schedule=order_schedule, teach_date_schedule=schedule_date )
+        new_schedule.save()
+        q = LessonClassyear.objects.get(pk = new_schedule.id)
+        week = q.teach_date_schedule.isocalendar()[1]
+        new_schedule.week = week
+        new_schedule.save()
+        messages.success(request, 'Lịch báo giảng đã được thêm.')
+        if 'quit' in request.POST:
+            return redirect('lesson', id=lesson_id, permanent=True)
+        if 'continue' in request.POST:
+            return redirect('add_lesson_schedule', lesson_id=lesson_id, permanent=True)
+    context = {}
+    
+    return render(request, 'schedule/add_lesson_schedule.html', context)
+    
 
 @login_required
 def manager(request):
