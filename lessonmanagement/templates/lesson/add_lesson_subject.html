@@ -6,64 +6,58 @@
 <div class="row justify-content-center ">
   <div class="col-4 border-bottom">
     <h2 class="mt-5 text-center"><i class="fas fa-plus me-2"></i>Thêm Giáo Án</h2>
-    <p class="text-center text-muted"><i class="far fa-lightbulb me-2"></i>Danh sách môn học và lớp học được hiển thị dựa trên sự sắp xếp của <a href="#" class="text-decoration-none">ban giám hiệu nhà trường</a>.<a href="#" class="text-decoration-none"> Xem thêm</a></p>
+    <p class="text-center text-muted"><i class="far fa-lightbulb me-2"></i>Danh sách môn học và lớp học được hiển thị
+      dựa trên sự sắp xếp của <a href="#" class="text-decoration-none">ban giám hiệu nhà trường</a>.<a href="#"
+        class="text-decoration-none"> Xem thêm</a></p>
   </div>
 </div>
 <div class="row pt-5 justify-content-center">
   <div class="col-6">
-      <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate >
-        {% csrf_token %}
-        <div class="row">
-          <h4 class="mb-4">Thông tin giáo án</h4>
-          <div class="col-lg-6">
-            <label for="subjectLevel" class="form-label">Môn học</label>
-            <input type="hidden"  name="subject" value='{{ subject }}'>
-            <input type="hidden"  name="level" value="{{ level }}">
-            <div id="subjectLevel">
-              <button class="btn btn-outline-success dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">{{ subject_title }} {{ level }}</button>
-              <ul class="dropdown-menu">
-                {% for i in teacher.subject_classyear_list %}
-                <li><a class="dropdown-item" href="{% url 'add_lesson_subject_level' i.subject__title|slugify i.classyear__startyear|classlevel %}">{{ i.subject__title }} {{ i.classyear__startyear|classlevel }}</a></li>
-                {% endfor %}
-              </ul>
-            </div>
+    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+      {% csrf_token %}
+      <div class="row">
+        <h4 class="mb-4">Thông tin giáo án</h4>
+        <div class="col-lg-6">
+          <label for="subjectLevel" class="form-label">Môn học</label>
+          <input type="hidden" name="subject" value='{{ subject }}'>
+          <input type="hidden" name="level" value="{{ level }}">
+          <div id="subjectLevel">
+            <button class="btn btn-outline-success dropdown-toggle w-100" type="button" data-bs-toggle="dropdown"
+              aria-expanded="false">{{ subject_title }} {{ level }}</button>
+            <ul class="dropdown-menu">
+              {% for i in teacher.subject_classyear_list %}
+              <li><a class="dropdown-item"
+                  href="{%url 'add_lesson_subject_level' i.subject__title|slugify i.classyear__startyear__start_date__year|classlevel%}">{{i.subject__title}} {{i.classyear__startyear__start_date__year|classlevel}}</a></li>
+              {% endfor %}
+            </ul>
           </div>
+        </div>
         <div class="col">
           <label for="startLesson" class="form-label">Bài giảng số</label>
-          <input type="number" class="form-control" id="startLesson" name="start_lesson" min="{{ new_number_lesson }}" onchange="getLessonTitle()"
-          value = '{{ new_number_lesson }}' required >
-
+          <input type="number" class="form-control" id="startLesson" name="start_lesson" min="{{ new_number_lesson }}"
+            onchange="getLessonTitle()" value='{{ new_number_lesson }}' required>
           <div class="invalid-feedback">
             Phải chọn bài giảng số mấy
           </div>
-
         </div>
-  
         <div class="col-12">
           <label for="titleLesson" class="form-label mt-4">Tên giáo án</label>
-          <div class="input-group" >
+          <div class="input-group">
             <span class="input-group-text" id="basic-addon1"><i class="fas fa-book me-2"></i></span>
-            <input type="text" id="titleLesson" name='title_lesson' class="form-control" aria-label="Username" aria-describedby="basic-addon1" required  placeholder value="{{ current_title_lesson.title }}">
+            <input type="text" id="titleLesson" name='title_lesson' class="form-control" aria-label="Username"
+              aria-describedby="basic-addon1" required placeholder value="{{ current_title_lesson.title }}">
             <div class="invalid-feedback">
-             Yêu cầu điền tên của giáo án
+              Yêu cầu điền tên của giáo án
             </div>
           </div>
         </div>
-
         <script>
-
-       
-
           function getLessonTitle() {
-            var new_title = {{ new_title_lesson|safe }}
-            var x = document.getElementById("startLesson").value;
-
- 
-            document.getElementById("titleLesson").value =  new_title[x-1].title ;
+            var new_title = {{new_title_lesson|safe}}
+          var x = document.getElementById("startLesson").value;
+          document.getElementById("titleLesson").value = new_title[x - 1].title;
           }
-
         </script>
-
         <div class="col-12">
           <label for="fileLesson" class="form-label mt-4">File giáo án</label>
           <input class="form-control" type="file" id="fileLesson" name="file_lesson" required>
@@ -71,71 +65,58 @@
           <div class="invalid-feedback">
             Yêu cầu tải file lên
           </div>
-
         </div>
-
         <div class="col-12">
-
           <label for="descriptionLesson" class="form-label mt-4">Tóm tắt nội dung bài giảng</label>
           <textarea class="form-control" id="descriptionLesson" rows="3" name="description_lesson"></textarea>
           <div class="form-text">Giáo án nên có phần tóm tắt để người quản lý tiện theo dõi</div>
-
-
           <hr class="my-4">
-
         </div>
         <div class="col-12">
-
-          <button onclick="goBack()" class="btn btn-lg btn-outline-danger mb-4 me-2"><i class="fas fa-times me-2"></i>Huỷ</button>
-
-        <script>
-        function goBack() {
-          window.history.back();
-        }
-        </script>
-
-
-  <button type="submit" class="btn btn-lg btn-success mb-4 w-50"><i class="fas fa-plus me-2"></i>Thêm giáo án</button>
-
+          <button onclick="goBack()" class="btn btn-lg btn-outline-danger mb-4 me-2"><i
+              class="fas fa-times me-2"></i>Huỷ</button>
+          <script>
+            function goBack() {
+              window.history.back();
+            }
+          </script>
+          <button type="submit" class="btn btn-lg btn-success mb-4 w-50"><i class="fas fa-plus me-2"></i>Thêm giáo
+            án</button>
         </div>
-</div>
-      </form>
-
-      <script>
-(function () {
-  'use strict'
-  var forms = document.querySelectorAll('.needs-validation')
-  Array.prototype.slice.call(forms)
-    .forEach(function (form) {
-      form.addEventListener('submit', function (event) {
-        if (!form.checkValidity()) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
-
-        form.classList.add('was-validated')
-      }, false)
-    })
-})()
-      </script>
+      </div>
+    </form>
+    <script>
+      (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms)
+          .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+              }
+              form.classList.add('was-validated')
+            }, false)
+          })
+      })()
+    </script>
   </div>
-
   <div class="col-4">
     {% if last_lesson %}
     <h5 class="mb-4">Giáo án vừa tải lên trong {{ subject_title }} {{ level }}</h5>
-
     <div class="list-group">
       {% for lesson in last_lesson %}
       <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
           <div class="fw-bold">
             {{ lesson.title }}
-         </div>
-         <small class="text-muted">   {{ lesson.upload_time|naturaltime }} /
-         {{ lesson.upload_time|date:"SHORT_DATE_FORMAT" }}
-         </small>
+          </div>
+          <small class="text-muted"> {{ lesson.upload_time|naturaltime }} /
+            {{ lesson.upload_time|date:"SHORT_DATE_FORMAT" }}
+          </small>
         </div>
-        <span class="badge bg-warning text-dark p-2 ms-2"  style="min-width: 100px;">
+        <span class="badge bg-warning text-dark p-2 ms-2" style="min-width: 100px;">
           Bài giảng số {{ lesson.number_lesson }}
         </span>
       </a>
@@ -145,11 +126,11 @@
     <h4 class="text-danger">Chưa có giáo án nào được tải lên trong mục này</h4>
     {% endif %}
   </div>
-<div class="row justify-content-center">
-  <div class="col-10">
-    {% include 'footer_withsidebar.html' %}
+  <div class="row justify-content-center">
+    <div class="col-12">
+      {% include 'footer_withsidebar.html' %}
+    </div>
   </div>
 </div>
-</div>
-  {% endwith %}
+{% endwith %}
 {% endblock %}

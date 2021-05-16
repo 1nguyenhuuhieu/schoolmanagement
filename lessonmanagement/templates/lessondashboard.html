@@ -35,7 +35,7 @@
                           <a href="{% url 'lesson' i.id %}" class="text-reset text-decoration-none">  {{ i.title }}</a>
                         </h6>
                         <span class="text-dark fw-bold">
-                        <a href="{% url 'lessons_subject_level' i.subject.title|slugify i.start_year_level %}" class="text-decoration-none">{{ i.subject.title }} {{ i.level }}</a>{% if i.display_classyear %}({% for j in i.display_classyear %}{{j}}{%if forloop.last %}{% else %},{% endif %}{% endfor %}) {% endif %} / Tiết {{ i.start_number_lesson}} {% if i.cout_number_lesson > 1 %} - {{ i.start_number_lesson|add:i.cout_number_lesson }} {% endif %}
+                        <a href="#" class="text-decoration-none">{{ i.subject.title }} {{ i.level }}</a>{% if i.display_classyear %}({% for j in i.display_classyear %}{{j}}{%if forloop.last %}{% else %},{% endif %}{% endfor %}) {% endif %} / Tiết {{ i.start_number_lesson}} {% if i.cout_number_lesson > 1 %} - {{ i.start_number_lesson|add:i.cout_number_lesson }} {% endif %}
                       </span>
                       <small class="text-muted">
     {{ i.upload_time|naturaltime }} / {{ i.upload_time|date:"SHORT_DATE_FORMAT" }}</small>

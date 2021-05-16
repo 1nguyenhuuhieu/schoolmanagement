@@ -26,7 +26,7 @@
 {% regroup teacher.subject_classyeartitle_list by subject__title as subject_classyeartitle_list_regroup %}
 {% for i in subject_classyeartitle_list_regroup %}
 <div class="row">
-  <h5><a href="#" class="text-decoration-none link-secondary">{{ i.grouper }} <i
+  <h5 class="mt-4"><a href="#" class="text-decoration-none link-secondary">{{ i.grouper }} <i
         class="fas fa-arrow-right ms-2"></i></a> </h5>
   {% regroup i.list by classyear__startyear__start_date__year as i_list_regroup %}
   {% for j in i_list_regroup %}
@@ -61,7 +61,6 @@
   </div>
   {% endfor %}
 </div>
-<hr>
 {% endfor %}
 {%else%}
 <h1 class="text-danger">Chưa có phân công giảng dạy</h1>

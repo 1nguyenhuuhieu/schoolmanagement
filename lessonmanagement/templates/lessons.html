@@ -15,10 +15,10 @@
                   <div class="btn-group btn-group-sm me-3">
                     <a href="#" class="btn btn-outline-success active " aria-current="page">Toàn bộ</a>
                     {% for i in classyear_list %}
-                    <a href="{{ i.classyear__title|slugify }}" class="btn btn-outline-success">{{ lesson_list.0.level }}{{ i.classyear.title }}</a>
+                    <a href="#" class="btn btn-outline-success">{{ lesson_list.0.level }}{{ i.classyear.title }}</a>
                     {% endfor %}
                   </div>
-            <a href="{% url 'add_lesson_subject_level' lesson_list.0.subject.title|slugify   lesson_list.0.level %}" class="btn btn-success btn-sm"><i class="fas fa-plus me-2"></i>Thêm giáo án</a>
+            <a href="#" class="btn btn-success btn-sm"><i class="fas fa-plus me-2"></i>Thêm giáo án</a>
 
 
             

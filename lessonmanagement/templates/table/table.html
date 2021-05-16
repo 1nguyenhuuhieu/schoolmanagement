@@ -1,43 +1,37 @@
-
-
-
-
 <table id="exampletable" class="table table-hover  " style="width:100%">
-    <thead >
+    <thead>
         <tr>
             <th>Tiết</th>
             <th>Tên giáo án</th>
-            
             <th>Ngày tải lên</th>
             <th>Trạng thái</th>
-           
         </tr>
     </thead>
     <tbody>
         {% for i in lesson_list %}
         <tr>
-            <td> 
-                <span class="badge rounded-pill bg-secondary" style="width: 60px;">{{ i.start_number_lesson}}{% if i.cout_number_lesson > 1 %}-{{ i.start_number_lesson|add:i.cout_number_lesson }} {% endif %}</span>
-                
+            <td>
+                <span class="badge rounded-pill bg-secondary" style="width: 40px;">{{i.number_lesson}}</span>
             </td>
-
-            <td><a href="{% url 'lesson' i.id %}" class="text-decoration-none">{{ i.title }}  </a></td>
-
-            <td class="text-muted" >{{ i.upload_time|date }}</td>
-            <td>                    {% if i.status == "pending" %}
-                <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i class="far fa-clock me-1"></i>{{ i.get_status_display}}</span>
+            <td><a href="{% url 'lesson' i.id %}" class="text-decoration-none">{{ i.title }} </a></td>
+            <td class="text-muted">{{ i.upload_time|date }}</td>
+            <td> {% if i.status == "pending" %}
+                <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i
+                        class="far fa-clock me-1"></i>{{ i.get_status_display}}</span>
                 {% elif i.status == "acept" %}
-                <span class="badge bg-success  rounded-pill"  style="width: 100px;"><i class="fas fa-check me-1"></i>{{ i.get_status_display}}</span> 
-                 {% elif i.status == "deny" %}
-                 <span class="badge bg-danger  rounded-pill"  style="width: 100px;"><i class="fas fa-times me-1"></i>{{ i.get_status_display}}</span> 
-                {% endif %} </td>
+                <span class="badge bg-success  rounded-pill" style="width: 100px;"><i class="fas fa-check me-1"></i>{{
+                    i.get_status_display}}</span>
+                {% elif i.status == "deny" %}
+                <span class="badge bg-danger  rounded-pill" style="width: 100px;"><i class="fas fa-times me-1"></i>{{
+                    i.get_status_display}}</span>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-
 <script>
-    $(document).ready(function() {
-    $('#exampletable').DataTable();
-} );
+    $(document).ready(function () {
+        $('#exampletable').DataTable();
+    });
 </script>

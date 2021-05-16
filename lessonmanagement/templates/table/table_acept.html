@@ -1,43 +1,33 @@
-
-
-
-
 <table id="exampletable3" class="table table-hover  " style="width:100%">
-    <thead >
+    <thead>
         <tr>
             <th>Tiết</th>
             <th>Tên giáo án</th>
             <th>Trạng thái</th>
             <th>Người duyệt</th>
-            
             <th>Thời gian duyệt</th>
-            
-           
         </tr>
     </thead>
     <tbody>
         {% for i in lesson_list %}
         {% if i.status == 'acept' %}
         <tr>
-            <td> 
-                <span class="badge rounded-pill bg-secondary" style="width: 60px;">{{ i.start_number_lesson}}{% if i.cout_number_lesson > 1 %}-{{ i.start_number_lesson|add:i.cout_number_lesson }} {% endif %}</span>
-                
+            <td>
+                <span class="badge rounded-pill bg-secondary"  style="width: 40px;">{{i.number_lesson}}</span>
             </td>
-
-            <td><a href="#" class="text-decoration-none">{{ i.title }}  </a></td>
-            <td> <span class="badge bg-success  rounded-pill"><i class="fas fa-check me-1"></i>{{ i.get_status_display}}</span> </td>
-            <td> <a href="#" class="text-decoration-none">{{ i.checker.full_name }}</a>  </td>
-
-            <td class="text-muted" > <span class="text-dark fw-bold"> {{ i.check_date|timesince }} trước</span> {{ i.check_date|date }}</td>
-            
+            <td><a href="#" class="text-decoration-none">{{ i.title }} </a></td>
+            <td> <span class="badge bg-success  rounded-pill"><i class="fas fa-check me-1"></i>{{
+                    i.get_status_display}}</span> </td>
+            <td> <a href="#" class="text-decoration-none">{{ i.checker.full_name }}</a> </td>
+            <td class="text-muted"> <span class="text-dark fw-bold"> {{ i.check_date|timesince }} trước</span> {{
+                i.check_date|date }}</td>
         </tr>
         {% endif %}
         {% endfor %}
     </tbody>
 </table>
-
 <script>
-    $(document).ready(function() {
-    $('#exampletable3').DataTable();
-} );
+    $(document).ready(function () {
+        $('#exampletable3').DataTable();
+    });
 </script>

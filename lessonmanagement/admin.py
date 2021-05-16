@@ -58,7 +58,6 @@ class SubjectLevel(ImportExportModelAdmin):
     list_filter = ('subject',)
     list_display = ('subject', 'number_lesson','title')
     resource_class = SubjectLevelResource
-  
 
 @admin.register(GroupSubject)
 class SchoolAdmin(admin.ModelAdmin):
@@ -69,18 +68,20 @@ class SubjectManagerAdmin(admin.ModelAdmin):
     date_hierarchy = 'startdate'
     list_display = ('subject','teacher', 'is_active')
     list_filter = ('subject', 'is_active')
+
 @admin.register(Classyear)
 class ClassyearAdmin(ImportExportModelAdmin):
     list_display = ('__str__', 'is_learning', 'class_level')
     inlines = [ClassyearManagerInline]    
     resource_class = ClassyearResource
+
 @admin.register(ClassyearManager)
 class ClassyearManagerAdmin(admin.ModelAdmin):
     pass
+
 @admin.register(GroupSubjectManager)
 class GroupSubjectManagerAdmin(admin.ModelAdmin):
     pass
-
 
 @admin.register(Teacher)
 class TeacherAdmin(ImportExportModelAdmin):
@@ -92,13 +93,12 @@ class TeacherAdmin(ImportExportModelAdmin):
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
     date_hierarchy = 'upload_time'
-    list_filter = ('subject', 'subject__group__title','level','teacher__lastname','status','checker')
-
-
+    list_filter = ('subject', 'subject__subject__group__title','teacher__lastname','status','checker')
 
 @admin.register(LessonClassyear)
 class LessonClassyearAdmin(admin.ModelAdmin):
     pass
+
 @admin.register(SubjectClassyear)
 class SubjectClassyearAdmin(admin.ModelAdmin):
     list_filter = ('classyear', 'subject__title', 'is_teach_now')
