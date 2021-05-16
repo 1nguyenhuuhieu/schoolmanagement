@@ -1,101 +1,70 @@
 {% extends 'base_withsidebar.html' %}
-
 {% block content %}
 {% with teacher=request.user.teacher %}
 {% load lessonmanagement_extras %}
-
 <div class="bg-white border shadow-sm p-3 rounded-pill mb-4">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb m-0 ">
-        <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i class="fas fa-home me-2"></i>Trang chủ</a></li>
-        <li class="breadcrumb-item"> <a href="{% url 'alllessons' %}" class="text-decoration-none">Giáo án</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Thêm Giáo án</li>
-      </ol>
-    </nav>
-  </div>
-
-
-  <h5>Chọn môn học để thêm giáo án</h5>
-
-
-  <small class="text-muted"><i class="far fa-lightbulb me-2 fa-fw"></i>Danh sách này được hiển thị dựa trên sự phân công giảng dạy từ <a href="#" class="text-decoration-none">ban giám hiệu nhà trường.</a></small>
-  <br>
-  <small class="text-muted fst-italic"><i class="fas fa-history me-2 fa-fw"></i>Giáo án tải lên gần nhất cách đây: {{ lesson_latest.upload_time|timesince }} <a href="#" class="text-decoration-none">{{ lesson_latest.title }}</a> </small>
- 
-  <hr>
-
- 
-  {% regroup teacher.subject_classyeartitle_list by subject__title as subject_classyeartitle_list_regroup %}
-
-  
-
-  {% for i in subject_classyeartitle_list_regroup %}
-
-  
-
-  <div class="row">
-
-    <h5><a href="#" class="text-decoration-none link-secondary">{{ i.grouper }} <i class="fas fa-arrow-right ms-2"></i></a> </h5>
-
-    {% regroup i.list by classyear__startyear as i_list_regroup %}
-     
-    {% for j in i_list_regroup %}
-  
-
-    
-    <div class="col-4 my-3">
-        <div class="card rounded-15 shadow-sm h-100">
-            <div class="card-body d-flex flex-column  ">
-              <h5 class="card-title"><i class="fas fa-book fa-fw me-2 text-muted"></i> 
-                {{ i.grouper }} {{ j.grouper|classlevel }}
-                </h5>
-              <hr>
-                <p class="card-text m-0">
-                <ul class="m-0">
-                    <li>Bộ môn <a href="#" class="text-decoration-none">{{ j.list.0.subject__group__title }}</a></li>
-                    <li>Giáo viên <a href="#" class="text-decoration-none">{{ teacher.full_name }}</a></li>
-                    <li>Dạy các lớp  
-                      {% for k in j.list %}
-                      <a href="#" class="text-decoration-none">{{ k.classyear__startyear|classlevel }}{{ k.classyear__title }}{% if forloop.last %}{% else %},{% endif %}
-                      </a>
-                      {% endfor %}
-                    </li>
-                    <li>Năm học {{ teacher.schoolyear }} </li>
-                  </ul>
-                </p>
-                <hr>
-                <div class="mt-auto d-flex justify-content-between align-items-center">
-                  <a href="{% url 'add_lesson_subject_level' i.grouper|slugify j.grouper|classlevel %}" class="btn btn-sm btn-success"><i class="fas fa-plus me-2"></i>Thêm giáo án</a>
-
-                  <a href="#" class="text-decoration-none">xem tất cả</a>
-
-                </div>
-
-              
-            </div>
-
-          </div>
-
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb m-0 ">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i
+            class="fas fa-home me-2"></i>Trang chủ</a></li>
+      <li class="breadcrumb-item"> <a href="{% url 'alllessons' %}" class="text-decoration-none">Giáo án</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Thêm Giáo án</li>
+    </ol>
+  </nav>
+</div>
+<h5>Chọn môn học để thêm giáo án</h5>
+<small class="text-muted"><i class="far fa-lightbulb me-2 fa-fw"></i>Danh sách này được hiển thị dựa trên sự phân công
+  giảng dạy từ <a href="#" class="text-decoration-none">ban giám hiệu nhà trường.</a></small>
+<br>
+{%if lesson_latest%}
+<small class="text-muted fst-italic"><i class="fas fa-history me-2 fa-fw"></i>Giáo án tải lên gần nhất cách đây: {{lesson_latest.upload_time|timesince}} <a href="#" class="text-decoration-none">{{ lesson_latest.title }}</a> </small>
+{%else%}
+<small class="text-danger fst-italic"><i class="fas fa-times me-2 fa-fw"></i>Chưa có giáo án nào được tải lên</small>
+{%endif%}
+<hr>
+{%if teacher.subject_classyeartitle_list%}
+{% regroup teacher.subject_classyeartitle_list by subject__title as subject_classyeartitle_list_regroup %}
+{% for i in subject_classyeartitle_list_regroup %}
+<div class="row">
+  <h5><a href="#" class="text-decoration-none link-secondary">{{ i.grouper }} <i
+        class="fas fa-arrow-right ms-2"></i></a> </h5>
+  {% regroup i.list by classyear__startyear__start_date__year as i_list_regroup %}
+  {% for j in i_list_regroup %}
+  <div class="col-4 my-3">
+    <div class="card rounded-15 shadow-sm h-100">
+      <div class="card-body d-flex flex-column  ">
+        <h5 class="card-title"><i class="fas fa-book fa-fw me-2 text-muted"></i>
+          {{ i.grouper }} {{ j.grouper|classlevel }}
+        </h5>
+        <hr>
+        <p class="card-text m-0">
+        <ul class="m-0">
+          <li>Bộ môn <a href="#" class="text-decoration-none">{{ j.list.0.subject__group__title }}</a></li>
+          <li>Giáo viên <a href="#" class="text-decoration-none">{{ teacher.full_name }}</a></li>
+          <li>Dạy các lớp
+            {% for k in j.list %}
+            <a href="#" class="text-decoration-none">{{ k.classyear__startyear__start_date__year|classlevel }}{{ k.classyear__title }}{%if forloop.last%}{% else %},{% endif %}
+            </a>
+            {% endfor %}
+          </li>
+          <li>Năm học {{ teacher.schoolyear }} </li>
+        </ul>
+        </p>
+        <hr>
+        <div class="mt-auto d-flex justify-content-between align-items-center">
+          <a href="{% url 'add_lesson_subject_level' i.grouper|slugify j.grouper|classlevel %}"
+            class="btn btn-sm btn-success"><i class="fas fa-plus me-2"></i>Thêm giáo án</a>
+          <a href="#" class="text-decoration-none">xem tất cả</a>
+        </div>
       </div>
-
-      {% endfor %}
-
-
-   
-
+    </div>
   </div>
-
-
-  <hr>
   {% endfor %}
-
-
-     
-   
-
-
-  
-
-  {% endwith %}
-
+</div>
+<hr>
+{% endfor %}
+{%else%}
+<h1 class="text-danger">Chưa có phân công giảng dạy</h1>
+{%endif%}
+{% endwith %}
 {% endblock %}

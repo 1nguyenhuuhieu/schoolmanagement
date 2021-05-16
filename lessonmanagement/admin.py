@@ -3,9 +3,9 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from .models import *
 
-class SubjectTeacherInline(admin.TabularInline):
-    model = SubjectTeacher
-    extra = 2
+class SubjectManagerInline(admin.TabularInline):
+    model = SubjectManager
+    extra = 1
 class SubjectInline(admin.TabularInline):
     model = Subject
 class SubjectClassyearInline(admin.TabularInline):
@@ -20,6 +20,10 @@ class SchoolManagerInline(admin.TabularInline):
 class GroupSubjectManagerInline(admin.TabularInline):
     model = GroupSubjectManager
 
+class SubjectLessonInline(admin.TabularInline):
+    model = SubjectLesson
+    extra = 4
+
 
 class ClassyearResource(resources.ModelResource):
 
@@ -33,6 +37,9 @@ class SubjectLevelResource(resources.ModelResource):
 class SubjectLessonResource(resources.ModelResource):
     class Meta:
         model = SubjectLesson
+class TeacherResource(resources.ModelResource):
+    class Meta:
+        model = Teacher
 
 
 
@@ -44,24 +51,24 @@ class SubjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'group' )
     list_filter = ('group', )
     exclude = ('subject_slug',)
-    inlines = [SubjectTeacherInline, SubjectClassyearInline]
+    inlines = [SubjectLessonInline, SubjectManagerInline ]
   
 @admin.register(SubjectLevel)
 class SubjectLevel(ImportExportModelAdmin):
-    list_filter = ('subject', 'level')
+    list_filter = ('subject',)
+    list_display = ('subject', 'number_lesson','title')
     resource_class = SubjectLevelResource
   
 
 @admin.register(GroupSubject)
 class SchoolAdmin(admin.ModelAdmin):
     list_display = ( 'title', )
-    inlines = [SubjectInline, GroupSubjectManagerInline]
     
-@admin.register(SubjectTeacher)
-class SubjectTeacherAdmin(admin.ModelAdmin):
+@admin.register(SubjectManager)
+class SubjectManagerAdmin(admin.ModelAdmin):
     date_hierarchy = 'startdate'
-    list_display = ('subject','teacher','role', 'is_active')
-    list_filter = ('subject','role', 'is_active')
+    list_display = ('subject','teacher', 'is_active')
+    list_filter = ('subject', 'is_active')
 @admin.register(Classyear)
 class ClassyearAdmin(ImportExportModelAdmin):
     list_display = ('__str__', 'is_learning', 'class_level')
@@ -76,10 +83,11 @@ class GroupSubjectManagerAdmin(admin.ModelAdmin):
 
 
 @admin.register(Teacher)
-class TeacherAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'main_subject', 'is_work')
+class TeacherAdmin(ImportExportModelAdmin):
+    list_display = ('__str__','id', 'main_subject', 'is_work')
     list_filter = ('main_subject', 'is_work')
-    inlines = [ClassyearManagerInline, SubjectTeacherInline, SubjectClassyearInline]
+    inlines = [ClassyearManagerInline, SubjectManagerInline, SubjectClassyearInline]
+    esource_class = TeacherResource
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):

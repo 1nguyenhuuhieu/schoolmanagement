@@ -75,56 +75,33 @@ def create_profile(request):
 
 @login_required
 def profile(request):
-
-
-
     list_subject = Subject.objects.values('title', 'id')
-
     if request.method == 'POST' and 'btnchangepassword' in request.POST:
-
         new_password = request.POST['new_password']
-
-
         current_user = User.objects.get(pk = request.user.id)
         current_user.set_password(new_password)
         current_user.save()
         messages.add_message(request, messages.SUCCESS, 'Cập nhập thông tin thành công.')
-
         return redirect('profile', permanent=True)
-
     if request.method == 'POST' and 'changeprofile' in request.POST:
-        
         current_user = Teacher.objects.get(user = request.user)
-
         fname = request.POST['fname']
         lname = request.POST['lname']
         birthdate = request.POST['birthdate']
         sex = request.POST['sex']
         number = request.POST['number']
-
         current_user.firstname = fname
         current_user.lastname = lname
         current_user.birth_date = birthdate
         current_user.zalo_number = number
         current_user.sex = sex
-
-
-
         current_user.save()
         messages.add_message(request, messages.SUCCESS, 'Cập nhập thông tin thành công.')
-
-
-
-
         return redirect('profile', permanent=True)
-
     if request.method == 'POST' and 'btnchangeeducation' in request.POST:
-
         current_user = Teacher.objects.get(user = request.user)
-
         main_subject = request.POST['subject']
         education_level = request.POST['education']
-
         subject = Subject.objects.get(pk = main_subject)
         current_user.main_subject = subject
         current_user.education_level = education_level
@@ -134,34 +111,18 @@ def profile(request):
         return redirect('profile', permanent=True)
     
     if request.method == 'POST' and 'btnavatar' in request.POST and request.FILES['avatar']:
-
-
         current_user = Teacher.objects.get(user = request.user)
-
-
         lesson = request.FILES['avatar']
-
-        
         teacher_location = 'media/avatar/' + str(request.user.username)
-       
-       
         lesson_location =  teacher_location + '/'
         lesson_location_withoutmedia = 'avatar/' + str(request.user.username) + '/'
-
         fs = FileSystemStorage(location=lesson_location)
-
         lesson_file =  fs.save(lesson.name.replace(" ", "_"), lesson)
         lesson_path =  lesson_location_withoutmedia + fs.get_valid_name(lesson_file).replace(" ", "_")
         current_user.avatar = lesson_path
-
         current_user.save()
         messages.add_message(request, messages.SUCCESS, 'Cập nhập thông tin thành công.')
         return redirect('profile', permanent=True)
-
-
-
-
-    
     context = {'list_subject': list_subject,
     }
     return render(request, 'profile/profile.html', context)
@@ -174,9 +135,6 @@ def teacher(request, teacher_id):
         return render(request, 'teacher/teacher.html', context )
     except:
         raise Http404("Lesson does not exist")
-
-
-
 
 @login_required    
 def lessondashboard(request):
@@ -197,27 +155,16 @@ def alllessons(request):
 def lessons_subject_level(request, subject, level):
     now = datetime.datetime.now()
     year = int(now.year)
-
     if now.month > 9:
         start_date = datetime.datetime(year, 9, 1)
     else:
         start_date = datetime.datetime(year -1, 9, 1)
-
-
     # giáo án phù hợp với môn học và lớp học, giáo viên, niên khóa hiện tại
     lessons = Lesson.objects.filter(teacher=request.user.teacher.id).filter(subject__subject_slug = subject).filter(level=level).filter(upload_time__gte = start_date)
-    
-
     #sử dụng cho đường dẫn tới các lớp cụ thể
-    lessons_id = lessons.values('id')
-    
     classyear_list = SubjectClassyear.objects.filter(teacher=request.user.teacher.id).filter(subject__subject_slug = subject).filter(classyear__startyear = level_to_startyear(level) )
-
-    print(classyear_list)
-
     context = {
         'lesson_list':lessons, 'classyear_list':classyear_list, 'subject':subject, 'level':level
-
     }
     return render(request, 'lessons.html', context)
 
@@ -240,24 +187,27 @@ def lesson(request, id):
     except Lesson.DoesNotExist:
         raise Http404("Lesson does not exist")
     
-    
+
+# Thêm giáo án tổng quan
 @login_required
 def addlesson(request):
-    schoolyear = current_schoolyear() 
-    schoolyear = Schoolyear.objects.get(start_date__year = schoolyear)
-    teacher_id = request.user.teacher.id
-
     context = {}
-    
-
+    schoolyear = current_schoolyear()
+    try: 
+        schoolyear = Schoolyear.objects.get(start_date__year = schoolyear)
+    except:
+        context = {
+        'error':'Không được phép thêm giáo án',
+        'cause':'Bạn chưa được phân công giảng dạy ở năm học ' + str(schoolyear) + ' - ' + str(schoolyear + 1),
+        }
+        return render(request, 'error/notfound.html', context )
     try:
         lesson_latest = Lesson.objects.filter(teacher=request.user.teacher.id).latest('upload_time')
         context['lesson_latest'] = lesson_latest
-       
-    except:
-        context = { 
-        }
 
+    except:
+        context = {
+        }
     return render(request, 'add_lesson.html', context)
 
 @login_required
@@ -267,49 +217,69 @@ def add_lesson_subject_level(request, subject, level):
     now = datetime.datetime.now()
     teacher = request.user.teacher.id
     q2 = Lesson.objects.filter(teacher=teacher, subject__subject_slug = subject, level = level)
-    try:
-        latest_lesson = q2.latest('number_lesson')
-        last_lesson = q2.all()[:5]
-        context['last_lesson'] = last_lesson
-        new_number_lesson = latest_lesson.number_lesson + 1
-    except:
-        new_number_lesson = 1
-    context['new_number_lesson'] = new_number_lesson
-    try:
-        q1 = SubjectClassyear.objects.filter(teacher = teacher).filter(subject__subject_slug = subject).filter(classyear__startyear = level_to_startyear(level))
-        subject_title = Subject.objects.get(subject_slug = subject)
-        context['subject_title'] = subject_title
-        q_subject_level = SubjectLevel.objects.filter(subject__subject_slug = subject, level = level)
-        if q1 and q_subject_level:
-            current_title_lesson =q_subject_level.get(number_lesson = new_number_lesson)
-            new_title_lesson = list(SubjectLevel.objects.filter(subject__subject_slug = subject, level = level).values('number_lesson', 'title'))
 
-            context['new_title_lesson'] = new_title_lesson
-            context['current_title_lesson'] = current_title_lesson
+    # kiểm tra phân công giảng dạy
+    subjectclassyear = SubjectClassyear.objects.filter(teacher = teacher, subject__subject_slug = subject).values('classyear__startyear__start_date__year')
+    subjectclassyear_list = []
+    for i in subjectclassyear:
+        class_level = class_level_def(i['classyear__startyear__start_date__year'])
+        subjectclassyear_list.append(class_level)
 
-    except:
-         return redirect('addlesson')
-    if request.method == 'POST' and request.FILES['file_lesson']:
-        title = request.POST['title_lesson']
-        subject = request.POST['subject']
-        subject_save = Subject.objects.get(subject_slug = subject)
-        level_save = request.POST['level']
-        start_lesson = request.POST['start_lesson']
-       
-        description_lesson = request.POST['description_lesson']
-        lesson = request.FILES['file_lesson']
-        teacher_location = 'media/lessons/' + str(request.user.username)
-        lesson_location =  teacher_location + '/'
-        lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
-        fs = FileSystemStorage(location=lesson_location)
-        lesson_file =  fs.save(lesson.name.replace(" ", "_"), lesson)
-        lesson_path =  lesson_location_withoutmedia + fs.get_valid_name(lesson_file).replace(" ", "_")
-        year = Schoolyear.objects.get(start_date__year = current_schoolyear())
-        new_lesson = Lesson(title=title, upload_time = now, level = level_save, description = description_lesson, teacher = request.user.teacher, subject = subject_save, number_lesson = start_lesson,  lesson_path = lesson_path, schoolyear=year  )
-        new_lesson.save()
-        messages.success(request, 'Vui lòng chờ giáo án của bạn được duyệt.')
-        return redirect('lesson', id=new_lesson.id, permanent=True )
-    return render(request, 'lesson/add_lesson_subject.html', context)
+    if level in subjectclassyear_list:
+        try:
+            latest_lesson = q2.latest('number_lesson')
+            last_lesson = q2.all()[:5]
+            context['last_lesson'] = last_lesson
+            new_number_lesson = latest_lesson.number_lesson + 1
+        except:
+            new_number_lesson = 1
+        context['new_number_lesson'] = new_number_lesson
+        try:
+            q1 = SubjectClassyear.objects.filter(teacher = teacher).filter(subject__subject_slug = subject).filter(classyear__startyear__start_date__year = level_to_startyear(level))
+            subject_title = Subject.objects.get(subject_slug = subject)
+            context['subject_title'] = subject_title
+            q_subject_level = SubjectLevel.objects.filter(subject__subject__subject_slug = subject, subject__level = level)
+            if q1 and q_subject_level:
+                current_title_lesson =q_subject_level.get(number_lesson = new_number_lesson)
+                new_title_lesson = list(SubjectLevel.objects.filter(subject__subject_slug = subject, level = level).values('number_lesson', 'title'))
+                context['new_title_lesson'] = new_title_lesson
+                context['current_title_lesson'] = current_title_lesson
+        except:
+            return redirect('addlesson')
+        if request.method == 'POST' and request.FILES['file_lesson']:
+            title = request.POST['title_lesson']
+            subject = request.POST['subject']
+            subject_save = Subject.objects.get(subject_slug = subject)
+            level_save = request.POST['level']
+            start_lesson = request.POST['start_lesson']
+        
+            description_lesson = request.POST['description_lesson']
+            lesson = request.FILES['file_lesson']
+            teacher_location = 'media/lessons/' + str(request.user.username)
+            lesson_location =  teacher_location + '/'
+            lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
+            fs = FileSystemStorage(location=lesson_location)
+            lesson_file =  fs.save(lesson.name.replace(" ", "_"), lesson)
+            lesson_path =  lesson_location_withoutmedia + fs.get_valid_name(lesson_file).replace(" ", "_")
+            year = Schoolyear.objects.get(start_date__year = current_schoolyear())
+            new_lesson = Lesson(title=title, upload_time = now, level = level_save, description = description_lesson, teacher = request.user.teacher, subject = subject_save, number_lesson = start_lesson,  lesson_path = lesson_path, schoolyear=year  )
+            new_lesson.save()
+            messages.success(request, 'Vui lòng chờ giáo án của bạn được duyệt.')
+            return redirect('lesson', id=new_lesson.id, permanent=True )
+        return render(request, 'lesson/add_lesson_subject.html', context)
+
+    else:
+        return redirect('no_permisson_add_lesson')
+
+
+@login_required
+def no_permisson_add_lesson(request):
+    context = {
+        'error':'Không tìm thấy phân công giảng dạy phù hợp',
+        'cause':'Bạn không được phân công giảng dạy lớp này',
+    }
+    return render(request, 'error/notfound.html', context )
+    
     
 @login_required
 def edit_lesson(request, lesson_id):
@@ -442,7 +412,8 @@ def add_lesson_schedule(request, lesson_id):
     context = {}
     
     return render(request, 'schedule/add_lesson_schedule.html', context)
-    
+
+
 
 @login_required
 def manager(request):

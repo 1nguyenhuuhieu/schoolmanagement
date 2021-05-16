@@ -6,7 +6,6 @@ from django.db.models import F
 from django.utils.text import slugify
 from django.forms import ModelForm
 
-
 LEVEL_CHOICES = [
         (6, 6),
         (7, 7),
@@ -37,26 +36,22 @@ def school_year_def(upload_time):
 #lấy năm vào trường của lớp từ level
 def level_to_startyear(level):
     now = datetime.datetime.now()
-
     if now.month < 9:
         return (now.year + 5 - level)
     else:
         return (now.year + 6 - level)
 
+# có đang đào tạo tại trường
 def is_learning_def(class_level):
     return class_level in [6,7,8,9]
-
-
 
 #Abstract for: School, Subject, GroupSubject
 class SchoolAbstract(models.Model):
     title = models.CharField(max_length=50, verbose_name="Tiêu đề")
     description = models.CharField(max_length=200, verbose_name="Mô tả sơ lược", blank=True)
     cover = models.ImageField(upload_to="coverimages/", verbose_name="Ảnh bìa", null = True, blank = True)
-
     class Meta:
         abstract = True
-
     def __str__(self):
         return self.title
 
@@ -68,7 +63,7 @@ class School(SchoolAbstract):
 
 #Môn học
 class Subject(SchoolAbstract):
-    group = models.ForeignKey("GroupSubject",on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Bộ môn')
+    group = models.ForeignKey("GroupSubject",on_delete=models.CASCADE, verbose_name='Bộ môn')
     subject_slug = models.SlugField(max_length=50, null=True, blank=True)
 
     class Meta:
@@ -84,8 +79,12 @@ class SubjectLesson(models.Model):
     level = models.IntegerField(choices=LEVEL_CHOICES, verbose_name='Khối')
     total_lesson = models.IntegerField(verbose_name='Tổng số tiết')
     week_lesson = models.IntegerField(verbose_name='Số tiết mỗi tuần')
+    class Meta:
+        unique_together = ('subject', 'level')
+        verbose_name = "Chi tiết môn học "
+        verbose_name_plural = "Chi tiết môn học "
     def __str__(self):
-        return '%s - %s' %(self.subject, self.level)
+        return '%s %s' %(self.subject, self.level)
 
 
 #Bộ môn
@@ -106,17 +105,12 @@ class MembershipAbstract(models.Model):
 
 
 #Giáo viên và môn học
-class SubjectTeacher(MembershipAbstract):
+class SubjectManager(MembershipAbstract):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    ROLE_CHOICES = [
-    ('member', 'Thành viên'),
-    ('manager', 'Tổ trưởng'),
-    ]
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     class Meta:
         
-        verbose_name = "Thành Viên/Quản lý Môn học"
-        verbose_name_plural = "Thành Viên/Quản lý Môn học"
+        verbose_name = "Người duyệt giáo án"
+        verbose_name_plural = "Người duyệt giáo án"
     def __str__(self):
         return '%s %s' % (self.teacher.full_name(), self.subject.title)
 
@@ -169,15 +163,15 @@ class Classyear(models.Model):
     ('D', 'D')
     ]
     title = models.CharField(verbose_name="Tên lớp", max_length=1, choices=TITLE_CHOICES)
-    startyear = models.IntegerField(verbose_name='Năm nhập học')
+    startyear = models.ForeignKey('Schoolyear', on_delete=models.CASCADE, verbose_name="Năm nhập học")
 
     @property
     def is_learning(self):
-        return is_learning_def(class_level_def(self.startyear))
+        return is_learning_def(class_level_def(self.startyear.start_date.year))
 
     @property
     def class_level(self):
-        return class_level_def(self.startyear)
+        return class_level_def(self.startyear.start_date.year)
 
     
     def class_title_year(self):
@@ -194,7 +188,7 @@ class Classyear(models.Model):
 
 #Hồ sơ giáo viên
 class Teacher(models.Model):
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Tài khoản đăng nhập", help_text="Tài khoản đăng nhập viết liền không dấu. Ví dụ: nhhieu. Viết tắt của Nguyễn Hữu Hiếu. Nếu trùng họ tên thì thêm số vào sau, ví dụ nhhieu2")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Tài khoản đăng nhập", help_text="Tài khoản đăng nhập viết liền không dấu. Ví dụ: nhhieu. Viết tắt của Nguyễn Hữu Hiếu. Nếu trùng họ tên thì thêm số vào sau, ví dụ nhhieu2")
     firstname = models.CharField("Họ",max_length=20, blank=True)
     lastname = models.CharField("Tên", max_length=20, blank=True)
     zalo_number = models.DecimalField(verbose_name="Số điện thoại",help_text="Số điện thoại có đăng ký zalo, sử dụng để nhận thông báo từ ban giám hiệu", max_digits=12, decimal_places=0,null=True, blank=True)
@@ -249,9 +243,9 @@ class Teacher(models.Model):
         return self.lesson_set.filter(teacher = self.user.id)
     #môn dạy và lớp dạy phục vụ cho sidebar.html
     def subject_classyear_list(self):
-        return self.subjectclassyear_set.filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear','subject__group__title').distinct()
+        return self.subjectclassyear_set.filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear__start_date__year','subject__group__title').distinct()
     def subject_classyeartitle_list(self):
-        return self.subjectclassyear_set.filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear','subject__group__title', 'classyear__title').distinct()
+        return self.subjectclassyear_set.filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear__start_date__year','subject__group__title', 'classyear__title').distinct()
 
     #giáo án mới nhất phục vụ trang dashboard
     def latest_lesson(self):
@@ -262,10 +256,6 @@ class Teacher(models.Model):
         managers = {}
         teacher = self.user.teacher.id
         
-        subject_manager = SubjectTeacher.objects.filter(teacher=teacher).filter(is_active = True)
-        if subject_manager:
-            subject_manager = subject_manager.latest('-id')
-            managers['subject'] = subject_manager
 
         group_manager = GroupSubjectManager.objects.filter(teacher=teacher).filter(is_active=True)
         if group_manager:
@@ -369,20 +359,16 @@ class Lesson(models.Model):
 
 # chương trình giảng dạy
 class SubjectLevel(models.Model):
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    
-    LEVEL_CHOICES = [
-        (6, 6),
-        (7, 7),
-        (8, 8),
-        (9, 9)
-    ]
-    level = models.IntegerField(choices=LEVEL_CHOICES)
+    subject = models.ForeignKey(SubjectLesson, on_delete=models.CASCADE, verbose_name="Môn học")
     number_lesson = models.IntegerField()
     title = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name = 'Phân phối chương trình'
+        verbose_name_plural = 'Phân phối chương trình'
     
     def __str__(self):
-        return '%s %s - Tiết %s' % (self.subject, self.level , self.number_lesson)
+        return '%s - Tiết %s' % (self.subject, self.number_lesson)
 
 #Giáo án thuộc lớp học nào
 class LessonClassyear(models.Model):
@@ -463,6 +449,7 @@ class News(models.Model):
 
 
 class Schoolyear(models.Model):
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
     start_date = models.DateField(help_text="Ngày bắt đầu năm học",  unique_for_year='start_date' )
     end_date = models.DateField(blank=True, null=True)
 

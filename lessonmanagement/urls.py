@@ -19,6 +19,7 @@ urlpatterns = [
     path('lesson/edit/<int:lesson_id>/', views.edit_lesson, name="edit_lesson"),
     path('lesson/add/', views.addlesson, name="addlesson"),
     path('lessons/add/<str:subject>/<int:level>/', views.add_lesson_subject_level, name="add_lesson_subject_level"),
+    path('lessons/add/error/', views.no_permisson_add_lesson, name = 'no_permisson_add_lesson'),
     # lịch báo giảng
     
     
