@@ -267,7 +267,7 @@ class SubjectDetail(models.Model):
         return '%s %s' % (self.subject, self.level)
 
 # chương trình giảng dạy
-class SubjectLevel(models.Model):
+class SubjectLesson(models.Model):
     subject = models.ForeignKey(SubjectDetail, on_delete=models.CASCADE, verbose_name="Môn học")
     number_lesson = models.IntegerField()
     title = models.CharField(max_length=100)

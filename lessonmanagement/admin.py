@@ -20,8 +20,8 @@ class SchoolManagerInline(admin.TabularInline):
 class GroupSubjectManagerInline(admin.TabularInline):
     model = GroupSubjectManager
 
-class SubjectLessonInline(admin.TabularInline):
-    model = SubjectLesson
+class SubjectDetailInline(admin.TabularInline):
+    model = SubjectDetail
     extra = 4
 
 
@@ -30,13 +30,13 @@ class ClassyearResource(resources.ModelResource):
     class Meta:
         model = Classyear
 
-class SubjectLevelResource(resources.ModelResource):
-    class Meta:
-        model = SubjectLevel
-
 class SubjectLessonResource(resources.ModelResource):
     class Meta:
         model = SubjectLesson
+
+class SubjectDetailResource(resources.ModelResource):
+    class Meta:
+        model = SubjectDetail
 class TeacherResource(resources.ModelResource):
     class Meta:
         model = Teacher
@@ -51,13 +51,13 @@ class SubjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'group' )
     list_filter = ('group', )
     exclude = ('subject_slug',)
-    inlines = [SubjectLessonInline, SubjectManagerInline ]
+    inlines = [SubjectDetailInline, SubjectManagerInline ]
   
-@admin.register(SubjectLevel)
-class SubjectLevel(ImportExportModelAdmin):
+@admin.register(SubjectLesson)
+class SubjectLesson(ImportExportModelAdmin):
     list_filter = ('subject',)
     list_display = ('subject', 'number_lesson','title')
-    resource_class = SubjectLevelResource
+    resource_class = SubjectLessonResource
 
 @admin.register(GroupSubject)
 class SchoolAdmin(admin.ModelAdmin):
@@ -95,13 +95,13 @@ class LessonAdmin(admin.ModelAdmin):
     date_hierarchy = 'upload_time'
     list_filter = ('subject', 'subject__subject__group__title','teacher__lastname','status','checker')
 
-@admin.register(LessonClassyear)
-class LessonClassyearAdmin(admin.ModelAdmin):
+@admin.register(LessonSchedule)
+class LessonScheduleAdmin(admin.ModelAdmin):
     pass
 
 @admin.register(SubjectClassyear)
 class SubjectClassyearAdmin(admin.ModelAdmin):
-    list_filter = ('classyear', 'subject__title', 'is_teach_now')
+    list_filter = ('classyear', 'subject__title')
 
 @admin.register(SchoolManager)
 class SchoolManagerAdmin(admin.ModelAdmin):
@@ -115,7 +115,7 @@ class NewsAdmin(admin.ModelAdmin):
 class SchoolyearAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(SubjectLesson)
+@admin.register(SubjectDetail)
 class SubjectLessonAdmin(ImportExportModelAdmin):
-     resource_class = SubjectLessonResource
+     resource_class = SubjectDetailResource
 
