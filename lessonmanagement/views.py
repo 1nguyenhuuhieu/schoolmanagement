@@ -23,7 +23,6 @@ def level_to_startyear(level):
     else:
         return (now.year + 6 - level)
 
-
 def class_level_def(year):
     now = datetime.datetime.now()
     i = 0
@@ -51,8 +50,7 @@ def current_schoolyear():
 def index(request):
     try:
         teacher = request.user.teacher
-        news = News.objects.order_by(
-            '-upload_time')[:5].annotate(Count('viewer'))
+        news = News.objects.order_by('-upload_time')[:5].annotate(Count('viewer'))
         countlesson = Lesson.objects.filter(teacher=teacher.id).count()
         page_title = 'Trang chủ'
         context = {'page_title': page_title}
@@ -63,6 +61,7 @@ def index(request):
         return render(request, 'index.html', context)
     except:
         return redirect('create_profile')
+
 # PROFILE
 @login_required
 def profile(request):
@@ -72,8 +71,7 @@ def profile(request):
         current_user = User.objects.get(pk=request.user.id)
         current_user.set_password(new_password)
         current_user.save()
-        messages.add_message(request, messages.SUCCESS,
-                             'Cập nhập thông tin thành công.')
+        messages.add_message(request, messages.SUCCESS, 'Cập nhập thông tin thành công.')
         return redirect('profile', permanent=True)
     if request.method == 'POST' and 'changeprofile' in request.POST:
         current_user = Teacher.objects.get(user=request.user)
@@ -118,8 +116,7 @@ def profile(request):
         messages.add_message(request, messages.SUCCESS,
                              'Cập nhập thông tin thành công.')
         return redirect('profile', permanent=True)
-    context = {'list_subject': list_subject,
-               }
+    context = {'list_subject': list_subject,}
     return render(request, 'profile/profile.html', context)
 
 
@@ -132,25 +129,22 @@ def teacher(request, teacher_id):
     except:
         raise Http404("Lesson does not exist")
 
-
 @login_required
 def lessondashboard(request):
     teacher = request.user.teacher
     # lấy tiết đã dạy hiện tại để tính thời lượng giảng dạy
     subject_classyear = SubjectClassyear.objects.filter(
-        teacher=teacher.id, is_teach_now=True)
+        teacher=teacher.id)
     context = {'subject_classyear': subject_classyear
                }
-    return render(request, 'lessondashboard.html', context)
-
+    return render(request, 'lesson/lessondashboard.html', context)
 
 @login_required
 def alllessons(request):
     lesson_list = Lesson.objects.filter(
         teacher=request.user.teacher.id).order_by('-upload_time')
     context = {'lesson_list': lesson_list}
-    return render(request, 'all_lessons.html', context)
-
+    return render(request, 'lesson/all_lessons.html', context)
 
 @login_required
 def lessons_subject_level(request, subject, level):
@@ -158,22 +152,20 @@ def lessons_subject_level(request, subject, level):
     schoolyear = current_schoolyear()
     now_school_year = Schoolyear.objects.get(start_date__year=schoolyear)
     # giáo án phù hợp với môn học và lớp học, giáo viên, niên khóa hiện tại
-    lessons = Lesson.objects.filter(
-        teacher=teacher, subject__subject__subject_slug=subject, subject__level=level, schoolyear=now_school_year)
+    lessons = Lesson.objects.filter(teacher=teacher, subject__subject__subject_slug=subject, subject__level=level, schoolyear=now_school_year)
     # sử dụng cho đường dẫn tới các lớp cụ thể
-    classyear_list = SubjectClassyear.objects.filter(teacher=request.user.teacher.id).filter(
-        subject__subject_slug=subject).filter(classyear__startyear=level_to_startyear(level))
+    classyear_list = SubjectClassyear.objects.filter(teacher=teacher, subject__subject_slug=subject, classyear__startyear=level_to_startyear(level))
     context = {
         'lesson_list': lessons, 'classyear_list': classyear_list, 'subject': subject, 'level': level
     }
-    return render(request, 'lessons.html', context)
+    return render(request, 'lesson/lesson_subject_level.html', context)
 
 def lesson_classyear(request, subject, level, title):
     context = {}
-    return render(request, 'lessons_classyear.html', context)
+    return render(request, 'lesson/lessons_classyear.html', context)
 
 def emptylesson(request):
-    return render(request, 'no_lesson.html', {})
+    return render(request, 'lesson/no_lesson.html', {})
 
 @login_required
 def lesson(request, id):
@@ -204,7 +196,7 @@ def addlesson(request):
     except:
         context = {
         }
-    return render(request, 'add_lesson.html', context)
+    return render(request, 'lesson/add_lesson.html', context)
 
 # THÊM GIÁO ÁN VÀO SUBJECT VÀ LEVEL
 @login_required
@@ -235,12 +227,12 @@ def add_lesson_subject_level(request, subject, level):
         try:
             subject_title = Subject.objects.get(subject_slug=subject)
             context['subject_title'] = subject_title
-            q_subject_level = SubjectLevel.objects.filter(
+            q_subject_level = SubjectLesson.objects.filter(
                 subject__subject__subject_slug=subject, subject__level=level)
             if q_subject_level:
                 current_title_lesson = q_subject_level.get(
                     number_lesson=new_number_lesson)
-                new_title_lesson = list(SubjectLevel.objects.filter(
+                new_title_lesson = list(SubjectLesson.objects.filter(
                     subject__subject__subject_slug=subject, subject__level=level).values('number_lesson', 'title'))
                 context['new_title_lesson'] = new_title_lesson
                 context['current_title_lesson'] = current_title_lesson
@@ -261,10 +253,10 @@ def add_lesson_subject_level(request, subject, level):
                 fs.get_valid_name(lesson_file).replace(" ", "_")
             year = Schoolyear.objects.get(
                 start_date__year=current_schoolyear())
-            q_subject = SubjectLesson.objects.get(
+            q_subject = SubjectDetail.objects.get(
                 subject__subject_slug=subject, level=level)
             print(q_subject)
-            new_lesson = Lesson(title=title, upload_time=now, description=description_lesson, teacher=teacher,
+            new_lesson = Lesson(title=title, upload_time=now, description=description_lesson, teacher=request.user.teacher,
                                 subject=q_subject, number_lesson=start_lesson, lesson_path=lesson_path, schoolyear=year)
             new_lesson.save()
             messages.success(
@@ -341,8 +333,7 @@ def schedule(request, year, week):
             naive_schoolyear = year - 1
         else:
             naive_schoolyear = year
-        lessons = LessonClassyear.objects.filter(
-            lesson__teacher=request.user.teacher.id, lesson__schoolyear__start_date__year=naive_schoolyear)
+        lessons = LessonSchedule.objects.filter(lesson__teacher=request.user.teacher.id, lesson__schoolyear__start_date__year=naive_schoolyear)
         # lịch báo giảng của tuần thứ <week> và năm <naive_schoolyear> lấy theo URL
         schedule_all = lessons.filter(week=week)
         schedule_morning = schedule_all.filter(session='morning')
@@ -392,14 +383,3 @@ def add_lesson_schedule(request, lesson_id):
             return redirect('add_lesson_schedule', lesson_id=lesson_id, permanent=True)
     context = {}
     return render(request, 'schedule/add_lesson_schedule.html', context)
-
-@login_required
-def manager(request):
-    try:
-        currentuser = SubjectTeacher.objects.filter(
-            teacher=request.user.id, role='manager').values('subject')
-        member = SubjectTeacher.objects.filter(subject__id__in=currentuser)
-        context = {'member': member}
-        return render(request, 'manager/manager.html', context)
-    except:
-        raise Http404('d')

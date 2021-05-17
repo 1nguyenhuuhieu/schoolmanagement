@@ -33,9 +33,6 @@ urlpatterns = [
     path('teacher/<int:teacher_id>/', views.teacher, name='teacher'),
 
 
-    # lần đầu đăng nhập, chưa tạo hồ sơ
-    path('manager/', views.manager, name='manager')
-
 
     
 ] 

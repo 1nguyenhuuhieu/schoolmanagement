@@ -24,11 +24,9 @@
                 <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i
                         class="far fa-clock me-1"></i>{{lesson.get_status_display}}</span>
                 {% elif lesson.status == "acept" %}
-                <span class="badge bg-success  rounded-pill" style="width: 100px;"><i class="fas fa-check me-1"></i>{{
-                    lesson.get_status_display}}</span>
+                <span class="badge bg-success  rounded-pill" style="width: 100px;"><i class="fas fa-check me-1"></i>{{lesson.get_status_display}}</span>
                 {% elif lesson.status == "deny" %}
-                <span class="badge bg-danger  rounded-pill" style="width: 100px;"><i class="fas fa-times me-1"></i>{{
-                    lesson.get_status_display}}</span>
+                <span class="badge bg-danger  rounded-pill" style="width: 100px;"><i class="fas fa-times me-1"></i>{{lesson.get_status_display}}</span>
                 {% endif %}
             </td>
         </tr>

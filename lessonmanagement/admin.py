@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import fields
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from .models import *
@@ -24,22 +25,30 @@ class SubjectDetailInline(admin.TabularInline):
     model = SubjectDetail
     extra = 4
 
-
 class ClassyearResource(resources.ModelResource):
-
     class Meta:
         model = Classyear
+
+class SchoolyearResource(resources.ModelResource):
+    class Meta:
+        model = Schoolyear
 
 class SubjectLessonResource(resources.ModelResource):
     class Meta:
         model = SubjectLesson
+        
 
 class SubjectDetailResource(resources.ModelResource):
     class Meta:
         model = SubjectDetail
+        fields = ('id', 'subject', 'subject__title', 'level', 'total_lesson' ,'week_lesson')
 class TeacherResource(resources.ModelResource):
     class Meta:
         model = Teacher
+
+class SubjectClassyearResource(resources.ModelResource):
+    class Meta:
+        model = SubjectClassyear
 
 
 
@@ -88,7 +97,7 @@ class TeacherAdmin(ImportExportModelAdmin):
     list_display = ('__str__','id', 'main_subject', 'is_work')
     list_filter = ('main_subject', 'is_work')
     inlines = [ClassyearManagerInline, SubjectManagerInline, SubjectClassyearInline]
-    esource_class = TeacherResource
+    resource_class = TeacherResource
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
@@ -100,8 +109,10 @@ class LessonScheduleAdmin(admin.ModelAdmin):
     pass
 
 @admin.register(SubjectClassyear)
-class SubjectClassyearAdmin(admin.ModelAdmin):
-    list_filter = ('classyear', 'subject__title')
+class SubjectClassyearAdmin(ImportExportModelAdmin):
+    list_display = ('teacher','subject', 'classyear_list', 'schoolyear')
+    list_filter = ('classyear', 'subject__subject__title', 'schoolyear')
+    resource_class = SubjectClassyearResource
 
 @admin.register(SchoolManager)
 class SchoolManagerAdmin(admin.ModelAdmin):
@@ -112,10 +123,12 @@ class NewsAdmin(admin.ModelAdmin):
     pass
 
 @admin.register(Schoolyear)
-class SchoolyearAdmin(admin.ModelAdmin):
-    pass
+class SchoolyearAdmin(ImportExportModelAdmin):
+    list_display = ('__str__', 'school')
+    resource_class = SchoolyearResource
 
 @admin.register(SubjectDetail)
-class SubjectLessonAdmin(ImportExportModelAdmin):
-     resource_class = SubjectDetailResource
+class SubjectDetailAdmin(ImportExportModelAdmin):
+
+    resource_class = SubjectDetailResource
 

@@ -101,9 +101,9 @@ class Teacher(models.Model):
         return self.lesson_set.filter(teacher = self.user.id)
     #môn dạy và lớp dạy phục vụ cho sidebar.html
     def subject_classyear_list(self):
-        return self.subjectclassyear_set.filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear__start_date__year','subject__group__title').distinct()
+        return self.subjectclassyear_set.all().order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title').distinct()
     def subject_classyeartitle_list(self):
-        return self.subjectclassyear_set.filter(is_teach_now = True).order_by('subject__title').values('subject__title', 'classyear__startyear__start_date__year','subject__group__title', 'classyear__title').distinct()
+        return self.subjectclassyear_set.all().order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title', 'classyear__title').distinct()
     #giáo án mới nhất phục vụ trang dashboard
     def latest_lesson(self):
         return Lesson.objects.filter(teacher=self.user.teacher.id).order_by('-upload_time')[:3]
@@ -164,7 +164,7 @@ class SchoolManager(MembershipAbstract):
         verbose_name = "Quản lý trường học "
         verbose_name_plural = "Quản lý trường học"
     def __str__(self):
-        return '%s - %s ' % (self.teacher.full_name(),  self.role)
+        return '%s - %s ' % (self.teacher.full_name(), self.role)
         
 # NĂM HỌC        
 class Schoolyear(models.Model):
@@ -206,7 +206,7 @@ class Classyear(models.Model):
 
 # GIÁO VIÊN CHỦ NHIỆM
 class ClassyearManager(MembershipAbstract):
-    classyear = models.ForeignKey("Classyear", on_delete=models.CASCADE)
+    classyear = models.ForeignKey(Classyear, on_delete=models.CASCADE)
         
     class Meta:
         verbose_name = "Giáo viên chủ nhiệm"
@@ -237,7 +237,7 @@ class GroupSubjectManager(MembershipAbstract):
 
 # MÔN HỌC
 class Subject(SchoolAbstract):
-    group = models.ForeignKey("GroupSubject",on_delete=models.CASCADE, verbose_name='Bộ môn')
+    group = models.ForeignKey(GroupSubject,on_delete=models.CASCADE, verbose_name='Bộ môn')
     subject_slug = models.SlugField(max_length=50, null=True, blank=True)
     class Meta:
         verbose_name = "Môn học"
@@ -260,9 +260,12 @@ class SubjectManager(MembershipAbstract):
 # CHI TIẾT MÔN HỌC CỤ THỂ
 class SubjectDetail(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name="Môn học")
-    level = models.CharField(max_length=1, choices=LEVEL_CHOICES, verbose_name="Khối học")
+    level = models.IntegerField(choices=LEVEL_CHOICES, verbose_name="Khối học")
     total_lesson = models.IntegerField(verbose_name="Tổng số tiết")
     week_lesson = models.IntegerField(verbose_name="Số tiết mỗi tuần")
+    class Meta:
+        verbose_name = "Chi tiết môn học"
+        verbose_name_plural = "Chi tiết môn học"
     def __str__(self):
         return '%s %s' % (self.subject, self.level)
 
@@ -279,7 +282,7 @@ class SubjectLesson(models.Model):
 
 # PHÂN CÔNG GIẢNG DẠY
 class SubjectClassyear(models.Model):
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    subject = models.ForeignKey(SubjectDetail, on_delete=models.CASCADE)
     classyear = models.ManyToManyField(Classyear)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     schoolyear = models.ForeignKey("Schoolyear", on_delete=models.CASCADE)
@@ -300,11 +303,11 @@ class Lesson(models.Model):
     upload_time = models.DateTimeField(blank=True, null=True)
     edit_time = models.DateTimeField(blank=True, null=True)
     description = models.CharField(max_length=200, null=True, blank=True)
-    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(SubjectDetail, on_delete=models.CASCADE)
     number_lesson = models.IntegerField(help_text="Bài giảng số mấy")
-    schoolyear = models.ForeignKey("Schoolyear", on_delete=models.CASCADE, blank=True, null=True)
-    classyear = models.ManyToManyField('Classyear', through="LessonClassyear")
+    schoolyear = models.ForeignKey(Schoolyear, on_delete=models.CASCADE, blank=True, null=True)
+    classyear = models.ManyToManyField(Classyear, through="LessonSchedule")
     #Kiểm tra giáo án
     STATUS_CHOICES = [
     ('pending', 'Chờ duyệt'),
