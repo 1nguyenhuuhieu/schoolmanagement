@@ -208,71 +208,71 @@ def add_lesson_subject_level(request, subject, level):
     now = datetime.datetime.now()
     teacher = request.user.teacher.id
     # lấy bài giảng đã thêm trong subject và level này
-    q2 = Lesson.objects.filter(
-        teacher=teacher, subject__subject__subject_slug=subject, subject__level=level)
+    q2 = Lesson.objects.filter(teacher=teacher, subject__subject__subject_slug=subject, subject__level=level)
     # kiểm tra phân công giảng dạy
     subjectclassyear = SubjectClassyear.objects.filter(teacher=teacher, subject__subject__subject_slug=subject).values('classyear__startyear__start_date__year')
     subjectclassyear_list = []
     for i in subjectclassyear:
-        class_level = class_level_def(
-            i['classyear__startyear__start_date__year'])
+        class_level = class_level_def(i['classyear__startyear__start_date__year'])
         subjectclassyear_list.append(class_level)
     if level in subjectclassyear_list:
-        try:
+        # lấy số bài giảng của giáo án gần nhất
+        if q2:
             latest_lesson = q2.latest('number_lesson')
             last_lesson = q2.all()[:5]
             context['last_lesson'] = last_lesson
             new_number_lesson = latest_lesson.number_lesson + 1
-        except:
+        else:
             new_number_lesson = 1
         context['new_number_lesson'] = new_number_lesson
-        try:
-            subject_title = Subject.objects.get(subject_slug=subject)
-            context['subject_title'] = subject_title
-            q_subject_level = SubjectLesson.objects.filter(
-                subject__subject__subject_slug=subject, subject__level=level)
-            try:
-                current_title_lesson = q_subject_level.get(
-                    number_lesson=new_number_lesson)
-                new_title_lesson = list(SubjectLesson.objects.filter(
-                    subject__subject__subject_slug=subject, subject__level=level).values('number_lesson', 'title'))
-                context['new_title_lesson'] = new_title_lesson
-                context['current_title_lesson'] = current_title_lesson
-            except:
-                return render(request, 'lesson/add_lesson_subject.html', context)
-
+        
+        subject_title = Subject.objects.get(subject_slug=subject)
+        context['subject_title'] = subject_title
+        q_subject_level = SubjectLesson.objects.filter(subject__subject__subject_slug=subject, subject__level=level)
+        try:  
+            current_title_lesson = q_subject_level.get(number_lesson=new_number_lesson)
+            new_title_lesson = list(SubjectLesson.objects.filter(subject__subject__subject_slug=subject, subject__level=level).values('number_lesson', 'title'))
+            context['new_title_lesson'] = new_title_lesson
+            context['current_title_lesson'] = current_title_lesson
         except:
-            return redirect('addlesson')
+            pass
+
+
+
         if request.method == 'POST' and request.FILES['file_lesson']:
+            print('test')  
+
             title = request.POST['title_lesson']
             start_lesson = request.POST['start_lesson']
             description_lesson = request.POST['description_lesson']
             lesson = request.FILES['file_lesson']
             teacher_location = 'media/lessons/' + str(request.user.username)
             lesson_location = teacher_location + '/'
-            lesson_location_withoutmedia = 'lessons/' + \
-                str(request.user.username) + '/'
+            lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
             fs = FileSystemStorage(location=lesson_location)
             lesson_file = fs.save(lesson.name.replace(" ", "_"), lesson)
-            lesson_path = lesson_location_withoutmedia + \
-                fs.get_valid_name(lesson_file).replace(" ", "_")
-            year = Schoolyear.objects.get(
-                start_date__year=current_schoolyear())
-            q_subject = SubjectDetail.objects.get(
-                subject__subject_slug=subject, level=level)
-            print(q_subject)
-            new_lesson = Lesson(title=title, upload_time=now, description=description_lesson, teacher=request.user.teacher,
-                                subject=q_subject, number_lesson=start_lesson, lesson_path=lesson_path, schoolyear=year)
+            lesson_path = lesson_location_withoutmedia + fs.get_valid_name(lesson_file).replace(" ", "_")
+            year = Schoolyear.objects.get(start_date__year=current_schoolyear())
+            q_subject = SubjectDetail.objects.get(subject__subject_slug=subject, level=level)
+            new_lesson = Lesson(title=title, upload_time=now, description=description_lesson, teacher=request.user.teacher,subject=q_subject, number_lesson=start_lesson, lesson_path=lesson_path, schoolyear=year)
             new_lesson.save()
-            messages.success(
-                request, 'Vui lòng chờ giáo án của bạn được duyệt.')
+            messages.success(request, 'Vui lòng chờ giáo án của bạn được duyệt.')
             if 'add' in request.POST:
                 return redirect('lesson', id=new_lesson.id, permanent=True)
             if 'continue' in request.POST:
                 return redirect('add_lesson_subject_level', subject, level)
+        
+        
         return render(request, 'lesson/add_lesson_subject.html', context)
+
+         
+    
     else:
         return redirect('no_permisson_add_lesson')
+
+
+
+
 
 
 @login_required
@@ -355,13 +355,8 @@ def schedule(request, year, week):
         #dữ liệu để thêm vào lịch báo giảng
         q_schoolyear = Schoolyear.objects.get(start_date__year=now_school_year)
         
-        limit_subjectdetail = SubjectClassyear.objects.filter(teacher=teacher, schoolyear=q_schoolyear).annotate(models.Count('classyear')).values('subject', 'classyear__count')
+        all_lesson = Lesson.objects.filter(teacher=teacher, schoolyear=q_schoolyear).order_by('-upload_time')
 
-        lesson_out_of_schedule = []
-        all_lesson_schedule = LessonSchedule.objects.filter(lesson__teacher=teacher, lesson__schoolyear=q_schoolyear)
-
-        test_q = all_lesson_schedule.values('lesson').annotate(models.Count('lesson'))
-        print(test_q)
 
         
 
@@ -372,8 +367,11 @@ def schedule(request, year, week):
             'schedule_morning': schedule_morning,
             'schedule_afternoon': schedule_afternoon,
             'monday': monday,
+            'all_lesson': all_lesson
         }
         return render(request, 'schedule/schedule.html', context)
+       
+
     else:
         return redirect('emptyschedule')
 

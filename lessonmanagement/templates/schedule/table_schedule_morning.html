@@ -82,17 +82,22 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Thêm lịch báo giảng</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form  method="POST">
       <div class="modal-body">
-        <h1>hello</h1>
-        <input type="hidden" id="form_date" name="test">
+        <h6>Chọn giáo án để thêm vào lịch báo giảng</h6>
+        <input type="hidden" id="form_date" name="form_date">
+        <select class="form-select" size="5" aria-label="size 3 select example">
+          {%for lesson in all_lesson%}
+          <option value="{{lesson.id}}">{{lesson.subject}} - Bài {{lesson.number_lesson}}: {{lesson.title}}</option>
+          {%endfor%}
+        </select>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="submit" class="btn btn-primary">Thêm</button>
       </div>
     </form>
     </div>

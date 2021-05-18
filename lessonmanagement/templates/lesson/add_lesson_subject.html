@@ -13,6 +13,7 @@
 </div>
 <div class="row pt-5 justify-content-center">
   <div class="col-6">
+
     <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
       {% csrf_token %}
       <div class="row">
@@ -38,7 +39,7 @@
         </div>
         <div class="col">
           <label for="startLesson" class="form-label">Bài giảng số</label>
-          <input type="number" class="form-control" id="startLesson" name="start_lesson" min="{{ new_number_lesson }}"
+          <input type="number" class="form-control" id="startLesson" name="start_lesson"
             onchange="getLessonTitle()" value='{{ new_number_lesson }}' required>
           <div class="invalid-feedback">
             Phải chọn bài giảng số mấy

@@ -194,17 +194,7 @@
       <li><i class="fas fa-users fa-fw me-2 text-muted"></i> Chủ nhiệm lớp <a href="#" class="text-decoration-none"> {{
           teacher.managers.class }}</a>.</li>
       {% endif %}
-      {% if teacher.subject_classyear_list %}
-      <li><i class="fas fa-chalkboard-teacher fa-fw me-2 text-muted"></i>
-        {% for i in teacher.subject_classyear_list %}
-        <a href="#"
-          class="text-decoration-none">{{ i.subject__title }} {{i.classyear__startyear__start_date__year|classlevel}}</a>
-        {% if not forloop.last %},{% else %}
-        .
-        {% endif %}
-        {% endfor %}
-      </li>
-      {% endif %}
+
     </ul>
   </div>
 </div>
