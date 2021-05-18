@@ -1,0 +1,147 @@
+{% extends 'base_clean.html' %}
+{% block content %}
+{% with teacher=request.user.teacher %}
+{% load lessonmanagement_extras %}
+{% load humanize %}
+<div class="row justify-content-center ">
+  <div class="col-5 border-bottom">
+    <h2 class="mt-5 text-center"><i class="far fa-calendar-check me-2"></i>Thêm vào lịch báo giảng</h2>
+    <p class="text-center text-muted"><i class="far fa-lightbulb me-2"></i>Danh sách lớp học được hiển thị dựa trên sự sắp xếp của <a href="#" class="text-decoration-none">ban giám hiệu nhà trường</a>.<a href="#" class="text-decoration-none"> Xem thêm</a></p>
+  </div>
+</div>
+<div class="row pt-5 justify-content-center" >
+
+    <div class="col-lg-6" >
+
+      {% include 'notification/success.html' %}
+
+      
+        <h5 class="mb-1">{{ lesson.title }} <small class="text-muted">{{ lesson.subject.title }} {{ lesson.level }}  / Tiết {{ lesson.start_number_lesson }} </small></h5>
+    <hr>
+    
+    <form method="POST" class="needs-validation" novalidate>
+        {% csrf_token %}
+
+        <div class="row">
+
+            <div class="col-lg-3">
+                <label for="classYear" class="form-label">Lớp học</label>
+                <select class="form-select" aria-label="Default select example" id="classYear" name="classyear" required>
+                    {% for i in classyear_list %}
+                    <option value="{{ i.classyear.id }}">{{ i.subject.title }} {{ i.classyear.startyear|classlevel }}{{ i.classyear.title }}</option>
+                    {% endfor %}
+                  </select>
+            </div>
+            <div class="col-lg-4">
+                <label for="schedule" class="form-label">Ngày giảng dạy</label>
+
+                <input class="form-control" type="date" id="schedule" name="schedule_date" required>
+            </div>
+            <div class="col-lg-2">
+                <label for="session" class="form-label">Buổi</label>
+                <select class="form-select" aria-label="Default select example" id="classYear" name="session" required>
+                    <option selected value="morning">Sáng</option>
+                    <option value="afternoon">Chiều</option>
+                  </select>
+            </div>
+
+            <div class="col-lg-3">
+                <label for="order" class="form-label">Tiết</label>
+                <select class="form-select" aria-label="Default select example" id="order" name="order" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+            </div>
+
+      
+                
+
+        </div>
+
+        <div class="text-center mt-5">
+
+          
+          <button onclick="goBack()" class="btn btn-lg btn-outline-danger  me-3"><i class="fas fa-times me-2"></i>Huỷ</button>
+
+        <script>
+        function goBack() {
+          window.history.back();
+        }
+        </script>
+
+
+        <button type="submit" class="btn btn-lg btn-outline-success me-3 " name="quit">Thêm</button>
+        <button type="submit" class="btn  btn-lg btn-success" name="continue">Thêm và tiếp tục thêm<i class="fas fa-forward ms-2"></i></button>
+
+        </div>
+
+
+  
+
+    </form>
+
+
+    <script>
+        (function () {
+          'use strict'
+          var forms = document.querySelectorAll('.needs-validation')
+          Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+              form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                  event.preventDefault()
+                  event.stopPropagation()
+                }
+        
+                form.classList.add('was-validated')
+              }, false)
+            })
+        })()
+              </script>
+
+
+
+
+
+    </div>
+
+    <div class="col-lg-4">
+        {% if not schedule_list %}
+        <h5 class="text-danger">Không có lịch báo giảng nào cho giáo án này</h5>
+        {% else %}
+        <h5 class="mb-3">Vừa thêm cho giáo án này</h5>
+
+
+        <div class="list-group">
+            {% for i in schedule_list %}
+            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">
+                    {{ lesson.subject.title }} {{ i.classyear.startyear|classlevel }}{{ i.classyear.title }}
+               </div>
+
+
+               <small class="text-muted">Tiết {{ i.order_schedule }} / {{ i.get_session_display }} / {{ i.teach_date_schedule|date:"SHORT_DATE_FORMAT" }}
+               </small>
+              </div>
+              <span class="badge bg-warning text-dark p-2 ms-2"  style="min-width: 100px;">
+                Tiết {{ lesson.start_number_lesson }} - {{ lesson.start_number_lesson|add:lesson.cout_number_lesson }}
+              </span>
+            </a>
+            {% endfor %}
+          </div>
+
+          
+        {% endif %}
+    </div>
+<div class="row justify-content-center">
+  <div class="col-10">
+    {% include 'footer_withsidebar.html' %}
+  </div>
+</div>
+</div>
+  {% endwith %}
+{% endblock %}

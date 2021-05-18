@@ -1,3 +1,5 @@
+
+
 {% load lessonmanagement_extras %}
 <style>
   table td:hover {
@@ -72,6 +74,34 @@
   </table>
 </div>
 
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form  method="POST">
+      <div class="modal-body">
+        <h1>hello</h1>
+        <input type="hidden" id="form_date" name="test">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+
+
+
 {% for i in schedule_morning %}
   <script>
     window.onload = changeContent()
@@ -83,7 +113,7 @@ rn = {{i.order_schedule}};
 cn = {{i.dayofweek|add:1}};
 // Nội dung
 
-content = "<small>{%include 'lesson/status_lesson.html'%}<span class='badge bg-primary me-2'>{{ i.lesson.subject.subject.title }} {{ i.lesson.subject.level }} {{i.classyear.title}} </span><span class='badge bg-success me-2'>Bài {{ i.lesson.number_lesson }} </span><br>{{ i.lesson.title }}</small>";  
+content = "<small><span class='badge {% if i.lesson.status == "pending"%}bg-warning{%elif i.lesson.status == "acept"%}bg-success{%else%}bg-danger{%endif%} me-2'>{{ i.lesson.get_status_display }}</span><span class='badge bg-primary me-2'>{{ i.lesson.subject.subject.title }} {{ i.lesson.subject.level }}{{i.classyear.title}} </span><span class='badge bg-primary me-2'>Bài {{ i.lesson.number_lesson }} </span><br>{{ i.lesson.title }}</small>";  
 var x=document.getElementById('morning_table').rows[parseInt(rn,10)].cells;
 x[parseInt(cn,10)].innerHTML=content;
 x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}"); 
@@ -100,11 +130,18 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
     else{
     var column = $(this).parent().children().index(this);
     var row = $(this).parent().parent().children().index(this.parentNode);
-    var schoolyear = {{ schedule_morning.0.lesson.schoolyear.start_date.year|add:0 }}
-    var month = {{ schedule_morning.0.lesson.schoolyear.start_date.year|add:0 }}
-    var year = {{ schedule_morning.0.lesson.schoolyear.start_date.year|add:0 }}
+    var monday_day = {{monday.day}} - 1 + column;
+    var monday_month = {{monday.month}};
+    var monday_year = {{monday.year}};
+    var date_schedule = [monday_year, monday_month, monday_day];
+    var date = date_schedule.join('-');
+    var order_shedule = row + 1
+    document.getElementById('form_date').innerHTML=date
 
-    window.location='/schedule/add/' + schoolyear +'/month/date/'+ column + '/' + row + '/';
+    var myModal = new bootstrap.Modal(document.getElementById('exampleModal'))
+    myModal.show()
+
+    // window.location='/schedule/add/?date=' + date + '&session=morning&ordered=' + order_shedule;
     }
    
 });

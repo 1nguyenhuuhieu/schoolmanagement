@@ -14,6 +14,8 @@ from django.contrib import messages
 from .forms import *
 from django.http import JsonResponse
 import os
+from django.db import models
+
 
 # đổi từ class level sang năm vào trường của một lớp
 def level_to_startyear(level):
@@ -328,6 +330,7 @@ def schedule(request, year, week):
     now_school_year = current_schoolyear()
     # danh sách các niên khoá đã mở cho vào list
     schoolyear = Schoolyear.objects.dates('start_date', 'year')
+    
     list_schoolyear = []
     for i in schoolyear:
         list_schoolyear.append(i.year)
@@ -348,6 +351,20 @@ def schedule(request, year, week):
         # lấy ngày thứ hai của năm <year> và tuần <week> from URL
         d = '%s-W%s' % (year, week)
         monday = datetime.datetime.strptime(d + '-1', "%Y-W%W-%w")
+
+        #dữ liệu để thêm vào lịch báo giảng
+        q_schoolyear = Schoolyear.objects.get(start_date__year=now_school_year)
+        
+        limit_subjectdetail = SubjectClassyear.objects.filter(teacher=teacher, schoolyear=q_schoolyear).annotate(models.Count('classyear')).values('subject', 'classyear__count')
+
+        lesson_out_of_schedule = []
+        all_lesson_schedule = LessonSchedule.objects.filter(lesson__teacher=teacher, lesson__schoolyear=q_schoolyear)
+
+        test_q = all_lesson_schedule.values('lesson').annotate(models.Count('lesson'))
+        print(test_q)
+
+        
+
         context = {
             'now_school_year': now_school_year,
             'week': week,
@@ -360,6 +377,8 @@ def schedule(request, year, week):
     else:
         return redirect('emptyschedule')
 
+    
+
 # không tìm thấy lịch báo giảng với năm học đã cho từ URL
 def emptyschedule(request):
     context = {
@@ -367,6 +386,19 @@ def emptyschedule(request):
         'cause': 'Năm học này không tồn tại trên hệ thống',
     }
     return render(request, 'error/notfound.html', context)
+
+#thêm giáo án vào ngày trong lịch báo giảng
+def add_schedule(request):
+    if request.method == 'GET':
+        name = request.GET['date']
+        test = models.DateField().to_python(name)
+      
+        print(test)
+
+    context = {
+
+    }
+    return render(request, 'schedule/add_schedule.html')
 
 # thêm giáo án vào lịch báo giảng
 @login_required
