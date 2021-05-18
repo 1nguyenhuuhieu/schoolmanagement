@@ -1,7 +1,1 @@
-{%if lesson.status == 'pending'%}
-<span class='badge bg-warning me-2'>{{ i.lesson.get_status_display }} </span>
-{%elif lesson.status == 'acept'%}
-<span class='badge bg-success me-2'>{{ i.lesson.get_status_display }} </span>
-{%else%}
-<span class='badge bg-danger me-2'>{{ i.lesson.get_status_display }} </span>
-{%endif%}
+<span class='badge bg-warning me-2'>{{ i.lesson.get_status_display }}</span>
