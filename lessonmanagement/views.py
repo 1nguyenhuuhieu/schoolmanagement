@@ -209,8 +209,7 @@ def add_lesson_subject_level(request, subject, level):
     q2 = Lesson.objects.filter(
         teacher=teacher, subject__subject__subject_slug=subject, subject__level=level)
     # kiểm tra phân công giảng dạy
-    subjectclassyear = SubjectClassyear.objects.filter(
-        teacher=teacher, subject__subject__subject_slug=subject).values('classyear__startyear__start_date__year')
+    subjectclassyear = SubjectClassyear.objects.filter(teacher=teacher, subject__subject__subject_slug=subject).values('classyear__startyear__start_date__year')
     subjectclassyear_list = []
     for i in subjectclassyear:
         class_level = class_level_def(
@@ -230,13 +229,16 @@ def add_lesson_subject_level(request, subject, level):
             context['subject_title'] = subject_title
             q_subject_level = SubjectLesson.objects.filter(
                 subject__subject__subject_slug=subject, subject__level=level)
-            if q_subject_level:
+            try:
                 current_title_lesson = q_subject_level.get(
                     number_lesson=new_number_lesson)
                 new_title_lesson = list(SubjectLesson.objects.filter(
                     subject__subject__subject_slug=subject, subject__level=level).values('number_lesson', 'title'))
                 context['new_title_lesson'] = new_title_lesson
                 context['current_title_lesson'] = current_title_lesson
+            except:
+                return render(request, 'lesson/add_lesson_subject.html', context)
+
         except:
             return redirect('addlesson')
         if request.method == 'POST' and request.FILES['file_lesson']:
