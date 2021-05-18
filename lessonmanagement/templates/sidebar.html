@@ -9,13 +9,13 @@
         data-bs-toggle="dropdown" aria-expanded="false">
         <span class="visually-hidden">Toggle Dropdown</span>
       </button>
-      <ul class="dropdown-menu dropdown-menu-end  ">
-        <li class="dropdown-item disabled text-muted">Thêm giáo án vào môn <i class="fas fa-angle-down ms-2"></i></li>
+      <ul class="dropdown-menu dropdown-menu-end ">
+        <li><h6 class="dropdown-header">Thêm giáo án vào môn <i class="fas fa-angle-down ms-1"></i></h6></li>
         <li>
           <hr class="dropdown-divider">
         </li>
         {% for i in teacher.subject_classyear_list %}
-        <li><a class="dropdown-item" href="#">{{ i.subject__title }} {{i.classyear__startyear__start_date__year|classlevel}} </a></li>
+        <li><a class="dropdown-item" href="#">{{ i.subject__subject__title }} {{i.classyear__startyear__start_date__year|classlevel}} </a></li>
         {% endfor %}
       </ul>
     </div>
@@ -42,9 +42,9 @@
       class="list-group-item list-group-item-action border-0 text-primary ps-0 {% if request.path == '/lessondashboard/' %} fw-bold {% endif %}"><i
         class="fas fa-chart-bar me-2 text-muted  fa-fw "></i>Thống Kê</a>
     {% for i in teacher.subject_classyear_list %}
-    <a href="#"
+    <a href="{%url 'lessons_subject_level' i.subject__subject__title|slugify 6%}"
       class="list-group-item list-group-item-action border-0 text-primary ps-0"><i
-        class="fas fa-book fa-fw me-2 text-muted"></i>{{i.subject__title}} {{i.classyear__startyear__start_date__year|classlevel}} </a>
+        class="fas fa-book fa-fw me-2 text-muted"></i>{{i.subject__subject__title}} {{i.classyear__startyear__start_date__year|classlevel}} </a>
     {% endfor %}
     <hr>
     <span class="fw-bold mb-3"><i class="far fa-lightbulb me-2"></i>Bạn muốn xem các giáo án cũ hơn?</span>

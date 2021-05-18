@@ -23,7 +23,7 @@
 {%endif%}
 <hr>
 {%if teacher.subject_classyeartitle_list%}
-{% regroup teacher.subject_classyeartitle_list by subject__title as subject_classyeartitle_list_regroup %}
+{% regroup teacher.subject_classyeartitle_list by subject__subject__title as subject_classyeartitle_list_regroup %}
 {% for i in subject_classyeartitle_list_regroup %}
 <div class="row">
   <h5 class="mt-4"><a href="#" class="text-decoration-none link-secondary">{{ i.grouper }} <i
@@ -37,9 +37,15 @@
           {{ i.grouper }} {{ j.grouper|classlevel }}
         </h5>
         <hr>
+        <ul class="m-0">
+          <li>Số bài một tuần: {{j.list.0.subject__week_lesson}}</li>
+          <li>Tổng số bài: {{j.list.0.subject__total_lesson}}</li>
+    
+        </ul>
+        <hr>
         <p class="card-text m-0">
         <ul class="m-0">
-          <li>Bộ môn <a href="#" class="text-decoration-none">{{ j.list.0.subject__group__title }}</a></li>
+          <li>Bộ môn <a href="#" class="text-decoration-none">{{ j.list.0.subject__subject__group__title }}</a></li>
           <li>Giáo viên <a href="#" class="text-decoration-none">{{ teacher.full_name }}</a></li>
           <li>Dạy các lớp
             {% for k in j.list %}

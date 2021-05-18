@@ -78,12 +78,12 @@
     function changeContent()
 {
 // tiết mấy
-rn = {{ i.order_schedule }};
-
+rn = {{i.order_schedule}};
 // Thứ mấy
-cn = {{ i.dayofweek|add:"-2" }};
+cn = {{i.dayofweek|add:1}};
 // Nội dung
-content = "<small><span class='badge bg-primary me-2'>{{ i.lesson.subject.title }} {{ i.lesson.level }} {{i.classyear.title}} </span><span class='badge bg-success me-2'>Tiết {{ i.lesson.start_number_lesson }} - {{ i.lesson.start_number_lesson|add:i.lesson.cout_number_lesson}} </span><br>{{ i.lesson.title }}</small>";  
+
+content = "<small>{%include 'lesson/status_lesson.html'%}<span class='badge bg-primary me-2'>{{ i.lesson.subject.subject.title }} {{ i.lesson.subject.level }} {{i.classyear.title}} </span><span class='badge bg-success me-2'>Bài {{ i.lesson.number_lesson }} </span><br>{{ i.lesson.title }}</small>";  
 var x=document.getElementById('morning_table').rows[parseInt(rn,10)].cells;
 x[parseInt(cn,10)].innerHTML=content;
 x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}"); 

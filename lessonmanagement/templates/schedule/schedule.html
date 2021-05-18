@@ -1,82 +1,67 @@
-
-          {% extends 'base.html' %}
-          {% load static %}
-          {% block content %}
-          {% load lessonmanagement_extras %}
-          {% load humanize %}
-          {% load lessonmanagement_extras %}
-          {% with teacher=request.user.teacher %}
-
-
-          <div class="d-flex justify-content-between align-items-center my-3">
-
-            <h4><i class="far fa-calendar-check me-3"></i>Lịch báo giảng của {{ request.user.teacher.full_name }} <small class="text-muted">Năm học {{ now_school_year }} - {{ now_school_year|add:1 }}</small> </h4>
-          <button class="btn btn-lg btn-success"><i class="fas fa-plus me-2"></i>Thêm lịch báo giảng</button>
-
-        </div>
-
-       
-
-           <div class="card rounded shadow-sm py-2 bg-info bg-gradient border-0 mb-3">
-            <div class="card-body">
-                <div class="row justify-content-center align-items-end">
-                    <div class="col-lg-4 ps-5">
-                        <h4>Tuần {{ week }} {% now 'W' as current_week %} {% if week == current_week|add:0 %} -  <small class="text-dark">Tuần này</small>{% endif %}</h4>
-                        {% now "W" as now_week %}
-                        <a href="{% url 'schedule' year week|add:-1 %}" class="btn btn-light me-2"><i class="fas fa-step-backward me-2"></i>Tuần trước</a>
-                        <a href="{% url 'schedule' year week|add:1 %}" class="btn btn-light me-2">Tuần sau<i class="fas fa-step-forward ms-2"></i></a>
-                    </div>
-                    <div class="col-lg-4">
-                        <form method="POST">
-                            {% csrf_token %}
-                            <div class="row ">
-                                <label for="search_date" class="form-label  fw-bold">
-                                    Chọn ngày
-                                    </label>
-                                <div class="col-9"><input type="date" class="form-control" name="search_date" id="search_date">
-                                </div>
-                                <div class="col"><button type="submit" name="search_date" class="btn btn-light">Tìm</button></div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-lg-4 ">
-                        <form method="POST">
-                            {% csrf_token %}
-                        <div class="row">
-                            <label for="exampleDataList" class="form-label fw-bold">Chọn tuần</label>
-                            <div class="col-9">
-                        <input type="search" class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Tìm theo tuần..." name="week_search">
-                        <datalist id="datalistOptions">
-                           
-                            <option value="12"> test</option>
-                        
-                        </datalist>
-                            </div>
-                            <div class="col"><button type="submit" name="btnweek" class="btn btn-light">Tìm</button></div>
-                        </div>
-                        </form>
-                    </div>
-                </div>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load lessonmanagement_extras %}
+{% load humanize %}
+{% load lessonmanagement_extras %}
+{% with teacher=request.user.teacher %}
+<div class="d-flex justify-content-between align-items-center my-3">
+    <h4><i class="far fa-calendar-check me-3"></i>Lịch báo giảng của {{ request.user.teacher.full_name }} <small class="text-muted">Năm học {{ now_school_year }} - {{ now_school_year|add:1 }}</small></h4>
+    <button class="btn btn-lg btn-success"><i class="fas fa-plus me-2"></i>Thêm lịch báo giảng</button>
+</div>
+<div class="card rounded shadow-sm py-2 bg-info bg-gradient border-0 mb-3">
+    <div class="card-body">
+        <div class="row justify-content-center align-items-end">
+            <div class="col-lg-4 ps-5">
+                <h4>Tuần {{ week }} {% now 'W' as current_week %} {% if week == current_week|add:0 %} - <small
+                        class="text-dark">Tuần này</small>{% endif %}</h4>
+                {% now "W" as now_week %}
+                <a href="{% url 'schedule' year week|add:-1 %}" class="btn btn-light me-2"><i
+                        class="fas fa-step-backward me-2"></i>Tuần trước</a>
+                <a href="{% url 'schedule' year week|add:1 %}" class="btn btn-light me-2">Tuần sau<i
+                        class="fas fa-step-forward ms-2"></i></a>
             </div>
-           </div>
-
-           <div class="mb-2 mt-3">
-           <h4>Buổi sáng</h4>
-
-           {% include 'schedule/table_schedule_morning.html' %}
-
-           </div>
-
-           <hr>
-
-           <div class="mb-2 mt-3">
-           <h4>Buổi chiều</h4>
-
-           {% include 'schedule/table_schedule_afternoon.html' %}
-
-           </div>
-
-
-
-          {% endwith %}
-           {% endblock %}
+            <div class="col-lg-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row ">
+                        <label for="search_date" class="form-label  fw-bold">
+                            Chọn ngày
+                        </label>
+                        <div class="col-9"><input type="date" class="form-control" name="search_date" id="search_date">
+                        </div>
+                        <div class="col"><button type="submit" name="search_date" class="btn btn-light">Tìm</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-4 ">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <label for="exampleDataList" class="form-label fw-bold">Chọn tuần</label>
+                        <div class="col-9">
+                            <input type="search" class="form-control" list="datalistOptions" id="exampleDataList"
+                                placeholder="Tìm theo tuần..." name="week_search">
+                            <datalist id="datalistOptions">
+                                <option value="12"> test</option>
+                            </datalist>
+                        </div>
+                        <div class="col"><button type="submit" name="btnweek" class="btn btn-light">Tìm</button></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mb-2 mt-3">
+    <h4>Buổi sáng</h4>
+    {% include 'schedule/table_schedule_morning.html' %}
+</div>
+<hr>
+<div class="mb-2 mt-3">
+    <h4>Buổi chiều</h4>
+    {% include 'schedule/table_schedule_afternoon.html' %}
+</div>
+{% endwith %}
+{% endblock %}

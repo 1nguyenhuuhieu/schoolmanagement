@@ -103,7 +103,7 @@ class Teacher(models.Model):
     def subject_classyear_list(self):
         return self.subjectclassyear_set.all().order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title').distinct()
     def subject_classyeartitle_list(self):
-        return self.subjectclassyear_set.all().order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title', 'classyear__title').distinct()
+        return self.subjectclassyear_set.all().order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title', 'classyear__title','subject__total_lesson', 'subject__week_lesson').distinct()
     #giáo án mới nhất phục vụ trang dashboard
     def latest_lesson(self):
         return Lesson.objects.filter(teacher=self.user.teacher.id).order_by('-upload_time')[:3]
@@ -343,17 +343,15 @@ class Lesson(models.Model):
 
 # LỊCH BÁO GIẢNG
 class LessonSchedule(models.Model):
-    is_teach = models.BooleanField(default=False)
-    teach_date = models.DateField(blank=True, null=True)
     lesson = models.ForeignKey(Lesson, on_delete = models.CASCADE)
     classyear = models.ForeignKey(Classyear, on_delete = models.CASCADE)
-    teach_date_schedule = models.DateField(blank=True, null=True)
+    teach_date_schedule = models.DateField()
     week = models.IntegerField(blank=True, null=True)
     SESSION_CHOICES = [
         ('morning', 'Buổi sáng'),
         ('afternoon', 'Buổi chiều'),
     ]
-    session = models.CharField(max_length=15, choices=SESSION_CHOICES, blank=True, null=True)
+    session = models.CharField(max_length=15, choices=SESSION_CHOICES)
     ORDER_CHOICES = [
         (1, 1),
         (2, 2),
@@ -361,10 +359,10 @@ class LessonSchedule(models.Model):
         (4, 4),
         (5, 5)
     ]
-    order_schedule = models.IntegerField(choices=ORDER_CHOICES, null=True, blank=True)
+    order_schedule = models.IntegerField(choices=ORDER_CHOICES)
         
     def dayofweek(self):
-        return self.teach_date_schedule.day
+        return self.teach_date_schedule.weekday()
 
     class Meta:
         unique_together = ('teach_date_schedule', 'session', 'order_schedule')
@@ -372,7 +370,7 @@ class LessonSchedule(models.Model):
         verbose_name_plural = 'Lịch báo giảng'
     
     def __str__(self):
-        return '%s %s %s' % (self.lesson, self.classyear, self.is_teach)
+        return '%s %s' % (self.lesson, self.classyear)
 
 class News(models.Model):
     creater = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name="create_news")

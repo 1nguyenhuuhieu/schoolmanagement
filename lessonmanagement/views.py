@@ -179,6 +179,7 @@ def lesson(request, id):
 # Thêm giáo án tổng quan
 @login_required
 def addlesson(request):
+    teacher = request.user.teacher.id
     context = {}
     schoolyear = current_schoolyear()
     try:
@@ -209,7 +210,7 @@ def add_lesson_subject_level(request, subject, level):
         teacher=teacher, subject__subject__subject_slug=subject, subject__level=level)
     # kiểm tra phân công giảng dạy
     subjectclassyear = SubjectClassyear.objects.filter(
-        teacher=teacher, subject__subject_slug=subject).values('classyear__startyear__start_date__year')
+        teacher=teacher, subject__subject__subject_slug=subject).values('classyear__startyear__start_date__year')
     subjectclassyear_list = []
     for i in subjectclassyear:
         class_level = class_level_def(
@@ -261,7 +262,10 @@ def add_lesson_subject_level(request, subject, level):
             new_lesson.save()
             messages.success(
                 request, 'Vui lòng chờ giáo án của bạn được duyệt.')
-            return redirect('lesson', id=new_lesson.id, permanent=True)
+            if 'add' in request.POST:
+                return redirect('lesson', id=new_lesson.id, permanent=True)
+            if 'continue' in request.POST:
+                return redirect('add_lesson_subject_level', subject, level)
         return render(request, 'lesson/add_lesson_subject.html', context)
     else:
         return redirect('no_permisson_add_lesson')
@@ -317,6 +321,7 @@ def lessons_toyear(request, year):
 
 # lịch báo giảng
 def schedule(request, year, week):
+    teacher = request.user.teacher.id
     now = datetime.datetime.now()
     now_school_year = current_schoolyear()
     # danh sách các niên khoá đã mở cho vào list
@@ -333,7 +338,7 @@ def schedule(request, year, week):
             naive_schoolyear = year - 1
         else:
             naive_schoolyear = year
-        lessons = LessonSchedule.objects.filter(lesson__teacher=request.user.teacher.id, lesson__schoolyear__start_date__year=naive_schoolyear)
+        lessons = LessonSchedule.objects.filter(lesson__teacher=teacher)
         # lịch báo giảng của tuần thứ <week> và năm <naive_schoolyear> lấy theo URL
         schedule_all = lessons.filter(week=week)
         schedule_morning = schedule_all.filter(session='morning')
