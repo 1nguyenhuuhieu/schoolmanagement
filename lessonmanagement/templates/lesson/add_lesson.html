@@ -14,10 +14,10 @@
 </div>
 <h5>Chọn môn học để thêm giáo án</h5>
 <small class="text-muted"><i class="far fa-lightbulb me-2 fa-fw"></i>Danh sách này được hiển thị dựa trên sự phân công
-  giảng dạy từ <a href="#" class="text-decoration-none">ban giám hiệu nhà trường.</a></small>
+  giảng dạy từ ban giám hiệu nhà trường.</small>
 <br>
 {%if lesson_latest%}
-<small class="text-muted fst-italic"><i class="fas fa-history me-2 fa-fw"></i>Giáo án tải lên gần nhất cách đây: {{lesson_latest.upload_time|timesince}} <a href="#" class="text-decoration-none">{{ lesson_latest.title }}</a> </small>
+<small class="text-muted fst-italic"><i class="fas fa-history me-2 fa-fw"></i>Giáo án tải lên gần nhất cách đây: {{lesson_latest.upload_time|timesince}} <a href="{%url 'lesson' lesson_latest.id%}" class="text-decoration-none">{{ lesson_latest.title }}</a> </small>
 {%else%}
 <small class="text-danger fst-italic"><i class="fas fa-times me-2 fa-fw"></i>Chưa có giáo án nào được tải lên</small>
 {%endif%}

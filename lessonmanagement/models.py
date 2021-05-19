@@ -105,14 +105,14 @@ class Teacher(models.Model):
         current_startyear = school_year_def(now)
         schoolyear = Schoolyear.objects.get(start_date__year=current_startyear)
         return schoolyear
+    
     def subject_classyear_list(self):
-        now = datetime.datetime.now()
-        current_year = school_year_def(now)
-        schoolyear = Schoolyear.objects.get(start_date__year=current_year)
-        return self.subjectclassyear_set.filter(schoolyear=schoolyear).order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title').distinct()
+        return self.subjectclassyear_set.filter(
+            schoolyear=self.current_schoolyear()).order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title').distinct()
 
     def subject_classyeartitle_list(self):
-        return self.subjectclassyear_set.all().order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title', 'classyear__title','subject__total_lesson', 'subject__week_lesson').distinct()
+        return self.subjectclassyear_set.filter(
+            schoolyear=self.current_schoolyear()).order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title', 'classyear__title','subject__total_lesson', 'subject__week_lesson').distinct()
     #giáo án mới nhất phục vụ trang dashboard
     def latest_lesson(self):
         return Lesson.objects.filter(teacher=self.user.teacher.id).order_by('-upload_time')[:3]
