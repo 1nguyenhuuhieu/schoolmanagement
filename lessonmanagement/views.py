@@ -16,7 +16,6 @@ from django.http import JsonResponse
 import os
 from django.db import models
 
-
 # đổi từ class level sang năm vào trường của một lớp
 def level_to_startyear(level):
     now = datetime.datetime.now()
@@ -132,20 +131,26 @@ def teacher(request, teacher_id):
         raise Http404("Lesson does not exist")
 
 @login_required
-def lessondashboard(request):
-    teacher = request.user.teacher
-    # lấy tiết đã dạy hiện tại để tính thời lượng giảng dạy
-    subject_classyear = SubjectClassyear.objects.filter(
-        teacher=teacher.id)
-    context = {'subject_classyear': subject_classyear
-               }
-    return render(request, 'lesson/lessondashboard.html', context)
-
-@login_required
 def alllessons(request):
     lesson_list = Lesson.objects.filter(
         teacher=request.user.teacher.id).order_by('-upload_time')
-    context = {'lesson_list': lesson_list}
+    schoolyear = Schoolyear.objects.all()
+    context = {'lesson_list': lesson_list, 'schoolyear': schoolyear}
+    return render(request, 'lesson/all_lessons.html', context)
+
+@login_required
+def lessons_schoolyear(request, schoolyear):
+    teacher = request.user.teacher.id
+    all_schoolyear = Schoolyear.objects.all()
+    q_schoolyear = Schoolyear.objects.get(
+        start_date__year=schoolyear)
+    lessons = Lesson.objects.filter(
+        teacher=teacher, schoolyear=q_schoolyear).order_by('-upload_time')
+    context = {
+        'current_year': q_schoolyear,
+        'lesson_list': lessons,
+        'schoolyear': all_schoolyear,
+    }
     return render(request, 'lesson/all_lessons.html', context)
 
 @login_required
@@ -156,7 +161,7 @@ def lessons_subject_level(request, subject, level):
     # giáo án phù hợp với môn học và lớp học, giáo viên, niên khóa hiện tại
     lessons = Lesson.objects.filter(teacher=teacher, subject__subject__subject_slug=subject, subject__level=level, schoolyear=now_school_year)
     # sử dụng cho đường dẫn tới các lớp cụ thể
-    classyear_list = SubjectClassyear.objects.filter(teacher=teacher, subject__subject_slug=subject, classyear__startyear=level_to_startyear(level))
+    classyear_list = SubjectClassyear.objects.filter(teacher=teacher, subject__subject__subject_slug=subject, classyear__startyear__start_date__year=level_to_startyear(level))
     context = {
         'lesson_list': lessons, 'classyear_list': classyear_list, 'subject': subject, 'level': level
     }

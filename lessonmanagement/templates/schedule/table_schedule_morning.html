@@ -1,5 +1,3 @@
-
-
 {% load lessonmanagement_extras %}
 <style>
   table td:hover {
@@ -73,10 +71,6 @@
     </tbody>
   </table>
 </div>
-
-
-
-
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -103,10 +97,6 @@
     </div>
   </div>
 </div>
-
-
-
-
 {% for i in schedule_morning %}
   <script>
     window.onload = changeContent()
@@ -148,12 +138,9 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
 
     // window.location='/schedule/add/?date=' + date + '&session=morning&ordered=' + order_shedule;
     }
-   
+   });
 });
-
-});
-  
-  </script>
+    </script>
 
 
 

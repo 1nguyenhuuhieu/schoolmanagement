@@ -7,9 +7,8 @@ from . import views
 urlpatterns = [
     path('', views.index, name="index"),
     path('profile/', views.profile, name="profile"),
-    path('lessondashboard/', views.lessondashboard, name="lessondashboard"),
-    path('lessons/<int:year>/', views.lessons_toyear, name="lessons_toyear"),
     path('lessons/', views.alllessons, name="alllessons"),
+    path('lessons/<int:schoolyear>/', views.lessons_schoolyear, name="lessons_schoolyear"),
 
     path('lessons/empty/', views.emptylesson, name="emptylesson"),
     

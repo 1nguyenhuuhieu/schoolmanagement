@@ -100,8 +100,17 @@ class Teacher(models.Model):
     def lesson_list(self):
         return self.lesson_set.filter(teacher = self.user.id)
     #môn dạy và lớp dạy phục vụ cho sidebar.html
+    def current_schoolyear(self):
+        now = datetime.datetime.now()
+        current_startyear = school_year_def(now)
+        schoolyear = Schoolyear.objects.get(start_date__year=current_startyear)
+        return schoolyear
     def subject_classyear_list(self):
-        return self.subjectclassyear_set.all().order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title').distinct()
+        now = datetime.datetime.now()
+        current_year = school_year_def(now)
+        schoolyear = Schoolyear.objects.get(start_date__year=current_year)
+        return self.subjectclassyear_set.filter(schoolyear=schoolyear).order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title').distinct()
+
     def subject_classyeartitle_list(self):
         return self.subjectclassyear_set.all().order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title', 'classyear__title','subject__total_lesson', 'subject__week_lesson').distinct()
     #giáo án mới nhất phục vụ trang dashboard

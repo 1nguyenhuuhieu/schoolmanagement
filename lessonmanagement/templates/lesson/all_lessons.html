@@ -7,21 +7,24 @@
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb m-0 ">
       <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i class="fas fa-home me-2"></i>Trang chủ</a></li>
-      <li class="breadcrumb-item active"> Giáo án</li>
+      <li class="breadcrumb-item active">Giáo án</li>
     </ol>
   </nav>
 </div>
 {% if request.user.teacher.lesson_list %}
 <div class="d-flex justify-content-between align-items-center" >
-
-<h5><i class="fas fa-book fa-fw me-2 "></i>Tất cả giáo án của tôi</h5>
-<div>
-  <div class="btn-group me-3" role="group" aria-label="Button group with nested dropdown">
-    <a href="#" class="btn btn-sm btn-outline-secondary">Tuần này</a>
-    <a href="#" class="btn btn-sm btn-outline-secondary">Tháng này</a>
-    <a href="{% url 'lessons_toyear' sdf|schoolyear  %}" class="btn btn-sm btn-outline-secondary">Năm học {{ teacher.schoolyear }}</a>
-  </div>
-  <button type="button" class="btn btn-sm btn-secondary">Tất cả</button>
+<h5><i class="fas fa-book fa-fw me-2 "></i>Giáo án của tôi</h5>
+<div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle" type="button" id="schoolyear" data-bs-toggle="dropdown" aria-expanded="false">
+   {%if current_year%}{{current_year}}{%else%}Tất cả năm học{%endif%}
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="schoolyear">
+    <li><a class="dropdown-item" href="{%url 'alllessons'%}">Tất cả</a></li>
+    <li><hr class="dropdown-divider"></li>
+    {%for i in schoolyear%}
+    <li><a class="dropdown-item" href="{%url 'lessons_schoolyear' i.start_date.year%}">{{i}}</a></li>
+    {%endfor%}
+  </ul>
 </div>
 </div>
 <hr class="mb-4">
