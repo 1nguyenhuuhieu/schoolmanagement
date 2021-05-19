@@ -46,6 +46,11 @@ def current_schoolyear():
     else:
         return year - 1
 
+def q_schoolyear():
+    schoolyear = current_schoolyear()
+    now_school_year = Schoolyear.objects.get(start_date__year=schoolyear)
+    return now_school_year
+
 # TRANG CHỦ
 @login_required
 def index(request):
@@ -186,24 +191,28 @@ def lesson(request, id):
 # Thêm giáo án tổng quan
 @login_required
 def addlesson(request):
+    now = datetime.datetime.now()
+    now_week = now.isocalendar()[1]
     teacher = request.user.teacher.id
-    context = {}
     schoolyear = current_schoolyear()
-    try:
-        schoolyear = Schoolyear.objects.get(start_date__year=schoolyear)
-    except:
-        context = {
-            'error': 'Không được phép thêm giáo án',
-            'cause': 'Bạn chưa được phân công giảng dạy ở năm học ' + str(schoolyear) + ' - ' + str(schoolyear + 1),
-        }
-        return render(request, 'error/notfound.html', context)
-    try:
-        lesson_latest = Lesson.objects.filter(
-            teacher=request.user.teacher.id).latest('upload_time')
-        context['lesson_latest'] = lesson_latest
-    except:
-        context = {
-        }
+    schoolyear = Schoolyear.objects.get(start_date__year=schoolyear)
+    subjectclassyear = SubjectClassyear.objects.filter(
+        teacher=teacher, schoolyear=schoolyear
+    )
+    
+    subjectclassyear_count = subjectclassyear.filter(
+        subject__lesson__schoolyear=schoolyear
+    ).annotate(models.Count('subject__lesson'))
+
+    subjectclassyear_week_count = subjectclassyear.filter(
+        subject__lesson__schoolyear=schoolyear, subject__lesson__upload_time__week=now_week
+    ).annotate(models.Count('subject__lesson'))
+
+    context = {
+        'subjectclassyear': subjectclassyear,
+        'subjectclassyear_count': subjectclassyear_count,
+        'subjectclassyear_week_count': subjectclassyear_week_count
+    }
     return render(request, 'lesson/add_lesson.html', context)
 
 # THÊM GIÁO ÁN VÀO SUBJECT VÀ LEVEL
@@ -406,15 +415,22 @@ def add_schedule(request):
 # thêm giáo án vào lịch báo giảng
 @login_required
 def add_lesson_schedule(request, lesson_id):
+    teacher = request.user.teacher.id
+    lesson = Lesson.objects.get(teacher=teacher, pk=lesson_id)
+    classyear_list = SubjectClassyear.objects.filter(
+        teacher=teacher, schoolyear=q_schoolyear(), subject=lesson.subject
+    ).values('classyear__id', 'classyear__title', 'classyear__startyear__start_date__year')
+    for i in classyear_list:
+        print(i)
     if request.method == "POST":
-        classyear_form = request.POST['classyear']
+        classyear_form = request.POST['input_classyear']
         classyear = Classyear.objects.get(id=classyear_form)
         schedule_date = request.POST['schedule_date']
         session_schedule = request.POST['session']
         order_schedule = request.POST['order']
-        new_schedule = LessonClassyear(is_teach=False, lesson=lesson, classyear=classyear, session=session_schedule, order_schedule=order_schedule, teach_date_schedule=schedule_date)
+        new_schedule = LessonSchedule(lesson=lesson, classyear=classyear, session=session_schedule, order_schedule=order_schedule, teach_date_schedule=schedule_date)
         new_schedule.save()
-        q = LessonClassyear.objects.get(pk=new_schedule.id)
+        q = LessonSchedule.objects.get(pk=new_schedule.id)
         week = q.teach_date_schedule.isocalendar()[1]
         new_schedule.week = week
         new_schedule.save()
@@ -423,5 +439,8 @@ def add_lesson_schedule(request, lesson_id):
             return redirect('lesson', id=lesson_id, permanent=True)
         if 'continue' in request.POST:
             return redirect('add_lesson_schedule', lesson_id=lesson_id, permanent=True)
-    context = {}
+    context = {
+        'lesson': lesson,
+        'classyear_list': classyear_list
+    }
     return render(request, 'schedule/add_lesson_schedule.html', context)

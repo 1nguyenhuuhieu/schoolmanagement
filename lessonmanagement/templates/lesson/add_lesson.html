@@ -1,6 +1,5 @@
 {% extends 'base_withsidebar.html' %}
 {% block content %}
-{% with teacher=request.user.teacher %}
 {% load lessonmanagement_extras %}
 <div class="bg-white border shadow-sm p-3 rounded-pill mb-4">
   <nav aria-label="breadcrumb">
@@ -12,63 +11,77 @@
     </ol>
   </nav>
 </div>
-<h5>Chọn môn học để thêm giáo án</h5>
+<h4>Thống kê giáo án tải lên</h4>
+<small class="text-muted"><i class="far fa-lightbulb me-2 fa-fw"></i>Thống kê này được tính toán dựa trên quy định chi tiết của từng môn học.</small>
+<div class="row mt-3">
+  <div class="col-lg-6">
+    <div class="bg-white border p-4 shadow-sm rounded-15 h-100">
+      <h5><i class="fas fa-school me-2"></i>Năm học</h5> 
+      <hr>
+      {%if subjectclassyear_count%}
+          {%for i in subjectclassyear_count%}
+              <div class="d-flex justify-content-between mt-4">
+                <h6>{{i.subject}} <small class="text-muted">Bài {{i.subject__lesson__count}}/{{i.subject.total_lesson}}</small> </h6>
+                {% widthratio i.subject__lesson__count i.subject.total_lesson 100 %}%
+              </div>
+              <div class="progress" style="height: 4px;">
+                <div class="progress-bar" role="progressbar" style="width: {% widthratio i.subject__lesson__count i.subject.total_lesson 100 %}%;" aria-valuenow="{{i.subject__lesson__count}}" aria-valuemin="0" aria-valuemax="{{i.subject.total_lesson}}"></div>
+            </div>
+          {%endfor%}
+        {%else%}
+          <h6 class="text-danger">Chưa có giáo án nào được tải lên</h6>
+        {%endif%}
+    </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="bg-white border p-4 shadow-sm rounded-15 h-100">
+    <h5><i class="fas fa-calendar-week me-2"></i>Tuần này</h5>
+    <hr>
+    {%if subjectclassyear_week_count%}
+      {%for i in subjectclassyear_week_count%}
+      <div class="d-flex justify-content-between mt-4">
+        <h6>{{i.subject}} <small class="text-muted">Tải lên {{i.subject__lesson__count}}/{{i.subject.week_lesson}}</small> </h6>
+        <span>{% widthratio i.subject__lesson__count i.subject.week_lesson 100 %}%</span>
+      </div>
+
+      <div class="progress" style="height: 4px;">
+        <div class="progress-bar" role="progressbar" style="width: {% widthratio i.subject__lesson__count i.subject.week_lesson 100 %}%;" aria-valuenow="{{i.subject__lesson__count}}" aria-valuemin="0" aria-valuemax="{{i.subject.week_lesson}}"></div>
+    </div>
+      {%endfor%}
+      {%else%}
+      <h6 class="text-danger">Tuần này chưa có giáo án nào được tải lên</h6>
+      {%endif%}
+    </div>
+  </div>
+</div>
+<hr class="mt-5">
+<h4>Chọn môn học để thêm giáo án</h4>
 <small class="text-muted"><i class="far fa-lightbulb me-2 fa-fw"></i>Danh sách này được hiển thị dựa trên sự phân công
   giảng dạy từ ban giám hiệu nhà trường.</small>
-<br>
-{%if lesson_latest%}
-<small class="text-muted fst-italic"><i class="fas fa-history me-2 fa-fw"></i>Giáo án tải lên gần nhất cách đây: {{lesson_latest.upload_time|timesince}} <a href="{%url 'lesson' lesson_latest.id%}" class="text-decoration-none">{{ lesson_latest.title }}</a> </small>
-{%else%}
-<small class="text-danger fst-italic"><i class="fas fa-times me-2 fa-fw"></i>Chưa có giáo án nào được tải lên</small>
-{%endif%}
-<hr>
-{%if teacher.subject_classyeartitle_list%}
-{% regroup teacher.subject_classyeartitle_list by subject__subject__title as subject_classyeartitle_list_regroup %}
-{% for i in subject_classyeartitle_list_regroup %}
 <div class="row">
-  <h5 class="mt-4"><a href="#" class="text-decoration-none link-secondary">{{ i.grouper }} <i
-        class="fas fa-arrow-right ms-2"></i></a> </h5>
-  {% regroup i.list by classyear__startyear__start_date__year as i_list_regroup %}
-  {% for j in i_list_regroup %}
+  {%for i in subjectclassyear%}
   <div class="col-4 my-3">
     <div class="card rounded-15 shadow-sm h-100">
       <div class="card-body d-flex flex-column  ">
         <h5 class="card-title"><i class="fas fa-book fa-fw me-2 text-muted"></i>
-          {{ i.grouper }} {{ j.grouper|classlevel }}
+          {{i.subject}}
         </h5>
         <hr>
         <ul class="m-0">
-          <li>Số bài một tuần: {{j.list.0.subject__week_lesson}}</li>
-          <li>Tổng số bài: {{j.list.0.subject__total_lesson}}</li>
-    
+          <li>Số bài một tuần: {{i.subject.week_lesson}} </li>
+          <li>Tổng số bài: {{i.subject.total_lesson}} </li>
+          <li>Bộ môn: {{i.subject.subject.group.title}}</li>
+          <li>Giáo viên: {{i.teacher}}</li>
+          <li>Dạy các lớp: {{i.classyear_list}}</li>
         </ul>
-        <hr>
-        <p class="card-text m-0">
-        <ul class="m-0">
-          <li>Bộ môn <a href="#" class="text-decoration-none">{{ j.list.0.subject__subject__group__title }}</a></li>
-          <li>Giáo viên <a href="#" class="text-decoration-none">{{ teacher.full_name }}</a></li>
-          <li>Dạy các lớp
-            {% for k in j.list %}
-            <a href="#" class="text-decoration-none">{{ k.classyear__startyear__start_date__year|classlevel }}{{ k.classyear__title }}{%if forloop.last%}{% else %},{% endif %}
-            </a>
-            {% endfor %}
-          </li>
-        </ul>
-        </p>
-        <hr>
+          <hr>
         <div class="mt-auto d-flex justify-content-between align-items-center">
-          <a href="{% url 'add_lesson_subject_level' i.grouper|slugify j.grouper|classlevel %}"
-            class="btn btn-sm btn-success"><i class="fas fa-plus me-2"></i>Thêm giáo án</a>
-          <a href="#" class="text-decoration-none">xem tất cả</a>
+          <a href="{%url 'add_lesson_subject_level' i.subject.subject.title|slugify i.subject.level|classlevel%}" class="btn btn-sm btn-success"><i class="fas fa-plus me-2"></i>Thêm giáo án</a>
+          <a href="{%url 'lessons_subject_level' i.subject.subject.title|slugify i.subject.level%}" class="text-decoration-none">Xem tất cả</a>
         </div>
       </div>
     </div>
   </div>
-  {% endfor %}
+  {%endfor%}
 </div>
-{% endfor %}
-{%else%}
-<h1 class="text-danger">Chưa có phân công giảng dạy</h1>
-{%endif%}
-{% endwith %}
 {% endblock %}
