@@ -4,13 +4,8 @@
     background-color: rgba(0,0,0,.075);
     cursor: pointer;
 }
-
-
 </style>
-
-
 <div class="table-responsive">
-
 <table class="table table-bordered  bg-white shadow-sm" id= 'afternoon_table'>
   <caption><i class="far fa-lightbulb me-2"></i>Chọn trực tiếp giáo án trong bảng để điều chỉnh lịch báo giảng</caption>
     <thead>
@@ -20,22 +15,16 @@
         <th scope="col">Thứ {{ i }} <small class="text-dark fw-normal">/
           {% with j=i|add:-2%}
           {% with newday=monday|plus_days:j %}
-
           {{ newday|date:'SHORT_DATE_FORMAT' }}
-
           {% endwith %}
           {% endwith %}
         </small></th>
-
         {% endfor %}
-
       </tr>
     </thead>
     <tbody>
       <tr>
-       
         <th scope="row">1</th>
-       
         <td></td>
         <td></td>
         <td></td>
@@ -44,9 +33,7 @@
         <td></td>
       </tr>
       <tr>
-       
         <th scope="row">2</th>
-       
         <td></td>
         <td></td>
         <td></td>
@@ -55,9 +42,7 @@
         <td></td>
       </tr>
       <tr>
-       
         <th scope="row">3</th>
-       
         <td></td>
         <td></td>
         <td></td>
@@ -66,9 +51,7 @@
         <td></td>
       </tr>
       <tr>
-       
         <th scope="row">4</th>
-       
         <td></td>
         <td></td>
         <td></td>
@@ -77,9 +60,7 @@
         <td></td>
       </tr>
       <tr>
-       
         <th scope="row">5</th>
-       
         <td></td>
         <td></td>
         <td></td>
@@ -89,51 +70,29 @@
       </tr>
     </tbody>
   </table>
-
 </div>
 
-
-
-
 {% for i in schedule_afternoon %}
-
-
   <script>
-
     window.onload = changeContent()
     function changeContent()
 {
-
 // tiết mấy
-rn = {{ i.order_schedule }};
-
+rn = {{i.order_schedule}};
 // Thứ mấy
-cn = {{ i.dayofweek|add:"-2" }};
+cn = {{i.dayofweek|add:1}};
 // Nội dung
-content = "<small><span class='badge bg-primary me-2'>{{ i.lesson.subject.title }} {{ i.lesson.level }} {{i.classyear.title}} </span><span class='badge bg-success me-2'>Tiết {{ i.lesson.start_number_lesson }} - {{ i.lesson.start_number_lesson|add:i.lesson.cout_number_lesson}} </span><br>{{ i.lesson.title }}</small>";  
+
+content = "<small><span class='badge {% if i.lesson.status == "pending"%}bg-warning{%elif i.lesson.status == "acept"%}bg-success{%else%}bg-danger{%endif%} me-2'>{{ i.lesson.get_status_display }}</span><span class='badge bg-primary me-2'>{{ i.lesson.subject.subject.title }} {{ i.lesson.subject.level }}{{i.classyear.title}} </span><span class='badge bg-primary me-2'>Bài {{ i.lesson.number_lesson }} </span><br>{{ i.lesson.title }}</small>";  
 var x=document.getElementById('afternoon_table').rows[parseInt(rn,10)].cells;
 x[parseInt(cn,10)].innerHTML=content;
 x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}"); 
 }
-
-
   </script>
-
   {% endfor %}
-
-  
-
-
-
-
-
-
-
-
-
-  <!-- <script>
+  <script>
     $(document).ready(function(){
-      $("td").click(function(){
+      $("#afternoon_table").find("td").click(function(){
     if ($(this).attr('name')){
       var idLesson = $(this).attr('name');
       window.location='/lesson/' + idLesson + '/';
@@ -141,9 +100,66 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
     else{
     var column = $(this).parent().children().index(this);
     var row = $(this).parent().parent().children().index(this.parentNode);
-    window.location='/schedule/add/yesfssfar/month/date/'+ column + '/' + row + '/';
+    var monday_day = {{monday.day}} - 1 + column;
+    var monday_month = {{monday.month}};
+    var monday_year = {{monday.year}};
+    var date_schedule = [monday_year, monday_month, monday_day];
+    var date = date_schedule.join('-');
+    var order_shedule = row + 1
+    document.getElementById('schedule_date').value=date
+    document.getElementById('session_date').value='afternoon'
+    document.getElementById('order_schedule').value=order_shedule
+
+    var myModal = new bootstrap.Modal(document.getElementById('add_schedule_modal'))
+    myModal.show()
+
+    // window.location='/schedule/add/?date=' + date + '&session=morning&ordered=' + order_shedule;
     }
+   });
 });
-});
-  </script> -->
+    </script>
+
+
+
+<!-- add schedule Modal -->
+<div class="modal fade" id="add_schedule_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Thêm lịch báo giảng</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST">
+        {%csrf_token%}
+      <div class="modal-body">
+        <input type="hidden" id="schedule_date" name="schedule_date">
+        <input type="hidden" id="session_date" name="session_date">
+        <input type="hidden" id="order_schedule" name="order_schedule">
+
+        <label for="classyear" class="form-label">Chọn lớp</label>
+
+        <select class="form-select mb-3" size="5" aria-label="size 5 select example" name="classyear" id="classyear">
+          {%for i in classyear%}
+          <option value="{{i.classyear__id}}">{{i.classyear__startyear__start_date__year|classlevel}}{{i.classyear__title}}</option>
+          {%endfor%}
+        </select>
+        <label for="lesson_id" class="form-label">Chọn bài giảng</label>
+
+        <select class="form-select" size="5" aria-label="size 5 select example" name="lesson_id" id="lesson_id">
+          {%for lesson in all_lesson%}
+          <option value="{{lesson.id}}">{{lesson.subject}} - Bài {{lesson.number_lesson}}: {{lesson.title}}</option>
+          {%endfor%}
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="submit" name="add_schedule" class="btn btn-primary">Thêm</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+
+
 

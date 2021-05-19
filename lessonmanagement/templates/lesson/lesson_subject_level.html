@@ -10,7 +10,7 @@
     {{lesson_list.0.subject}}
   </h5>
   <div>
-    <a href="#" class="btn btn-success btn-sm"><i class="fas fa-plus me-2"></i>Thêm giáo án</a>
+    <a href="{%url 'add_lesson_subject_level' lesson_list.0.subject.subject.title|slugify lesson_list.0.subject.level|classlevel%}" class="btn btn-success btn-sm"><i class="fas fa-plus me-2"></i>Thêm giáo án</a>
   </div>
 </div>
 <hr>

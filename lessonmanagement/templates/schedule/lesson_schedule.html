@@ -2,13 +2,18 @@
 {% load humanize %}
 <table class="table table-bordered">
     <tr>
+        <th scope="row">Môn học</th>
+        <td>{{ lesson.subject }}</td>
+    </tr>
+    <tr>
+        <th scope="row">Bài số</th>
+        <td>{{ lesson.number_lesson }}</td>
+    </tr>
+    <tr>
         <th scope="row">Tên giáo án</th>
         <td>{{ lesson.title }}</td>
     </tr>
-    <tr>
-        <th scope="row">Tiết</th>
-        <td>{{ lesson.number_lesson }}</td>
-    </tr>
+
     <tr>
         <th scope="row">Ngày dạy</th>
         <td>{{ i.teach_date_schedule|date:"D" }}. Tuần {{ i.teach_date_schedule|date:"W" }}. {{ i.teach_date_schedule }}.  <span class="badge bg-danger">{{ i.teach_date_schedule|timeuntil }}</span></td>

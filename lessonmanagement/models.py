@@ -348,7 +348,7 @@ class Lesson(models.Model):
     def classyear_list(self):
         return LessonSchedule.objects.filter(lesson=self.id)
     def __str__(self):
-        return 'Bài %s - %s: %s' % (self.number_lesson, self.subject, self.title)
+        return '%s : Bài %s - %s' % (self.subject, self.number_lesson,self.title)
 
 # LỊCH BÁO GIẢNG
 class LessonSchedule(models.Model):
@@ -380,18 +380,3 @@ class LessonSchedule(models.Model):
     
     def __str__(self):
         return '%s %s' % (self.lesson, self.classyear)
-
-class News(models.Model):
-    creater = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name="create_news")
-    title = models.CharField(max_length=100)
-    content = models.TextField()
-    cover = models.FileField(upload_to="news/", verbose_name="File đính kèm trong tin tức", null = True, blank = True)
-    upload_time = models.DateTimeField(auto_now=True)
-    viewer = models.ManyToManyField(Teacher, blank=True, null=True)
-
-    class Meta:
-        ordering = ['upload_time']
-
-    def __str__(self):
-        return self.title
-

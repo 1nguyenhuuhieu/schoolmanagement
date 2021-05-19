@@ -118,10 +118,6 @@ class SubjectClassyearAdmin(ImportExportModelAdmin):
 class SchoolManagerAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(News)
-class NewsAdmin(admin.ModelAdmin):
-    pass
-
 @admin.register(Schoolyear)
 class SchoolyearAdmin(ImportExportModelAdmin):
     list_display = ('__str__', 'school')

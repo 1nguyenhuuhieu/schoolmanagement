@@ -6,7 +6,7 @@
 {% include 'breadcrumb/breadcrumb_lesson.html' %}
 {% include 'notification/success.html' %}
 <div class="bg-white rounded-15 shadow-sm p-4 border">
-    <h2>{{ lesson.subject.subject.title }} {{ lesson.subject.level }} - Tiết
+    <h2>{{ lesson.subject.subject.title }} {{ lesson.subject.level }} - Bài
         {{ lesson.number_lesson }}</h2>
     <h4 class="mb-3">{{ lesson.title }}</h4>
     <div class="d-flex align-items-center mb-3">
@@ -60,18 +60,42 @@
     <a href="{% url 'add_lesson_schedule' lesson.id %}" class="btn btn-danger"><i
             class="far fa-calendar-check me-2"></i>Thêm lịch báo giảng</a>
     {% else %}
-    {% for i in lesson.classyear_list %}
-    <h6 class="bg-info mb-0 p-2 mt-4">
-        {{ lesson.subject.title }} {{ i.classyear.startyear }}{{ i.classyear.title }} <small>
-            <a href="#" class="ms-2 text-decoration-none text-dark"><i class="far fa-edit me-2"></i>Sửa lịch báo
-                giảng</a>
-        </small>
-    </h6>
-    {% include 'schedule/lesson_schedule.html' %}
-    {% endfor %}
+
+    <table class="table table-hover mt-4">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Lớp</th>
+            <th scope="col">Tiết</th>
+            <th scope="col">Buổi</th>
+            <th scope="col">Ngày</th>
+            <th scope="col">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+            {%for i in lesson.classyear_list%}
+          <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <td>{{i.classyear.startyear.start_date.year|classlevel}}{{i.classyear.title}}</td>
+            <td>{{i.order_schedule}}</td>
+            <td>{{i.get_session_display}}</td>
+            <td>{{i.teach_date_schedule|date:'D'}}, {{i.teach_date_schedule|date:'SHORT_DATE_FORMAT'}}</td>
+            <td>
+                <form method="POST">
+                    {%csrf_token%}
+                    <input type="hidden" name="schedule_id" value="{{i.id}}">
+
+                <button class="btn btn-sm btn-outline-danger" type="submit" name="delete"><i class="fas fa-trash-alt me-2"></i>Xóa</button>
+
+                </form>
+            </td>
+          </tr>
+          {%endfor%}
+        </tbody>
+      </table>
     <br>
-    <a href="{% url 'add_lesson_schedule' lesson.id %}" class="btn btn-danger mb-3"><i
-            class="far fa-calendar-check me-2"></i>Thêm lịch báo giảng</a>
+    <a href="{% url 'add_lesson_schedule' lesson.id %}" class="btn btn-lg btn-success mb-3"><i
+            class="far fa-calendar-check me-2"></i>Thêm giáo án vào lịch báo giảng</a>
     {% endif %}
 </div>
 {% endblock %}
