@@ -1,0 +1,30 @@
+{%extends 'base.html'%}
+{%load static%}
+
+{%block content%}
+<link rel="stylesheet" href="{% static 'readpptx/css/pptxjs.css' %}">
+<link rel="stylesheet" href="{% static 'readpptx/css/nv.d3.min.css' %}">
+
+<script src="{%static 'readpptx/js/jquery-1.11.3.min.js'%}"></script>
+<script src="{%static 'readpptx/js/jszip.min.js'%}"></script>
+<script src="{%static 'readpptx/js/filereader.js'%}"></script>
+<script src="{%static 'readpptx/js/d3.min.js'%}"></script>
+<script src="{%static 'readpptx/js/nv.d3.min.js'%}"></script>
+<script src="{%static 'readpptx/js/pptxjs.js'%}"></script>
+<script src="{%static 'readpptx/js/divs2slides.js'%}"></script>
+<script src="{%static 'readpptx/js/jquery.fullscreen-min.js'%}"></script>
+
+<div class="row">
+    <div class="col-12 d-flex justify-content-center py-5">
+    <div id="openLesson"></div>
+    </div>
+</div>
+
+
+    <script>
+        $("#openLesson").pptxToHtml({
+     pptxFileUrl: "{{lesson.lesson_path.url}}"
+
+});
+    </script>
+{%endblock%}

@@ -9,6 +9,7 @@
     <h2>{{ lesson.subject.subject.title }} {{ lesson.subject.level }} - Bài
         {{ lesson.number_lesson }}</h2>
     <h4 class="mb-3">{{ lesson.title }}</h4>
+    <hr>
     <div class="d-flex align-items-center mb-3">
         <img src="
         {% if request.user.teacher.avatar %}
@@ -29,7 +30,7 @@
         {{ lesson.description }}
     </p>
     {% endif %}
-    <a href="#" class="btn btn-sm btn-outline-success me-2"><i class="far fa-eye me-2"></i>Xem</a>
+    <a href="{%url 'open_lesson' lesson.id%}" class="btn btn-sm btn-outline-success me-2"><i class="far fa-eye me-2"></i>Xem</a>
     <a href="{{ lesson.lesson_path.url }}" class="btn btn-sm btn-outline-success me-2"><i
             class="fas fa-download me-2"></i>Tải về</a>
             <a href="{% url 'add_lesson_schedule' lesson.id %}" class="btn btn-sm btn-success"><i
@@ -49,13 +50,15 @@
     {% else %}
     <span class="badge bg-danger text-white rounded-pill">{{ lesson.get_status_display }}</span> bởi
     <a href="#" class="text-decoration-none">{{ lesson.checker }} </a> / {{ lesson.check_date|naturaltime }}
-    <a href="{% url 'edit_lesson' lesson.id %}" class="btn btn-lg btn-danger ms-2"><i class="fas fa-wrench me-2"></i>Sửa
+    <a href="{% url 'edit_lesson' lesson.id %}" class="btn btn-warning ms-2"><i class="fas fa-wrench me-2"></i>Sửa
         giáo án</a>
     {% if lesson.note_checker %}
     <p class="mt-3"><span class="fw-bold">Ghi chú:</span> {{ lesson.note_checker }}</p>
     {% endif %}
     {% endif %}
+
     <hr class="my-4">
+    
     <h6><i class="far fa-calendar-check me-2 text-muted fa-fw"></i>Lịch báo giảng</h6>
     {% if not lesson.classyear_list %}
     <h5 class="text-danger mt-3">Giáo án này chưa được lên lịch báo giảng</h5>

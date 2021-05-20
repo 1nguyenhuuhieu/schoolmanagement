@@ -11,6 +11,7 @@ urlpatterns = [
     path('lessons/<int:schoolyear>/', views.lessons_schoolyear, name="lessons_schoolyear"),
 
     path('lessons/empty/', views.emptylesson, name="emptylesson"),
+    path('lesson/open/<int:id>/', views.open_lesson, name="open_lesson"),
     
     path('lessons/<str:subject>/<int:level>/', views.lessons_subject_level, name="lessons_subject_level"),
     path('lessons/<str:subject>/<int:level>/<str:title>/', views.lesson_classyear, name="lesson_classyear"),

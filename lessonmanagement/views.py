@@ -193,6 +193,18 @@ def lesson(request, id):
     except Lesson.DoesNotExist:
         raise Http404("Lesson does not exist")
 
+
+@login_required
+def open_lesson(request, id):
+    teacher = request.user.teacher.id
+    lesson = Lesson.objects.get(
+        teacher=teacher, schoolyear=q_schoolyear(), pk=id
+    )
+    context = {
+        'lesson': lesson
+    }
+    return render(request,'lesson/open_lesson.html',context)
+
 # Thêm giáo án tổng quan
 @login_required
 def addlesson(request):
