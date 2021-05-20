@@ -30,8 +30,10 @@
     </p>
     {% endif %}
     <a href="#" class="btn btn-sm btn-outline-success me-2"><i class="far fa-eye me-2"></i>Xem</a>
-    <a href="{{ lesson.lesson_path.url }}" class="btn btn-sm btn-outline-success"><i
+    <a href="{{ lesson.lesson_path.url }}" class="btn btn-sm btn-outline-success me-2"><i
             class="fas fa-download me-2"></i>Tải về</a>
+            <a href="{% url 'add_lesson_schedule' lesson.id %}" class="btn btn-sm btn-success"><i
+              class="far fa-calendar-check me-2"></i>Thêm giáo án vào lịch báo giảng</a>
     <hr class="my-4">
     <h6><i class="fas fa-toggle-on text-muted fa-fw me-2"></i>Trạng thái giáo án</h6>
     {% if lesson.status == 'pending' %}
@@ -93,9 +95,8 @@
           {%endfor%}
         </tbody>
       </table>
-    <br>
-    <a href="{% url 'add_lesson_schedule' lesson.id %}" class="btn btn-lg btn-success mb-3"><i
-            class="far fa-calendar-check me-2"></i>Thêm giáo án vào lịch báo giảng</a>
+
+   
     {% endif %}
 </div>
 {% endblock %}
