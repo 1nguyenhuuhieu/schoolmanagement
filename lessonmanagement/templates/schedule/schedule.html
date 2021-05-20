@@ -5,11 +5,9 @@
 {% load humanize %}
 {% load lessonmanagement_extras %}
 {% with teacher=request.user.teacher %}
-
-
 <div class="d-flex justify-content-between align-items-center my-3">
     <h4><i class="far fa-calendar-check me-3"></i>Lịch báo giảng của {{ request.user.teacher.full_name }} <small class="text-muted">Năm học {{ now_school_year }} - {{ now_school_year|add:1 }}</small></h4>
-    <a href="{%url 'add_schedule'%}" class="btn btn-lg btn-success"><i class="fas fa-plus me-2"></i>Thêm lịch báo giảng</a>
+    <a href="{%url 'add_schedule'%}" class="btn btn-primary">Thêm lịch báo giảng</a>
 </div>
 <div class="card rounded shadow-sm py-2 bg-info bg-gradient border-0 mb-3">
     <div class="card-body">

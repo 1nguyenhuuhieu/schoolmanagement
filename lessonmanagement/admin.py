@@ -29,6 +29,11 @@ class ClassyearResource(resources.ModelResource):
     class Meta:
         model = Classyear
 
+class LessonScheduleResource(resources.ModelResource):
+    class Meta:
+        model = LessonSchedule
+        fields = ('id', 'classyear', 'classyear__startyear__start_date','classyear__title','week','session', 'order_schedule', 'teach_date_schedule'  )
+
 class SchoolyearResource(resources.ModelResource):
     class Meta:
         model = Schoolyear
@@ -105,8 +110,9 @@ class LessonAdmin(admin.ModelAdmin):
     list_filter = ('subject', 'subject__subject__group__title','teacher__lastname','status','checker')
 
 @admin.register(LessonSchedule)
-class LessonScheduleAdmin(admin.ModelAdmin):
-    pass
+class LessonScheduleAdmin(ImportExportModelAdmin):
+    resource_class = LessonScheduleResource
+   
 
 @admin.register(SubjectClassyear)
 class SubjectClassyearAdmin(ImportExportModelAdmin):
