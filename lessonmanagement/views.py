@@ -225,10 +225,17 @@ def addlesson(request):
         subject__lesson__schoolyear=schoolyear, subject__lesson__upload_time__week=now_week
     ).annotate(models.Count('subject__lesson'))
 
+    subjectclassyear_week = subjectclassyear.filter(
+        subject__lesson__schoolyear=schoolyear, subject__lesson__upload_time__week=now_week
+    )
+    
+    empty_week = subjectclassyear.difference(subjectclassyear_week)
+
     context = {
         'subjectclassyear': subjectclassyear,
         'subjectclassyear_count': subjectclassyear_count,
-        'subjectclassyear_week_count': subjectclassyear_week_count
+        'subjectclassyear_week_count': subjectclassyear_week_count,
+        'empty_week': empty_week
     }
     return render(request, 'lesson/add_lesson.html', context)
 

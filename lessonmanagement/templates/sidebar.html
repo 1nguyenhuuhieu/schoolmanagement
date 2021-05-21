@@ -27,14 +27,19 @@
     {% now "Y" as current_year %}
     <span class="fw-bold mb-3">Năm {{teacher.current_schoolyear}} </span>
     {% for i in teacher.subject_classyear_list %}
+    {% with test=i.classyear__startyear__start_date__year|classlevel%}
+    {{ test|safe }}
+    
+   {%endwith%}
     <a href="{%url 'lessons_subject_level' i.subject__subject__title|slugify i.classyear__startyear__start_date__year|classlevel%}"
-      class="list-group-item list-group-item-action border-0 text-primary ps-0"><i
+      class="list-group-item list-group-item-action border-0 text-primary ps-0 {%if i.classyear__startyear__start_date__year|classlevel|add:'0' in request.path %}  fw-bolder {%endif%}"><i
         class="fas fa-book fa-fw me-2 text-muted"></i>{{i.subject__subject__title}} {{i.classyear__startyear__start_date__year|classlevel}} </a>
     {% endfor %}
-    <hr>
-        <span class="fw-bold mb-3"><i class="far fa-lightbulb me-2"></i>Bạn muốn xem các giáo án cũ hơn?</span>
-    <p class="text-muted pe-3">Hệ thống lưu trữ toàn bộ các giáo án bạn đã tải lên. Đến thư viện giáo án và tìm lại.</p>
    </div>
-  <a href="{% url 'alllessons' %}" class="btn btn-success"><i class="fas fa-archive me-2"></i>Thư viện giáo án</a>
+   <hr>
+    <a href="#" class="btn btn-outline-success me-2 mb-3"><i class="fas fa-calendar-week me-2 fa-fw"></i>Tuần này</a>
+    <a href="{% url 'alllessons' %}" class="btn btn-outline-success mb-3 {%if request.path == '/lessons/'%} active {%endif%}"><i class="fas fa-archive me-2 fa-fw"></i>Thư viện giáo án</a>
+      <h6 class="fw-bold"><i class="far fa-lightbulb me-2"></i>Bạn muốn xem các giáo án cũ hơn?</h6>
+   <p class="text-muted pe-3">Hệ thống lưu trữ toàn bộ các giáo án bạn đã tải lên. Đến thư viện giáo án và tìm lại.</p>
 </div>
 {% endwith %}
