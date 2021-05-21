@@ -206,10 +206,16 @@ def week_lessons(request, subject, level):
         lessons = lessons.filter(
             subject__subject__subject_slug=subject, subject__level=level
         )
-    
+        subject_title = Subject.objects.get(subject_slug=subject)
+        subject_level = level
+    else:
+        subject_title = 'Tất cả'
+        subject_level = ''
     context = {
         'lesson_list': lessons,
         'subjects': subjects,
+        'subject_title': subject_title,
+        'subject_level': subject_level
     }
     return render(request, 'lesson/week_lessons.html', context)
 
@@ -524,3 +530,10 @@ def add_lesson_schedule(request, lesson_id):
         'schedule_list': schedule_list
     }
     return render(request, 'schedule/add_lesson_schedule.html', context)
+
+@login_required
+def guide(request):
+    context = {
+
+    }
+    return render(request, 'guide/guide.html', context)

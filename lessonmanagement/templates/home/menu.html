@@ -1,0 +1,29 @@
+{% load static %}
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card homecard rounded-15 h-100" >
+            <img src="{% static 'imgs/home/presentation.png' %}" class="card-img-top p-4" alt="...">
+            <div class="card-body">
+              <h5 class="card-title text-center"><a href="{% url 'alllessons' %}" class="stretched-link text-decoration-none link-dark">Giáo án</a></h5>
+            </div>
+          </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card homecard rounded-15 h-100" >
+            <img src="{% static 'imgs/home/schedule.png' %}" class="card-img-top  p-4" alt="...">
+            <div class="card-body">
+                {% now 'W' as w %}
+                {% now 'Y' as y %}
+              <h5 class="card-title text-center"><a href="{% url 'schedule' y w %}" class="stretched-link text-decoration-none link-dark">Lịch báo giảng</a></h5>
+            </div>
+          </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card homecard rounded-15 h-100" >
+            <img src="{% static 'imgs/home/writing.png' %}" class="card-img-top  p-4" alt="...">
+            <div class="card-body">
+              <h5 class="card-title text-center"><a href="{% url 'schedule' y w %}" class="stretched-link text-decoration-none link-dark">Duyệt giáo án</a></h5>
+            </div>
+          </div>
+    </div>
+</div>
