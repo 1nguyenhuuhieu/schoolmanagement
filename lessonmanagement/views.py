@@ -193,9 +193,26 @@ def lesson(request, id):
         raise Http404("Lesson does not exist")
 
 @login_required
-def week_lessons(request):
-    context = {}
+def week_lessons(request, subject, level):
+    teacher = request.user.teacher.id
+    now = datetime.datetime.now()
+    week = now.isocalendar()[1]
+    subjects = SubjectClassyear.objects.filter(
+        teacher=teacher, schoolyear=q_schoolyear()
+    )
+    lessons = Lesson.objects.filter(
+        teacher=teacher, schoolyear=q_schoolyear(), upload_time__week=week)
+    if subject != 'all':
+        lessons = lessons.filter(
+            subject__subject__subject_slug=subject, subject__level=level
+        )
+    
+    context = {
+        'lesson_list': lessons,
+        'subjects': subjects,
+    }
     return render(request, 'lesson/week_lessons.html', context)
+
 @login_required
 def open_lesson(request, id):
     teacher = request.user.teacher.id
