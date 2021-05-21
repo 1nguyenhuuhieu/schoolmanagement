@@ -329,10 +329,12 @@ def no_permisson_add_lesson(request):
 @login_required
 def edit_lesson(request, lesson_id):
     now = datetime.datetime.now()
+    teacher = request.user.teacher.id
+    schoolyear = q_schoolyear()
 
     try:
-        lesson = Lesson.objects.filter(
-            teacher=request.user.teacher.id).get(id=lesson_id)
+        lesson = Lesson.objects.get(
+            teacher=teacher, pk=lesson_id)
         context = {'lesson': lesson}
         if request.method == "POST":
             title = request.POST['title_lesson']
