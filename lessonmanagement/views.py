@@ -178,7 +178,6 @@ def emptylesson(request):
 
 @login_required
 def lesson(request, id):
-    
     try:
         lesson = Lesson.objects.filter(
             teacher=request.user.teacher.id).get(id=id)
@@ -194,7 +193,7 @@ def lesson(request, id):
         raise Http404("Lesson does not exist")
 
 @login_required
-def week_lessons(request, week):
+def week_lessons(request):
     context = {}
     return render(request, 'lesson/week_lessons.html', context)
 @login_required
