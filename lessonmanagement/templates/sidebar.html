@@ -27,13 +27,11 @@
     {% now "Y" as current_year %}
     <span class="fw-bold mb-3">Năm {{teacher.current_schoolyear}} </span>
     {% for i in teacher.subject_classyear_list %}
-    {% with test=i.classyear__startyear__start_date__year|classlevel%}
-    {{ test|safe }}
-    
-   {%endwith%}
+    {% with level_sidebar=i.classyear__startyear__start_date__year|classlevel%}
     <a href="{%url 'lessons_subject_level' i.subject__subject__title|slugify i.classyear__startyear__start_date__year|classlevel%}"
-      class="list-group-item list-group-item-action border-0 text-primary ps-0 {%if i.classyear__startyear__start_date__year|classlevel|add:'0' in request.path %}  fw-bolder {%endif%}"><i
+      class="list-group-item list-group-item-action border-0 text-primary ps-0 {%if i.subject__subject__title|slugify in request.path and level_sidebar|safe in request.path %} fw-bolder {%endif%}"><i
         class="fas fa-book fa-fw me-2 text-muted"></i>{{i.subject__subject__title}} {{i.classyear__startyear__start_date__year|classlevel}} </a>
+   {%endwith%}
     {% endfor %}
    </div>
    <hr>

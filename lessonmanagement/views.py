@@ -193,7 +193,10 @@ def lesson(request, id):
     except Lesson.DoesNotExist:
         raise Http404("Lesson does not exist")
 
-
+@login_required
+def week_lessons(request, week):
+    context = {}
+    return render(request, 'lesson/week_lessons.html', context)
 @login_required
 def open_lesson(request, id):
     teacher = request.user.teacher.id
