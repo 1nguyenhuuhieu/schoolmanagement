@@ -15,6 +15,7 @@ from .forms import *
 from django.http import JsonResponse
 import os
 from django.db import models
+from django.shortcuts import get_object_or_404
 
 # đổi từ class level sang năm vào trường của một lớp
 def level_to_startyear(level):
@@ -137,7 +138,12 @@ def alllessons(request):
     lesson_list = Lesson.objects.filter(
         teacher=request.user.teacher.id).order_by('-upload_time')
     schoolyear = Schoolyear.objects.all()
-    context = {'lesson_list': lesson_list, 'schoolyear': schoolyear}
+    page_title = 'Thư viện giáo án'
+    context = {
+        'lesson_list': lesson_list,
+        'schoolyear': schoolyear,
+        'page_title': page_title
+        }
     return render(request, 'lesson/all_lessons.html', context)
 
 @login_required
@@ -178,19 +184,17 @@ def emptylesson(request):
 
 @login_required
 def lesson(request, id):
-    try:
-        lesson = Lesson.objects.filter(
-            teacher=request.user.teacher.id).get(id=id)
-        if request.method == "POST" and "delete" in request.POST:
-            schedule_id = request.POST['schedule_id']
-            schedule = LessonSchedule.objects.get(pk=schedule_id)
-            schedule.delete()
-            messages.success(request, 'Lịch báo giảng đã được xóa thành công.')
-            return redirect('lesson',id=id, permanent=True)
+    teacher = request.user.teacher.id
+    lesson = get_object_or_404(Lesson,teacher=teacher, pk=id )
+    if request.method == "POST" and "delete" in request.POST:
+        schedule_id = request.POST['schedule_id']
+        schedule = LessonSchedule.objects.get(pk=schedule_id)
+        schedule.delete()
+        messages.success(request, 'Lịch báo giảng đã được xóa thành công.')
+        return redirect('lesson',id=id, permanent=True)
 
-        return render(request, 'lesson/lesson_detail.html', {'lesson': lesson})
-    except Lesson.DoesNotExist:
-        raise Http404("Lesson does not exist")
+    return render(request, 'lesson/lesson_detail.html', {'lesson': lesson})
+
 
 @login_required
 def week_lessons(request, subject, level):
@@ -398,7 +402,9 @@ def schedule(request, year, week):
         #dữ liệu để thêm vào lịch báo giảng
         q_schoolyear = Schoolyear.objects.get(start_date__year=now_school_year)
         
-        all_lesson = Lesson.objects.filter(teacher=teacher, schoolyear=q_schoolyear).order_by('-upload_time')
+        # all_lesson = Lesson.objects.filter(teacher=teacher, schoolyear=q_schoolyear).order_by('-upload_time')
+        all_lesson = Lesson.objects.filter(teacher=teacher, schoolyear=q_schoolyear).order_by('subject__subjectclassyear__classyear').values('subject__subjectclassyear__classyear','subject__subjectclassyear__classyear__startyear__start_date__year','subject__subjectclassyear__classyear__title','id',  'subject__subject__title', 'subject__level','title')
+
         classyear = SubjectClassyear.objects.filter(
             teacher=teacher, schoolyear=q_schoolyear
             ).order_by(
@@ -434,7 +440,7 @@ def schedule(request, year, week):
             'schedule_afternoon': schedule_afternoon,
             'monday': monday,
             'all_lesson': all_lesson,
-            'classyear': classyear
+            'classyear': classyear,
         }
         return render(request, 'schedule/schedule.html', context)
        

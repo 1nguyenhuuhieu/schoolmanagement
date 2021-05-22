@@ -5,9 +5,8 @@
 {% load humanize %}
 <div class="row justify-content-center ">
   <div class="col-lg-4 border-bottom">
-    <h2 class="mt-5 text-center"><i class="fas fa-plus me-2"></i>Thêm Giáo Án</h2>
-    <p class="text-center text-muted"><i class="far fa-lightbulb me-2"></i>Danh sách môn học và lớp học được hiển thị
-      dựa trên sự sắp xếp của ban giám hiệu nhà trường.</p>
+    <h2 class="mt-5 text-center"><i class="fas fa-book me-2"></i>Thêm Giáo Án</h2>
+    <p class="text-center text-muted"><i class="far fa-lightbulb me-2"></i>Bạn không thể thêm 2 bài giảng có cùng <span class="fw-bold">Số bài giảng</span> vào một môn học.</p>
   </div>
 </div>
 <div class="row pt-5 justify-content-center">
@@ -19,12 +18,13 @@
         <div class="col-12">
           {% include 'notification/success.html' %}
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-12 d-flex">
+          <div class="me-3">
           <label for="subjectLevel" class="form-label">Môn học</label>
           <input type="hidden" name="subject" value='{{ subject }}'>
           <input type="hidden" name="level" value="{{ level }}">
           <div id="subjectLevel">
-            <button class="btn btn-success dropdown-toggle w-100" type="button" data-bs-toggle="dropdown"
+            <button class="btn btn-success dropdown-toggle " type="button" data-bs-toggle="dropdown"
               aria-expanded="false">{{ subject_title }} {{ level }}</button>
             <ul class="dropdown-menu">
               {% for i in teacher.subject_classyear_list %}
@@ -34,13 +34,18 @@
             </ul>
           </div>
         </div>
-        <div class="col">
+        <div>
+
           <label for="startLesson" class="form-label">Bài giảng số</label>
           <input type="number" class="form-control" id="startLesson" name="start_lesson"
             onchange="getLessonTitle()" value='{{ new_number_lesson }}' required>
           <div class="invalid-feedback">
             Phải chọn bài giảng số mấy
           </div>
+
+        </div>
+    
+  
         </div>
         <div class="col-12">
           <label for="titleLesson" class="form-label mt-4">Tên giáo án</label>
@@ -75,8 +80,7 @@
           <hr class="my-4">
         </div>
         <div class="col-12">
-          <button onclick="goBack()" class="btn  btn-outline-danger mb-4 me-2"><i
-              class="fas fa-times me-2"></i>Huỷ</button>
+          <button onclick="goBack()" class="btn  btn-secondary mb-4 me-2">Huỷ</button>
           <script>
             function goBack() {
               window.history.back();

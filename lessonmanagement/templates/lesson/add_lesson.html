@@ -12,58 +12,69 @@
   </nav>
 </div>
 <h4>Thống kê giáo án tải lên</h4>
-<small class="text-muted"><i class="far fa-lightbulb me-2 fa-fw"></i>Thống kê này được tính toán dựa trên quy định chi tiết của từng môn học.</small>
+<small class="text-muted"><i class="far fa-lightbulb me-2 fa-fw"></i>Thống kê này được tính toán dựa trên quy định chi
+  tiết của từng môn học.</small>
 <div class="row mt-4">
   <div class="col-lg-6">
     <div class="bg-white border p-4 shadow-sm rounded-15 h-100">
-      <h5><i class="fas fa-school me-3 text-muted"></i>Năm học {{request.user.teacher.current_schoolyear}}</h5> 
+      <h5><i class="fas fa-school me-3 text-muted"></i>Năm học {{request.user.teacher.current_schoolyear}}</h5>
       <hr>
       {%if subjectclassyear_count%}
-          {%for i in subjectclassyear_count%}
-          {% widthratio i.subject__lesson__count i.subject.total_lesson 100 as width_year %}
-              <div class="d-flex justify-content-between mt-4">
-                <h6> <a href="{%url 'lessons_subject_level' i.subject.subject.title|slugify i.subject.level|classlevel%}" class="text-decoration-none link-dark">{{i.subject}}</a>  <small class="text-muted">Bài {{i.subject__lesson__count}}/{{i.subject.total_lesson}}</small> </h6>
-                {{width_year}}%
-              </div>
-              <div class="progress" style="height: 4px;">
-                <div class="progress-bar" role="progressbar" style="width: {{width_year}}%;" aria-valuenow="{{i.subject__lesson__count}}" aria-valuemin="0" aria-valuemax="{{i.subject.total_lesson}}"></div>
-            </div>
-          {%endfor%}
-        {%else%}
-          <h6 class="text-danger">Chưa có giáo án nào được tải lên</h6>
-        {%endif%}
-    </div>
-    </div>
-    <div class="col-lg-6">
-      <div class="bg-white border p-4 shadow-sm rounded-15 h-100">
-    <h5><i class="fas fa-calendar-week me-3 text-muted"></i>Tuần này</h5>
-    <hr>
+      {%for i in subjectclassyear_count%}
+      {% widthratio i.subject__lesson__count i.subject.total_lesson 100 as width_year %}
+      <div class="d-flex justify-content-between mt-4">
+        <h6> <a href="{%url 'lessons_subject_level' i.subject.subject.title|slugify i.subject.level|classlevel%}"
+            class="text-decoration-none link-dark ">{{i.subject}}</a>  <small class="text-muted">Bài
+            {{i.subject__lesson__count}}/{{i.subject.total_lesson}}</small> </h6>
 
+         
+
+        {{width_year}}%
+      </div>
+      <div class="progress" style="height: 4px;">
+        <div class="progress-bar" role="progressbar" style="width: {{width_year}}%;"
+          aria-valuenow="{{i.subject__lesson__count}}" aria-valuemin="0" aria-valuemax="{{i.subject.total_lesson}}">
+        </div>
+      </div>
+      {%endfor%}
+      {%else%}
+      <h6 class="text-danger">Chưa có giáo án nào được tải lên</h6>
+      {%endif%}
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="bg-white border p-4 shadow-sm rounded-15 h-100">
+      <h5><i class="fas fa-calendar-week me-3 text-muted"></i>Tuần này</h5>
+      <hr>
       {%for i in subjectclassyear_week_count%}
       {% widthratio i.subject__lesson__count i.subject.week_lesson 100 as width_week %}
       <div class="d-flex justify-content-between align-items-center">
-        <h6 class="m-0">{% if width_week|add:0 >= 100 %}<span class="badge bg-success" style="min-width: 70px;">Hoàn tất</span>{% elif width_week|add:0 > 0 %}<span class="badge bg-warning text-dark" style="min-width: 70px;">Thiếu</span>{% else %}<span class="badge bg-danger">Chưa có</span>{% endif %}<a href="{%url 'lessons_subject_level' i.subject.subject.title|slugify i.subject.level|classlevel%}" class="text-decoration-none link-dark ms-2">{{i.subject}}</a> <small class="text-muted">Tải lên {{i.subject__lesson__count}}/{{i.subject.week_lesson}}</small> </h6>
-   
-      {%if width_week|add:0 < 100%}<button class="btn btn-sm btn-success"><i class="fas fa-plus me-2"></i>Thêm</button>
-      {%else%}
-      <button class="btn btn-sm btn-success" disabled><i class="fas fa-plus me-2"></i>Thêm</button>
-      {%endif%}
-   
-
+        <h6 class="m-0">{% if width_week|add:0 >= 100 %}<span class="badge bg-success" style="min-width: 70px;">Hoàn
+            tất</span>{% elif width_week|add:0 > 0 %}<span class="badge bg-warning text-dark"
+            style="min-width: 70px;">Thiếu</span>{% else %}<span class="badge bg-danger">Chưa có</span>{% endif %}<a
+            href="{%url 'lessons_subject_level' i.subject.subject.title|slugify i.subject.level|classlevel%}"
+            class="text-decoration-none link-dark ms-2">{{i.subject}}</a> <small class="text-muted">Tải lên
+            {{i.subject__lesson__count}}/{{i.subject.week_lesson}}</small> </h6>
+        {%if width_week|add:0 < 100%}
+        <a href="{% url 'add_lesson_subject_level' i.subject.subject.subject_slug i.subject.level|classlevel %}" class="btn btn-sm btn-success"><i
+            class="fas fa-plus me-2"></i>Thêm</a>
+          {%else%}
+          <button class="btn btn-sm btn-success" disabled><i class="fas fa-plus me-2"></i>Thêm</button>
+          {%endif%}
       </div>
-<hr class="my-3">
-   
-
-
+      <hr class="my-3">
       {%endfor%}
       {%for i in empty_week%}
       <div class="d-flex justify-content-between align-items-center">
-        <h6 class="m-0"><span class="badge bg-danger" style="min-width: 70px;">Chưa có</span><a href="{%url 'lessons_subject_level' i.subject.subject.title|slugify i.subject.level|classlevel%}" class="text-decoration-none link-dark ms-2">{{i.subject}}</a> <small class="text-muted">Tải lên 0/{{i.subject.week_lesson}}</small> </h6>
-   
-
-    <button class="btn btn-sm btn-success"><i class="fas fa-plus me-2"></i>Thêm</button>
-
+        <h6 class="m-0"><span class="badge bg-danger" style="min-width: 70px;">Chưa có</span><a
+            href="{%url 'lessons_subject_level' i.subject.subject.title|slugify i.subject.level|classlevel%}"
+            class="text-decoration-none link-dark ms-2">{{i.subject}}</a> <small class="text-muted">Tải lên
+            0/{{i.subject.week_lesson}}</small> </h6>
+        <a href="{% url 'add_lesson_subject_level' i.subject.subject.subject_slug i.subject.level|classlevel %}" class="btn btn-sm btn-success"><i class="fas fa-plus me-2"></i>Thêm</a>
       </div>
+      {% if not forloop.last %}
+      <hr>
+      {% endif %}
       {%endfor%}
     </div>
   </div>
@@ -88,10 +99,10 @@
           <li>Giáo viên: {{i.teacher}}</li>
           <li>Dạy các lớp: {{i.classyear_list}}</li>
         </ul>
-          <hr>
+        <hr>
         <div class="mt-auto d-flex justify-content-between align-items-center">
-          <a href="{%url 'add_lesson_subject_level' i.subject.subject.title|slugify i.subject.level|classlevel%}" class="btn btn-sm btn-outline-success stretched-link"><i class="fas fa-plus me-2"></i>Thêm giáo án</a>
-      
+          <a href="{%url 'add_lesson_subject_level' i.subject.subject.title|slugify i.subject.level|classlevel%}"
+            class="btn btn-sm btn-outline-success stretched-link"><i class="fas fa-plus me-2"></i>Thêm giáo án</a>
         </div>
       </div>
     </div>

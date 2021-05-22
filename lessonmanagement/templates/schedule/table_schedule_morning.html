@@ -106,12 +106,18 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
     var date_schedule = [monday_year, monday_month, monday_day];
     var date = date_schedule.join('-');
     var order_shedule = row + 1
+
+    
+    
     document.getElementById('schedule_date').value=date
     document.getElementById('session_date').value='morning'
     document.getElementById('order_schedule').value=order_shedule
 
+    
     var myModal = new bootstrap.Modal(document.getElementById('add_schedule_modal'))
     myModal.show()
+
+
 
     // window.location='/schedule/add/?date=' + date + '&session=morning&ordered=' + order_shedule;
     }
@@ -119,46 +125,6 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
 });
     </script>
 
-
-
-<!-- add schedule Modal -->
-<div class="modal fade" id="add_schedule_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Thêm lịch báo giảng</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form method="POST">
-        {%csrf_token%}
-      <div class="modal-body">
-        <input type="hidden" id="schedule_date" name="schedule_date">
-        <input type="hidden" id="session_date" name="session_date">
-        <input type="hidden" id="order_schedule" name="order_schedule">
-
-        <label for="classyear" class="form-label">Chọn lớp</label>
-
-        <select class="form-select mb-3" size="5" aria-label="size 5 select example" name="classyear" id="classyear">
-          {%for i in classyear%}
-          <option value="{{i.classyear__id}}">{{i.classyear__startyear__start_date__year|classlevel}}{{i.classyear__title}}</option>
-          {%endfor%}
-        </select>
-        <label for="lesson_id" class="form-label">Chọn bài giảng</label>
-
-        <select class="form-select" size="5" aria-label="size 5 select example" name="lesson_id" id="lesson_id">
-          {%for lesson in all_lesson%}
-          <option value="{{lesson.id}}">{{lesson.subject}} - Bài {{lesson.number_lesson}}: {{lesson.title}}</option>
-          {%endfor%}
-        </select>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-        <button type="submit" name="add_schedule" class="btn btn-primary">Thêm</button>
-      </div>
-    </form>
-    </div>
-  </div>
-</div>
 
 
 

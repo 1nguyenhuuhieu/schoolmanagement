@@ -6,7 +6,8 @@
 {% load lessonmanagement_extras %}
 {% with teacher=request.user.teacher %}
 <div class="d-flex justify-content-between align-items-center my-3">
-    <h4><i class="far fa-calendar-check me-3"></i>Lịch báo giảng của {{ request.user.teacher.full_name }} <small class="text-muted">Năm học {{ now_school_year }} - {{ now_school_year|add:1 }}</small></h4>
+    <h4><i class="far fa-calendar-check me-3"></i>Lịch báo giảng của {{ request.user.teacher.full_name }} <small
+            class="text-muted">Năm học {{ now_school_year }} - {{ now_school_year|add:1 }}</small></h4>
     <a href="{%url 'add_schedule'%}" class="btn btn-primary">Thêm lịch báo giảng</a>
 </div>
 <div class="card rounded shadow-sm py-2 bg-info bg-gradient border-0 mb-3">
@@ -56,7 +57,7 @@
 </div>
 <div class="mb-2 mt-3">
     <h4>Buổi sáng</h4>
-{% include 'notification/success.html' %}
+    {% include 'notification/success.html' %}
 
     {% include 'schedule/table_schedule_morning.html' %}
 </div>
@@ -65,5 +66,103 @@
     <h4>Buổi chiều</h4>
     {% include 'schedule/table_schedule_afternoon.html' %}
 </div>
+
+
+<!-- add schedule Modal -->
+<div class="modal fade" id="add_schedule_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-book fa-fw text-muted me-2"></i>Thêm
+                    lịch báo giảng</h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST">
+                {%csrf_token%}
+                
+           
+                <input type="hidden" id="schedule_date" name="schedule_date">
+                <input type="hidden" id="session_date" name="session_date">
+                <input type="hidden" id="order_schedule" name="order_schedule">
+
+                <div class="modal-body">
+                    {% regroup all_lesson by subject__subjectclassyear__classyear as all_lesson_regroup %}
+               
+
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                        {% for i in all_lesson_regroup %}
+                        <input type="hidden" name="classyear" value={{i.grouper}}>
+                        <div class="accordion-item ">
+                            <h2 class="accordion-header" id="flush-{{forloop.counter}}">
+                                <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#flush-collapse{{forloop.counter}}" aria-expanded="false"
+                                    aria-controls="flush-collapse{{forloop.counter}}">
+                                    {{i.list.0.subject__subjectclassyear__classyear__startyear__start_date__year|classlevel}}{{i.list.0.subject__subjectclassyear__classyear__title}}
+                                </button>
+                            </h2>
+                            <div id="flush-collapse{{forloop.counter}}" class="accordion-collapse collapse"
+                                aria-labelledby="flush-{{forloop.counter}}" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+                                    <select class="form-select mb-3" size="5" aria-label="size 5 select example"
+                                        name="classyear" id="classyear" onchange="changeLesson()">
+                                        {% for j in i.list reversed %}
+                                        <option value="{{j.id}}">{{j.subject__subject__title}} {{j.subject__level}}:
+                                            {{j.title}} </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        {%endfor%}
+                    </div>
+                    <hr>
+                    <p class="mt-3">
+                        <i class="far fa-lightbulb me-2"></i>Hãy <a href="{% url 'addlesson'%}"
+                            class="text-decoration-none"> thêm mới giáo án</a> nếu không tìm thấy giáo án phù hợp với
+                        yêu cầu của bạn.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" name="add_schedule" class="btn btn-primary">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+{% for i in all_lesson_regroup %}
+<h6>ID:{{ i.grouper }}, Tên lớp: {{
+    i.list.0.subject__subjectclassyear__classyear__startyear__start_date__year|classlevel}}{{
+    i.list.0.subject__subjectclassyear__classyear__title}}</h6>
+{% for j in i.list %}
+<ul>
+    <li>id bài giảng: {{j.id}}</li>
+    <li>{{j.subject__subject__title}} {{j.subject__level}}</li>
+    <li>{{j.title}}</li>
+</ul>
+{% endfor %}
+{%endfor%}
+
+
+
+
+
+
+<script>
+    function changeLesson() {
+        var classlevel = document.getElementById('classyear').value
+        console.log(classlevel)
+    }
+</script>
+
+
+
 {% endwith %}
 {% endblock %}
