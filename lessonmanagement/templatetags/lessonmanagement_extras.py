@@ -3,7 +3,6 @@ from django import template
 register = template.Library()
 
 
-
 @register.filter
 def classlevel(value):
     now = datetime.datetime.now()
@@ -30,7 +29,12 @@ def schoolyear(value):
 def plus_days(value, days):
     return value + datetime.timedelta(days=days)
 
+@register.filter
+# đổi từ tuần của năm dương lịch ra tuần của năm học
+def schoolyear_week(value):
+    now = datetime.datetime.now()
+    if value > 34:
+        return 'Tuần %s Học kì 1' % (str(value - 34))
+    else:
+        return 'Tuần %s Học kì 2' % (str(value - 1))
 
-@register.simple_tag
-def base_page_title():
-    return 'test'

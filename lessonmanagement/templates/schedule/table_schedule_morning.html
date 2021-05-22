@@ -108,10 +108,9 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
     var order_shedule = row + 1
 
     
-    
-    document.getElementById('schedule_date').value=date
-    document.getElementById('session_date').value='morning'
-    document.getElementById('order_schedule').value=order_shedule
+    $("input[name='schedule_date']").val(date);
+    $("input[name='session_date']").val('morning');
+    $("input[name='order_schedule']").val(order_shedule);
 
     
     var myModal = new bootstrap.Modal(document.getElementById('add_schedule_modal'))

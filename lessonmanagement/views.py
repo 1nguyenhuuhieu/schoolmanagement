@@ -52,9 +52,13 @@ def q_schoolyear():
     now_school_year = Schoolyear.objects.get(start_date__year=schoolyear)
     return now_school_year
 
+
+
+
 # TRANG CHỦ
 @login_required
 def index(request):
+
     try:
         teacher = request.user.teacher
         countlesson = Lesson.objects.filter(teacher=teacher.id).count()
@@ -384,7 +388,10 @@ def schedule(request, year, week):
     now_school_year = current_schoolyear()
     # danh sách các niên khoá đã mở cho vào list
     schoolyear = Schoolyear.objects.dates('start_date', 'year')
+    all_schoolyear = Schoolyear.objects.all()
     
+
+
     list_schoolyear = []
     for i in schoolyear:
         list_schoolyear.append(i.year)
@@ -412,6 +419,11 @@ def schedule(request, year, week):
                 ).values(
                     'classyear__startyear__start_date__year','classyear__title','classyear__id'
                     ).distinct()
+        
+        # dùng cho tìm kiếm theo tuần
+        lessons_week = LessonSchedule.objects.filter(
+            lesson__teacher = teacher, lesson__schoolyear=q_schoolyear
+        ).dates('teach_date_schedule', 'week')
       
 
         if request.method == "POST" and 'add_schedule' in request.POST:
@@ -419,6 +431,8 @@ def schedule(request, year, week):
             session = request.POST['session_date']
             order_schedule = request.POST['order_schedule']
             classyear_id = request.POST['classyear']
+
+
             classyear = Classyear.objects.get(pk=classyear_id)
             lesson_id = request.POST['lesson_id']
             lesson = Lesson.objects.get(pk=lesson_id)
@@ -431,6 +445,8 @@ def schedule(request, year, week):
             new_schedule.save()
             messages.success(request, 'Lịch báo giảng đã được thêm.')
             return redirect('schedule', year=year, week=week ,permanent=True)
+        
+
 
         context = {
             'now_school_year': now_school_year,
@@ -441,8 +457,17 @@ def schedule(request, year, week):
             'monday': monday,
             'all_lesson': all_lesson,
             'classyear': classyear,
+            'lessons_week': lessons_week,
+            'all_schoolyear': all_schoolyear
         }
+        
+        if request.method == "GET" and 'week_search' in request.GET:
+            week_search = request.GET['week_search']
+            year_week = request.GET['year_week']
+            return redirect('schedule', year=year_week, week=week_search, permanent=True)
         return render(request, 'schedule/schedule.html', context)
+
+
        
 
     else:

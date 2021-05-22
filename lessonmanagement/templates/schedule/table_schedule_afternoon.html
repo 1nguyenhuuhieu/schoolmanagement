@@ -106,16 +106,25 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
     var date_schedule = [monday_year, monday_month, monday_day];
     var date = date_schedule.join('-');
     var order_shedule = row + 1
-    document.getElementById('schedule_date').value=date
-    document.getElementById('session_date').value='afternoon'
-    document.getElementById('order_schedule').value=order_shedule
 
+    
+    $("input[name='schedule_date']").val(date);
+    $("input[name='session_date']").val('afternoon');
+    $("input[name='order_schedule']").val(order_shedule);
+
+    
     var myModal = new bootstrap.Modal(document.getElementById('add_schedule_modal'))
     myModal.show()
 
-    // window.location='/schedule/add/?date=' + date + '&session=morning&ordered=' + order_shedule;
+
+
+    // window.location='/schedule/add/?date=' + date + '&session=afternoon&ordered=' + order_shedule;
     }
    });
 });
     </script>
+
+
+
+
 

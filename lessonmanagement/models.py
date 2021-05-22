@@ -178,10 +178,14 @@ class SchoolManager(MembershipAbstract):
 # NĂM HỌC        
 class Schoolyear(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE)
-    start_date = models.DateField(help_text="Ngày bắt đầu năm học",  unique_for_year='start_date' )
+    start_date = models.DateField(help_text="Tuần 1 học kì 1 sẽ tính từ tuần này",  unique_for_year='start_date' )
+    start_date_2 = models.DateField(help_text="Tuần 1 học kì 2 sẽ tính từ tuần này", blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
     spring_start = models.DateTimeField(help_text="Giờ mùa hè. Buổi sáng bắt đầu từ ngày nào, mấy giờ", blank=True, null=True) 
     winter_start = models.DateTimeField(help_text="Giờ mùa đông. Buổi sáng bắt đầu từ ngày nào, mấy giờ", blank=True, null=True) 
+    
+    # tuần của năm học
+ 
     class Meta:
         verbose_name = "Năm học"
         verbose_name_plural = "Năm học"
