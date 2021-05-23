@@ -42,7 +42,7 @@ def current_schoolyear():
     now = datetime.datetime.now()
     year = now.year
     month = now.month
-    if month > 9:
+    if month > 8:
         return year
     else:
         return year - 1
@@ -80,16 +80,10 @@ def monday_week_schoolyear(schoolyear, week):
 # TRANG CHỦ
 @login_required
 def index(request):
-    try:
-        teacher = request.user.teacher
-        countlesson = Lesson.objects.filter(teacher=teacher.id).count()
-        page_title = 'Trang chủ'
-        context = {'page_title': page_title}
-        if countlesson:
-            context['countlesson'] = countlesson
-        return render(request, 'index.html', context)
-    except:
-        return redirect('create_profile')
+    page_title = 'Trang chủ'
+    context = {'page_title': page_title}
+    return render(request, 'index.html', context)
+
 
 # PROFILE
 @login_required
@@ -145,7 +139,11 @@ def profile(request):
         messages.add_message(request, messages.SUCCESS,
                              'Cập nhập thông tin thành công.')
         return redirect('profile', permanent=True)
-    context = {'list_subject': list_subject,}
+    context = {
+        'list_subject': list_subject,
+        'page_title': "Thông tin cá nhân",
+
+    }
     return render(request, 'profile/profile.html', context)
 
 
@@ -160,8 +158,9 @@ def teacher(request, teacher_id):
 
 @login_required
 def alllessons(request):
+    teacher = request.user.teacher.id
     lesson_list = Lesson.objects.filter(
-        teacher=request.user.teacher.id).order_by('-upload_time')
+        teacher=teacher).order_by('-upload_time')
     schoolyear = Schoolyear.objects.all()
     page_title = 'Thư viện giáo án'
     context = {
@@ -183,12 +182,14 @@ def lessons_schoolyear(request, schoolyear):
         'current_year': q_schoolyear,
         'lesson_list': lessons,
         'schoolyear': all_schoolyear,
+        'page_title': 'Giáo án năm %s' % (q_schoolyear)
     }
     return render(request, 'lesson/all_lessons.html', context)
 
 @login_required
 def lessons_subject_level(request, subject, level):
     teacher = request.user.teacher.id
+    subject_title = Subject.objects.get(subject_slug=subject)
     schoolyear = current_schoolyear()
     now_school_year = Schoolyear.objects.get(start_date__year=schoolyear)
     # giáo án phù hợp với môn học và lớp học, giáo viên, niên khóa hiện tại
@@ -196,7 +197,8 @@ def lessons_subject_level(request, subject, level):
     # sử dụng cho đường dẫn tới các lớp cụ thể
     classyear_list = SubjectClassyear.objects.filter(teacher=teacher, subject__subject__subject_slug=subject, classyear__startyear__start_date__year=level_to_startyear(level))
     context = {
-        'lesson_list': lessons, 'classyear_list': classyear_list, 'subject': subject, 'level': level
+        'lesson_list': lessons, 'classyear_list': classyear_list, 'subject': subject, 'level': level,
+        'page_title': 'Giáo án %s %s' % (subject_title.title, level)
     }
     return render(request, 'lesson/lesson_subject_level.html', context)
 
@@ -217,8 +219,11 @@ def lesson(request, id):
         schedule.delete()
         messages.success(request, 'Lịch báo giảng đã được xóa thành công.')
         return redirect('lesson',id=id, permanent=True)
-
-    return render(request, 'lesson/lesson_detail.html', {'lesson': lesson})
+    context = {
+        'lesson': lesson,
+        'page_title': lesson.title
+    }
+    return render(request, 'lesson/lesson_detail.html', context)
 
 
 @login_required
@@ -244,7 +249,8 @@ def week_lessons(request, subject, level):
         'lesson_list': lessons,
         'subjects': subjects,
         'subject_title': subject_title,
-        'subject_level': subject_level
+        'subject_level': subject_level,
+        'page_title': 'Giáo án tuần này'
     }
     return render(request, 'lesson/week_lessons.html', context)
 
@@ -255,7 +261,8 @@ def open_lesson(request, id):
         teacher=teacher, schoolyear=q_schoolyear(), pk=id
     )
     context = {
-        'lesson': lesson
+        'lesson': lesson,
+        'page_title': lesson.title
     }
     return render(request,'lesson/open_lesson.html',context)
 
@@ -289,7 +296,8 @@ def addlesson(request):
         'subjectclassyear': subjectclassyear,
         'subjectclassyear_count': subjectclassyear_count,
         'subjectclassyear_week_count': subjectclassyear_week_count,
-        'empty_week': empty_week
+        'empty_week': empty_week,
+        'page_title': 'Thêm giáo án'
     }
     return render(request, 'lesson/add_lesson.html', context)
 
@@ -370,7 +378,9 @@ def edit_lesson(request, lesson_id):
     try:
         lesson = Lesson.objects.get(
             teacher=teacher, pk=lesson_id)
-        context = {'lesson': lesson}
+        context = {
+            'lesson': lesson,
+            'page_title': 'Sửa giáo án'}
         if request.method == "POST":
             title = request.POST['title_lesson']
             start_lesson = request.POST['start_lesson']
@@ -398,96 +408,106 @@ def edit_lesson(request, lesson_id):
     except:
         raise Http404("fuck wrong")
 
-def lessons_toyear(request, year):
-    context = {}
-    return render(request, 'lesson/lesson_toyear.html', context)
+
+
 
 # lịch báo giảng của năm học hiện tại
 def schedule(request, year, week):
-
-    teacher = request.user.teacher.id
-    all_schoolyear = Schoolyear.objects.all()
-    # năm học theo year
-    schoolyear = Schoolyear.objects.get(start_date__year=year)
-    now_week = now_week_schoolyear(schoolyear)
-    if week == 0:
-        week = now_week
-    lessons = LessonSchedule.objects.filter(
-        lesson__teacher=teacher, lesson__schoolyear=schoolyear
-        )
-    # lịch báo giảng của tuần thứ <week> và năm <schoolyear> lấy theo URL
-    schedule_all = lessons.filter(week=week)
-    schedule_morning = schedule_all.filter(session='morning')
-    schedule_afternoon = schedule_all.filter(session='afternoon')
-    # lấy ngày thứ hai của năm <schoolyear> và tuần <week> from URL
-
-    monday = monday_week_schoolyear(schoolyear, week)
-    #dữ liệu để thêm vào lịch báo giảng
-    all_lesson = Lesson.objects.filter(
-        teacher=teacher, schoolyear=schoolyear
-        ).order_by(
-            'subject__subjectclassyear__classyear'
-            ).values(
-                'subject__subjectclassyear__classyear','subject__subjectclassyear__classyear__startyear__start_date__year','subject__subjectclassyear__classyear__title','id',  'subject__subject__title', 'subject__level','title')
-    classyear = SubjectClassyear.objects.filter(
-        teacher=teacher, schoolyear=schoolyear
-        ).order_by(
-            'classyear__startyear__start_date__year'
-            ).values(
-                'classyear__startyear__start_date__year','classyear__title','classyear__id'
-                ).distinct()
-    # dùng cho tìm kiếm theo tuần
-    lessons_week = LessonSchedule.objects.filter(
-        lesson__teacher = teacher, lesson__schoolyear=schoolyear
-    ).dates('teach_date_schedule', 'week')
-    if request.method == "POST" and 'add_schedule' in request.POST:
-        date = request.POST['schedule_date']
-        session = request.POST['session_date']
-        order_schedule = request.POST['order_schedule']
-        classyear_id = request.POST['classyear']
-        classyear = Classyear.objects.get(pk=classyear_id)
-        lesson_id = request.POST['lesson_id']
-        lesson = Lesson.objects.get(pk=lesson_id)
-        new_schedule = LessonSchedule(
-            lesson=lesson, classyear=classyear, teach_date_schedule=date, session=session, order_schedule=order_schedule )
-        new_schedule.save()
-        q = LessonSchedule.objects.get(pk=new_schedule.id)
-        d = q.teach_date_schedule
-        d_week = day_week_schoolyear(schoolyear, d)
-        q.week = d_week
-        q.save()
-        messages.success(request, 'Lịch báo giảng đã được thêm.')
-        return redirect('schedule', year=year, week=week ,permanent=True)
-    context = {
-        'week': week,
-        'year': year,
-        'schedule_morning': schedule_morning,
-        'schedule_afternoon': schedule_afternoon,
-        'monday': monday,
-        'all_lesson': all_lesson,
-        'classyear': classyear,
-        'lessons_week': lessons_week,
-        'schoolyear': schoolyear,
-        'now_week': now_week,
-        'all_schoolyear': all_schoolyear
-    }
-    if request.method == "GET" and 'btn_search_date' in request.GET:
-        search_date = request.GET['search_date']
-        date_search = datetime.datetime.strptime(search_date, '%Y-%m-%d')
-        if date_search.month < 9:
-            year = date_search.year - 1
-        else:
-            year = date_search.year
-        date_search = date_search.date()
+    if week <= 40:
+        teacher = request.user.teacher.id
+        all_schoolyear = Schoolyear.objects.all()
+        # năm học theo year
         schoolyear = Schoolyear.objects.get(start_date__year=year)
-        week = day_week_schoolyear(schoolyear, date_search)
-        return redirect('schedule', year=year, week=week, permanent=True)
+        now_week = now_week_schoolyear(schoolyear)
+        if week == 0:
+            week = now_week
+        lessons = LessonSchedule.objects.filter(
+            lesson__teacher=teacher, lesson__schoolyear=schoolyear
+            )
+        # lịch báo giảng của tuần thứ <week> và năm <schoolyear> lấy theo URL
+        schedule_all = lessons.filter(week=week)
+        schedule_morning = schedule_all.filter(session='morning')
+        schedule_afternoon = schedule_all.filter(session='afternoon')
+        # lấy ngày thứ hai của năm <schoolyear> và tuần <week> from URL
+        monday = monday_week_schoolyear(schoolyear, week)
+        #dữ liệu để thêm vào lịch báo giảng
+        all_lesson = Lesson.objects.filter(
+            teacher=teacher, schoolyear=schoolyear
+            ).order_by(
+                'subject__subjectclassyear__classyear'
+                ).values(
+                    'subject__subjectclassyear__classyear','subject__subjectclassyear__classyear__startyear__start_date__year','subject__subjectclassyear__classyear__title','id',  'subject__subject__title', 'subject__level','title')
+        classyear = SubjectClassyear.objects.filter(
+            teacher=teacher, schoolyear=schoolyear
+            ).order_by(
+                'classyear__startyear__start_date__year'
+                ).values(
+                    'classyear__startyear__start_date__year','classyear__title','classyear__id'
+                    ).distinct()
+        # dùng cho tìm kiếm theo tuần
+        lessons_week = LessonSchedule.objects.filter(
+            lesson__teacher = teacher, lesson__schoolyear=schoolyear
+        ).dates('teach_date_schedule', 'week')
+        lessons_week_schoolyear = []
+        week_dict = {}
+        monday_dict = {}
+        for i in lessons_week:
+            week_dict['week'] = day_week_schoolyear(schoolyear,i)
+            monday_dict['monday'] = i
+            lessons_week_schoolyear.append((week_dict, monday_dict))
+            week_dict = {}
+            monday_dict = {}
 
-    if request.method == "GET" and 'week_search' in request.GET:
-        week_search = request.GET['week_search']
-        year_week = request.GET['year_week']
-        return redirect('schedule', year=year_week, week=week_search, permanent=True)
-    return render(request, 'schedule/schedule.html', context)
+        if request.method == "POST" and 'add_schedule' in request.POST:
+            date = request.POST['schedule_date']
+            session = request.POST['session_date']
+            order_schedule = request.POST['order_schedule']
+            classyear_id = request.POST['classyear']
+            classyear = Classyear.objects.get(pk=classyear_id)
+            lesson_id = request.POST['lesson_id']
+            lesson = Lesson.objects.get(pk=lesson_id)
+            new_schedule = LessonSchedule(
+                lesson=lesson, classyear=classyear, teach_date_schedule=date, session=session, order_schedule=order_schedule )
+            new_schedule.save()
+            q = LessonSchedule.objects.get(pk=new_schedule.id)
+            d = q.teach_date_schedule
+            d_week = day_week_schoolyear(schoolyear, d)
+            q.week = d_week
+            q.save()
+            messages.success(request, 'Lịch báo giảng đã được thêm.')
+            return redirect('schedule', year=year, week=week ,permanent=True)
+        context = {
+            'week': week,
+            'year': year,
+            'schedule_morning': schedule_morning,
+            'schedule_afternoon': schedule_afternoon,
+            'monday': monday,
+            'all_lesson': all_lesson,
+            'classyear': classyear,
+            'lessons_week': lessons_week_schoolyear,
+            'schoolyear': schoolyear,
+            'now_week': now_week,
+            'all_schoolyear': all_schoolyear
+        }
+        if request.method == "GET" and 'btn_search_date' in request.GET:
+            search_date = request.GET['search_date']
+            date_search = datetime.datetime.strptime(search_date, '%Y-%m-%d')
+            if date_search.month < 9:
+                year = date_search.year - 1
+            else:
+                year = date_search.year
+            date_search = date_search.date()
+            schoolyear = Schoolyear.objects.get(start_date__year=year)
+            week = day_week_schoolyear(schoolyear, date_search)
+            return redirect('schedule', year=year, week=week, permanent=True)
+
+        if request.method == "GET" and 'week_search' in request.GET:
+            week_search = request.GET['week_search']
+            year_week = request.GET['year_week']
+            return redirect('schedule', year=year_week, week=week_search, permanent=True)
+        return render(request, 'schedule/schedule.html', context)
+    else:
+        raise Http404
 # không tìm thấy lịch báo giảng với năm học đã cho từ URL
 def emptyschedule(request):
     context = {
@@ -587,3 +607,55 @@ def guide(request):
 
     }
     return render(request, 'guide/guide.html', context)
+
+
+# DUYỆT GIÁO ÁN
+@login_required
+def check_lessons(request, year):
+    teacher = request.user.teacher.id
+    schoolyear = Schoolyear.objects.get(start_date__year=year)
+    subjects = SubjectManager.objects.filter(
+        teacher=teacher, schoolyear=schoolyear
+    )
+    if subjects:
+        context = {
+            'subjects': subjects
+        }
+        return render(request, 'lesson/check_lessons.html', context)
+    else:
+        raise Http404
+
+@login_required
+def check_lessons_subject(request, year, subject):
+    teacher = request.user.teacher.id
+    schoolyear = Schoolyear.objects.get(start_date__year=year)
+    subject = SubjectManager.objects.get(
+        teacher=teacher, schoolyear=schoolyear, subject__subject_slug=subject
+    )
+    lessons = Lesson.objects.filter(
+        schoolyear=schoolyear, subject__subject=subject.subject
+    )
+    context = {
+        'subject': subject,
+        'lessons': lessons
+    }
+    return render(request, 'lesson/check_lessons_subject.html', context)
+
+@login_required
+def check_lesson(request,lesson_id):
+    teacher = request.user.teacher.id
+    lesson = Lesson.objects.get(
+        pk=lesson_id
+    )
+    subject = lesson.subject.subject
+    schoolyear = lesson.schoolyear
+    subjectmanager = SubjectManager.objects.filter(
+        teacher=teacher, subject=subject, schoolyear=schoolyear 
+    )
+    if subjectmanager:
+        context = {
+            'lesson': lesson
+        }
+        return render(request, 'lesson/check_lesson.html', context)
+    else:
+        raise Http404

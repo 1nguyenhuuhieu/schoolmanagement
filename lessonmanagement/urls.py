@@ -21,7 +21,13 @@ urlpatterns = [
     path('lesson/add/', views.addlesson, name="addlesson"),
     path('lessons/add/<str:subject>/<int:level>/', views.add_lesson_subject_level, name="add_lesson_subject_level"),
     path('lessons/add/error/', views.no_permisson_add_lesson, name = 'no_permisson_add_lesson'),
+   
     # lịch báo giảng
+
+    # DUYệt GIÁO ÁN
+     path('checklessons/<int:year>/', views.check_lessons, name='check_lessons'),
+     path('checklessons/<int:year>/<str:subject>/', views.check_lessons_subject, name='check_lessons_subject'),
+     path('checklesson/<int:lesson_id>/', views.check_lesson, name='check_lesson'),
     
     
     path('schedule/<int:year>/<int:week>/', views.schedule, name = 'schedule'),

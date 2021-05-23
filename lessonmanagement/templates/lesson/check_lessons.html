@@ -1,0 +1,17 @@
+{% extends 'base_checklessons.html' %}
+{% load humanize %}
+{% load static %}
+{% load lessonmanagement_extras %}
+{% block content %}
+
+<h6>danh sách môn học</h6>
+<ul>
+{% for subject in subjects %}
+<li><a href="{% url 'check_lessons_subject' 2020 subject.subject.subject_slug %}">{{subject.subject}}</a></li>
+{% endfor %}
+</ul>
+
+<h6>danh sách giáo viên</h6>
+<ul>
+</ul>
+{% endblock %}

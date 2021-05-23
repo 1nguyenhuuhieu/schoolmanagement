@@ -12,7 +12,6 @@ LEVEL_CHOICES = [
         (8, 8),
         (9, 9)
     ]
-
 # Lấy khối học từ năm bắt đầu vào trường
 def class_level_def(year):
     now = datetime.datetime.now()
@@ -63,6 +62,7 @@ class MembershipAbstract(models.Model):
     startdate = models.DateField(blank=True, null=True, verbose_name='Ngày bắt đầu')
     enddate = models.DateField(blank=True, null=True, verbose_name='Ngày kết thúc')
     is_active = models.BooleanField(default=True, blank=True, verbose_name="Có hiệu lực không", help_text="Không: Nếu giáo viên đã nghỉ hưu hoặc thôi việc")
+    schoolyear = models.ForeignKey('Schoolyear', on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
@@ -177,12 +177,12 @@ class SchoolManager(MembershipAbstract):
         
 # NĂM HỌC        
 class Schoolyear(models.Model):
-    school = models.ForeignKey(School, on_delete=models.CASCADE)
-    start_date = models.DateField(help_text="Tuần 1 học kì 1 sẽ tính từ tuần này",  unique_for_year='start_date' )
-    start_date_2 = models.DateField(help_text="Tuần 1 học kì 2 sẽ tính từ tuần này", blank=True, null=True)
-    end_date = models.DateField(blank=True, null=True)
-    spring_start = models.DateTimeField(help_text="Giờ mùa hè. Buổi sáng bắt đầu từ ngày nào, mấy giờ", blank=True, null=True) 
-    winter_start = models.DateTimeField(help_text="Giờ mùa đông. Buổi sáng bắt đầu từ ngày nào, mấy giờ", blank=True, null=True) 
+    school = models.ForeignKey(School, on_delete=models.CASCADE, verbose_name="Trường")
+    start_date = models.DateField(help_text="Tuần 1 học kì 1 sẽ tính từ tuần này",  unique_for_year='start_date', verbose_name="Ngày học đầu tiên" )
+    start_date_2 = models.DateField(help_text="Tuần 1 học kì 2 sẽ tính từ tuần này", blank=True, null=True, verbose_name="Ngày học đầu tiên học kì 2")
+    end_date = models.DateField(blank=True, null=True, verbose_name="Ngày kết thúc năm học")
+    spring_start = models.DateTimeField(help_text="Giờ mùa hè. Buổi sáng bắt đầu từ ngày nào, mấy giờ", blank=True, null=True, verbose_name="Giờ mùa hè") 
+    winter_start = models.DateTimeField(help_text="Giờ mùa đông. Buổi sáng bắt đầu từ ngày nào, mấy giờ", blank=True, null=True,verbose_name="Giờ mùa đông") 
     
     # tuần của năm học
  
@@ -336,7 +336,7 @@ class Lesson(models.Model):
         verbose_name = "Giáo Án"
         verbose_name_plural = "Giáo Án"
         ordering = ["-upload_time"]
-        unique_together = ['subject', 'number_lesson']
+        unique_together = ['subject', 'number_lesson', 'teacher']
 
     #niên khoá hiện tại
     def school_year(self):
@@ -378,7 +378,7 @@ class LessonSchedule(models.Model):
         return self.teach_date_schedule.weekday()
 
     class Meta:
-        unique_together = ('teach_date_schedule', 'session', 'order_schedule')
+        unique_together = ('teach_date_schedule', 'session', 'order_schedule', 'lesson')
         verbose_name = 'Lịch báo giảng'
         verbose_name_plural = 'Lịch báo giảng'
     

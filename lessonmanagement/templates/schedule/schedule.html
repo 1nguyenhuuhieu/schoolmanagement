@@ -64,6 +64,7 @@
                 </form>
             </div>
             <div class="col">
+          
                 <form method="GET">
                     <div class="row g-2">
                         <label for="week_data_list" class="form-label fw-bold">Chọn tuần</label>
@@ -71,10 +72,10 @@
                             <input type="number" class="form-control" list="datalistWeek" id="week_data_list"
                                 placeholder="Số tuần..." name="week_search" min="0" max="40">
                             <datalist id="datalistWeek">
-                                {% for week in lessons_week %}
-                                <option value="{{ week|date:'W' }}">
+                                {% for i in lessons_week %}
+                                <option value="{{ i.0.week }}">
                                     <input type="hidden" name="year_week" value="{{ year }}">
-                                {{week|date:"SHORT_DATE_FORMAT"}} đến {% with sat=week|plus_days:5 %} {{ sat|date:"SHORT_DATE_FORMAT" }} {% endwith %}
+                             {% with sat=i.1.monday|plus_days:5 %}  {{i.1.monday|date:"SHORT_DATE_FORMAT"}} đến {{sat|date:"SHORT_DATE_FORMAT"}} {%endwith%}
                                 </option>
                                 {% endfor %}
                             </datalist>

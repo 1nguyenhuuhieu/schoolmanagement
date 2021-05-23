@@ -100,13 +100,20 @@
             </ul>
           </div>
         </li>
-        {% if request.user.is_staff %}
-        <li class="nav-item ms-2">
-          <a href="{% url 'admin:index' %}" class="nav-link btn btn-danger text-white">
-            Quản Lý
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle btn btn-warning text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Quản lý
           </a>
-        </li>
-        {% endif %}
+          <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="{% url 'check_lessons' request.user.teacher.current_schoolyear.start_date.year %}">Duyệt giáo án</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          </ul>
+        </li> 
       </ul>
     </div>
   </div>

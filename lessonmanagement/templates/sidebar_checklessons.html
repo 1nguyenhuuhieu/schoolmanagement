@@ -1,0 +1,23 @@
+{% load lessonmanagement_extras %}
+{% with teacher=request.user.teacher %}
+<div class="position-sticky top-0 start-0 pt-4">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4 class="m-0">Duyệt giáo án</h4>
+  </div>
+   <div class="list-group">
+    <hr>
+    {% now "m" as current_month %}
+    {% now "Y" as current_year %}
+    <span class="fw-bold mb-3">Năm {{teacher.current_schoolyear}} </span>
+
+    <a href="#" class="list-group-item list-group-item-action border-0 text-primary ps-0"><i
+        class="fas fa-book fa-fw me-2 text-muted"></i>test </a>
+
+   </div>
+   <hr>
+    <a href="#" class="btn btn-outline-success me-2 mb-3 "><i class="fas fa-calendar-week me-2 fa-fw"></i>Tuần này</a>
+    <a href="#" class="btn btn-outline-success mb-3"><i class="fas fa-archive me-2 fa-fw"></i>Thư viện giáo án</a>
+      <h6 class="fw-bold mt-4"><i class="far fa-lightbulb me-2"></i>Bạn muốn xem các giáo án cũ hơn?</h6>
+   <p class="text-muted pe-3">Hệ thống lưu trữ toàn bộ các giáo án bạn đã tải lên. Đến thư viện giáo án và tìm lại.</p>
+</div>
+{% endwith %}

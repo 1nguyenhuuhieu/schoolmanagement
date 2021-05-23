@@ -12,7 +12,7 @@
       <tr>
         <th scope="col">#</th>
         {% for i in '234567'|make_list %}
-        <th scope="col">Thứ {{ i }} <small class="text-dark fw-normal">/
+        <th scope="col" name="test{{i}}">Thứ {{ i }} <small class="text-dark fw-normal">/
           {% with j=i|add:-2%}
           {% with newday=monday|plus_days:j %}
           {{ newday|date:'SHORT_DATE_FORMAT' }}
@@ -71,7 +71,6 @@
     </tbody>
   </table>
 </div>
-
 {% for i in schedule_afternoon %}
   <script>
     window.onload = changeContent()
@@ -82,7 +81,6 @@ rn = {{i.order_schedule}};
 // Thứ mấy
 cn = {{i.dayofweek|add:1}};
 // Nội dung
-
 content = "<small><span class='badge {% if i.lesson.status == "pending"%}bg-warning{%elif i.lesson.status == "acept"%}bg-success{%else%}bg-danger{%endif%} me-2'>{{ i.lesson.get_status_display }}</span><span class='badge bg-primary me-2'>{{ i.lesson.subject.subject.title }} {{ i.lesson.subject.level }}{{i.classyear.title}} </span><span class='badge bg-primary me-2'>Bài {{ i.lesson.number_lesson }} </span><br>{{ i.lesson.title }}</small>";  
 var x=document.getElementById('afternoon_table').rows[parseInt(rn,10)].cells;
 x[parseInt(cn,10)].innerHTML=content;
@@ -100,24 +98,25 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
     else{
     var column = $(this).parent().children().index(this);
     var row = $(this).parent().parent().children().index(this.parentNode);
-    var monday_day = {{monday.day}} - 1 + column;
-    var monday_month = {{monday.month}};
-    var monday_year = {{monday.year}};
-    var date_schedule = [monday_year, monday_month, monday_day];
-    var date = date_schedule.join('-');
-    var order_shedule = row + 1
 
-    
-    $("input[name='schedule_date']").val(date);
+    Date.prototype.addDays = function (days) {
+    let date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+    }
+    let date = new Date("{{monday|date:'Y-m-d'}}");
+    date_schedule_j = date.addDays(column-1);
+    var monday_day = date_schedule_j.getDate();
+    var monday_month = date_schedule_j.getMonth() + 1;
+    var monday_year = date_schedule_j.getFullYear();
+    var date_schedule = [monday_year, monday_month, monday_day];
+    var date_j = date_schedule.join('-');
+    var order_shedule = row + 1
+    $("input[name='schedule_date']").val(date_j);
     $("input[name='session_date']").val('afternoon');
     $("input[name='order_schedule']").val(order_shedule);
-
-    
     var myModal = new bootstrap.Modal(document.getElementById('add_schedule_modal'))
     myModal.show()
-
-
-
     // window.location='/schedule/add/?date=' + date + '&session=afternoon&ordered=' + order_shedule;
     }
    });
