@@ -71,7 +71,6 @@
     </tbody>
   </table>
 </div>
-
 {% for i in schedule_morning %}
   <script>
     window.onload = changeContent()
@@ -82,7 +81,6 @@ rn = {{i.order_schedule}};
 // Thứ mấy
 cn = {{i.dayofweek|add:1}};
 // Nội dung
-
 content = "<small><span class='badge {% if i.lesson.status == "pending"%}bg-warning{%elif i.lesson.status == "acept"%}bg-success{%else%}bg-danger{%endif%} me-2'>{{ i.lesson.get_status_display }}</span><span class='badge bg-primary me-2'>{{ i.lesson.subject.subject.title }} {{ i.lesson.subject.level }}{{i.classyear.title}} </span><span class='badge bg-primary me-2'>Bài {{ i.lesson.number_lesson }} </span><br>{{ i.lesson.title }}</small>";  
 var x=document.getElementById('morning_table').rows[parseInt(rn,10)].cells;
 x[parseInt(cn,10)].innerHTML=content;
@@ -106,18 +104,11 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
     var date_schedule = [monday_year, monday_month, monday_day];
     var date = date_schedule.join('-');
     var order_shedule = row + 1
-
-    
     $("input[name='schedule_date']").val(date);
     $("input[name='session_date']").val('morning');
     $("input[name='order_schedule']").val(order_shedule);
-
-    
     var myModal = new bootstrap.Modal(document.getElementById('add_schedule_modal'))
     myModal.show()
-
-
-
     // window.location='/schedule/add/?date=' + date + '&session=morning&ordered=' + order_shedule;
     }
    });

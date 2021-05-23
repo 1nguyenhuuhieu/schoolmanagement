@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import *
 from django.contrib.auth.models import User
 import datetime
-from django.utils.text import slugify
+from django.utils.text import normalize_newlines, slugify
 from django.http import Http404
 from django.shortcuts import redirect
 from django.db.models import Count
@@ -53,12 +53,33 @@ def q_schoolyear():
     return now_school_year
 
 
+# đổi ngày hiện tại sang tuần tương ứng của năm học
+def now_week_schoolyear(schoolyear):
+    start_day = schoolyear.start_date
+    start_monday = start_day + datetime.timedelta(days=-start_day.weekday())
+    today = datetime.date.today()
+    week = (today - start_monday)/7
+    return week.days
+
+# đổi ngày bất kì sang tuần tương ứng của năm học
+def day_week_schoolyear(schoolyear, d):
+    start_day = schoolyear.start_date
+    start_monday = start_day + datetime.timedelta(days=-start_day.weekday())
+    week = (d - start_monday)/7
+    return week.days
+
+# lấy ngày thứ hai của tuần năm học
+def monday_week_schoolyear(schoolyear, week):
+    start_day = schoolyear.start_date
+    start_monday = start_day + datetime.timedelta(days=-start_day.weekday())
+    now_monday = start_monday + datetime.timedelta(days = week*7)
+    return now_monday
+
 
 
 # TRANG CHỦ
 @login_required
 def index(request):
-
     try:
         teacher = request.user.teacher
         countlesson = Lesson.objects.filter(teacher=teacher.id).count()
@@ -381,100 +402,92 @@ def lessons_toyear(request, year):
     context = {}
     return render(request, 'lesson/lesson_toyear.html', context)
 
-# lịch báo giảng
+# lịch báo giảng của năm học hiện tại
 def schedule(request, year, week):
+
     teacher = request.user.teacher.id
-    now = datetime.datetime.now()
-    now_school_year = current_schoolyear()
-    # danh sách các niên khoá đã mở cho vào list
-    schoolyear = Schoolyear.objects.dates('start_date', 'year')
     all_schoolyear = Schoolyear.objects.all()
-    
+    # năm học theo year
+    schoolyear = Schoolyear.objects.get(start_date__year=year)
+    now_week = now_week_schoolyear(schoolyear)
+    if week == 0:
+        week = now_week
+    lessons = LessonSchedule.objects.filter(
+        lesson__teacher=teacher, lesson__schoolyear=schoolyear
+        )
+    # lịch báo giảng của tuần thứ <week> và năm <schoolyear> lấy theo URL
+    schedule_all = lessons.filter(week=week)
+    schedule_morning = schedule_all.filter(session='morning')
+    schedule_afternoon = schedule_all.filter(session='afternoon')
+    # lấy ngày thứ hai của năm <schoolyear> và tuần <week> from URL
 
+    monday = monday_week_schoolyear(schoolyear, week)
+    #dữ liệu để thêm vào lịch báo giảng
+    all_lesson = Lesson.objects.filter(
+        teacher=teacher, schoolyear=schoolyear
+        ).order_by(
+            'subject__subjectclassyear__classyear'
+            ).values(
+                'subject__subjectclassyear__classyear','subject__subjectclassyear__classyear__startyear__start_date__year','subject__subjectclassyear__classyear__title','id',  'subject__subject__title', 'subject__level','title')
+    classyear = SubjectClassyear.objects.filter(
+        teacher=teacher, schoolyear=schoolyear
+        ).order_by(
+            'classyear__startyear__start_date__year'
+            ).values(
+                'classyear__startyear__start_date__year','classyear__title','classyear__id'
+                ).distinct()
+    # dùng cho tìm kiếm theo tuần
+    lessons_week = LessonSchedule.objects.filter(
+        lesson__teacher = teacher, lesson__schoolyear=schoolyear
+    ).dates('teach_date_schedule', 'week')
+    if request.method == "POST" and 'add_schedule' in request.POST:
+        date = request.POST['schedule_date']
+        session = request.POST['session_date']
+        order_schedule = request.POST['order_schedule']
+        classyear_id = request.POST['classyear']
+        classyear = Classyear.objects.get(pk=classyear_id)
+        lesson_id = request.POST['lesson_id']
+        lesson = Lesson.objects.get(pk=lesson_id)
+        new_schedule = LessonSchedule(
+            lesson=lesson, classyear=classyear, teach_date_schedule=date, session=session, order_schedule=order_schedule )
+        new_schedule.save()
+        q = LessonSchedule.objects.get(pk=new_schedule.id)
+        d = q.teach_date_schedule
+        d_week = day_week_schoolyear(schoolyear, d)
+        q.week = d_week
+        q.save()
+        messages.success(request, 'Lịch báo giảng đã được thêm.')
+        return redirect('schedule', year=year, week=week ,permanent=True)
+    context = {
+        'week': week,
+        'year': year,
+        'schedule_morning': schedule_morning,
+        'schedule_afternoon': schedule_afternoon,
+        'monday': monday,
+        'all_lesson': all_lesson,
+        'classyear': classyear,
+        'lessons_week': lessons_week,
+        'schoolyear': schoolyear,
+        'now_week': now_week,
+        'all_schoolyear': all_schoolyear
+    }
+    if request.method == "GET" and 'btn_search_date' in request.GET:
+        search_date = request.GET['search_date']
+        date_search = datetime.datetime.strptime(search_date, '%Y-%m-%d')
+        if date_search.month < 9:
+            year = date_search.year - 1
+        else:
+            year = date_search.year
+        date_search = date_search.date()
+        schoolyear = Schoolyear.objects.get(start_date__year=year)
+        week = day_week_schoolyear(schoolyear, date_search)
+        return redirect('schedule', year=year, week=week, permanent=True)
 
-    list_schoolyear = []
-    for i in schoolyear:
-        list_schoolyear.append(i.year)
-    # năm trong URL có thoả mãn niên khoá đã mở
-    if year in list_schoolyear or (year-1) in list_schoolyear:
-        lessons = LessonSchedule.objects.filter(lesson__teacher=teacher)
-        # lịch báo giảng của tuần thứ <week> và năm <naive_schoolyear> lấy theo URL
-        schedule_all = lessons.filter(week=week)
-        schedule_morning = schedule_all.filter(session='morning')
-        schedule_afternoon = schedule_all.filter(session='afternoon')
-        # lấy ngày thứ hai của năm <year> và tuần <week> from URL
-        d = '%s-W%s' % (year, week)
-        monday = datetime.datetime.strptime(d + '-1', "%Y-W%W-%w")
-
-        #dữ liệu để thêm vào lịch báo giảng
-        q_schoolyear = Schoolyear.objects.get(start_date__year=now_school_year)
-        
-        # all_lesson = Lesson.objects.filter(teacher=teacher, schoolyear=q_schoolyear).order_by('-upload_time')
-        all_lesson = Lesson.objects.filter(teacher=teacher, schoolyear=q_schoolyear).order_by('subject__subjectclassyear__classyear').values('subject__subjectclassyear__classyear','subject__subjectclassyear__classyear__startyear__start_date__year','subject__subjectclassyear__classyear__title','id',  'subject__subject__title', 'subject__level','title')
-
-        classyear = SubjectClassyear.objects.filter(
-            teacher=teacher, schoolyear=q_schoolyear
-            ).order_by(
-                'classyear__startyear__start_date__year'
-                ).values(
-                    'classyear__startyear__start_date__year','classyear__title','classyear__id'
-                    ).distinct()
-        
-        # dùng cho tìm kiếm theo tuần
-        lessons_week = LessonSchedule.objects.filter(
-            lesson__teacher = teacher, lesson__schoolyear=q_schoolyear
-        ).dates('teach_date_schedule', 'week')
-      
-
-        if request.method == "POST" and 'add_schedule' in request.POST:
-            date = request.POST['schedule_date']
-            session = request.POST['session_date']
-            order_schedule = request.POST['order_schedule']
-            classyear_id = request.POST['classyear']
-
-
-            classyear = Classyear.objects.get(pk=classyear_id)
-            lesson_id = request.POST['lesson_id']
-            lesson = Lesson.objects.get(pk=lesson_id)
-            new_schedule = LessonSchedule(
-                lesson=lesson, classyear=classyear, teach_date_schedule=date, session=session, order_schedule=order_schedule )
-            new_schedule.save()
-            q = LessonSchedule.objects.get(pk=new_schedule.id)
-            week = q.teach_date_schedule.isocalendar()[1]
-            new_schedule.week = week
-            new_schedule.save()
-            messages.success(request, 'Lịch báo giảng đã được thêm.')
-            return redirect('schedule', year=year, week=week ,permanent=True)
-        
-
-
-        context = {
-            'now_school_year': now_school_year,
-            'week': week,
-            'year': year,
-            'schedule_morning': schedule_morning,
-            'schedule_afternoon': schedule_afternoon,
-            'monday': monday,
-            'all_lesson': all_lesson,
-            'classyear': classyear,
-            'lessons_week': lessons_week,
-            'all_schoolyear': all_schoolyear
-        }
-        
-        if request.method == "GET" and 'week_search' in request.GET:
-            week_search = request.GET['week_search']
-            year_week = request.GET['year_week']
-            return redirect('schedule', year=year_week, week=week_search, permanent=True)
-        return render(request, 'schedule/schedule.html', context)
-
-
-       
-
-    else:
-        return redirect('emptyschedule')
-
-    
-
+    if request.method == "GET" and 'week_search' in request.GET:
+        week_search = request.GET['week_search']
+        year_week = request.GET['year_week']
+        return redirect('schedule', year=year_week, week=week_search, permanent=True)
+    return render(request, 'schedule/schedule.html', context)
 # không tìm thấy lịch báo giảng với năm học đã cho từ URL
 def emptyschedule(request):
     context = {
@@ -511,10 +524,13 @@ def add_schedule(request):
         lesson = Lesson.objects.get(pk=lesson_id)
         new_schedule = LessonSchedule(lesson=lesson, classyear=classyear, session=session_schedule, order_schedule=order_schedule, teach_date_schedule=schedule_date)
         new_schedule.save()
+
         q = LessonSchedule.objects.get(pk=new_schedule.id)
-        week = q.teach_date_schedule.isocalendar()[1]
-        new_schedule.week = week
-        new_schedule.save()
+        schoolyear = lesson.schoolyear
+        d = q.teach_date_schedule
+        d_week = day_week_schoolyear(schoolyear, d)
+        q.week = d_week
+        q.save()
         messages.success(request, 'Lịch báo giảng đã được thêm.')
         if 'quit' in request.POST:
             return redirect('add_schedule', permanent=True)
@@ -547,9 +563,12 @@ def add_lesson_schedule(request, lesson_id):
         new_schedule = LessonSchedule(lesson=lesson, classyear=classyear, session=session_schedule, order_schedule=order_schedule, teach_date_schedule=schedule_date)
         new_schedule.save()
         q = LessonSchedule.objects.get(pk=new_schedule.id)
-        week = q.teach_date_schedule.isocalendar()[1]
-        new_schedule.week = week
-        new_schedule.save()
+
+        schoolyear = lesson.schoolyear
+        d = q.teach_date_schedule
+        d_week = day_week_schoolyear(schoolyear, d)
+        q.week = d_week
+        q.save()
         messages.success(request, 'Lịch báo giảng đã được thêm.')
         if 'quit' in request.POST:
             return redirect('lesson', id=lesson_id, permanent=True)

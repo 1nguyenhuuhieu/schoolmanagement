@@ -1,6 +1,6 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark  ">
-  <div class="container-fluid px-lg-4">
+  <div class="container-fluid ">
     <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'imgs/logo_thcsanhson.png'%}" alt=""
         height="30px"></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -17,9 +17,8 @@
           <a class="nav-link {% if 'lesson' in request.path %} active {% endif %}" href="{% url 'alllessons' %}">Giáo án</a>
         </li>
         <li class="nav-item ">
-          {% now 'W' as w %}
-          {% now 'Y' as y %}
-          <a class="nav-link {% if 'schedule' in request.path %} active {% endif %}" href="{% url 'schedule' y w %}">
+
+          <a class="nav-link {% if 'schedule' in request.path %} active {% endif %}" href="{% url 'schedule' request.user.teacher.current_schoolyear.start_date.year 0 %}">
             Lịch báo giảng
           </a>
         </li>
