@@ -436,7 +436,7 @@ def schedule(request, year, week):
             ).order_by(
                 'subject__subjectclassyear__classyear'
                 ).values(
-                    'subject__subjectclassyear__classyear','subject__subjectclassyear__classyear__startyear__start_date__year','subject__subjectclassyear__classyear__title','id',  'subject__subject__title', 'subject__level','title')
+                    'subject__subjectclassyear__classyear','subject__subjectclassyear__classyear__startyear__start_date__year','subject__subjectclassyear__classyear__title','id',  'subject__subject__title', 'subject__level','title').distinct()
         classyear = SubjectClassyear.objects.filter(
             teacher=teacher, schoolyear=schoolyear
             ).order_by(
@@ -444,6 +444,7 @@ def schedule(request, year, week):
                 ).values(
                     'classyear__startyear__start_date__year','classyear__title','classyear__id'
                     ).distinct()
+      
         # dùng cho tìm kiếm theo tuần
         lessons_week = LessonSchedule.objects.filter(
             lesson__teacher = teacher, lesson__schoolyear=schoolyear
@@ -615,11 +616,21 @@ def check_lessons(request, year):
     teacher = request.user.teacher.id
     schoolyear = Schoolyear.objects.get(start_date__year=year)
     subjects = SubjectManager.objects.filter(
-        teacher=teacher, schoolyear=schoolyear
+        teacher=teacher, schoolyear=schoolyear, is_active=True
+    ).values('id')
+    list_subjects = []
+    for subject in subjects:
+        list_subjects.append(subject['id'])
+        
+
+    print(list_subjects)
+    lessons = Lesson.objects.filter(
+        schoolyear=schoolyear, subject__subject__id__in=list_subjects
     )
     if subjects:
         context = {
-            'subjects': subjects
+            'subjects': subjects,
+            'lesson_list': lessons
         }
         return render(request, 'lesson/check_lessons.html', context)
     else:

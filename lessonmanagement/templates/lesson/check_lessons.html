@@ -1,17 +1,41 @@
 {% extends 'base_checklessons.html' %}
-{% load humanize %}
+{% block content %}
 {% load static %}
 {% load lessonmanagement_extras %}
-{% block content %}
-
-<h6>danh sách môn học</h6>
-<ul>
-{% for subject in subjects %}
-<li><a href="{% url 'check_lessons_subject' 2020 subject.subject.subject_slug %}">{{subject.subject}}</a></li>
-{% endfor %}
-</ul>
-
-<h6>danh sách giáo viên</h6>
-<ul>
-</ul>
+{% with teacher=request.user.teacher %}
+<div class="bg-white border shadow-sm p-3 rounded-pill mb-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb m-0 ">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i
+            class="fas fa-home me-2"></i>Trang chủ</a></li>
+      <li class="breadcrumb-item active">Kiểm tra giáo án</li>
+    </ol>
+  </nav>
+</div>
+{% if lesson_list %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3 class="m-0"><i class="fas fa-pen-alt me-2"></i>Kiểm tra giáo án</h3>
+  <div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="schoolyear" data-bs-toggle="dropdown"
+      aria-expanded="false">
+      {%if current_year%}{{current_year}}{%else%}Tất cả năm học{%endif%}
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="schoolyear">
+      <li><a class="dropdown-item" href="{%url 'alllessons'%}">Tất cả</a></li>
+      <li>
+        <hr class="dropdown-divider">
+      </li>
+      {%for i in schoolyear%}
+      <li><a class="dropdown-item" href="{%url 'lessons_schoolyear' i.start_date.year%}">{{i}}</a></li>
+      {%endfor%}
+    </ul>
+  </div>
+</div>
+<div class="border py-4 px-3 rounded-15 shadow-sm bg-white">
+  {% include "table/table_check_lessons.html" %}
+</div>
+{% else %}
+{% include 'lesson/empty_lesson.html' %}
+{% endif %}
+{% endwith %}
 {% endblock %}
