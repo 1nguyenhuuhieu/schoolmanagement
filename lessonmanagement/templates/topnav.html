@@ -14,7 +14,7 @@
             href="{% url 'index' %}">Trang Chủ</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if 'lesson' in request.path %} active {% endif %}" href="{% url 'alllessons' %}">Giáo án</a>
+          <a class="nav-link {% if '/lesson' in request.path %} active {% endif %}" href="{% url 'alllessons' %}">Giáo án</a>
         </li>
         <li class="nav-item ">
 

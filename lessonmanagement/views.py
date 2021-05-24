@@ -1,3 +1,4 @@
+from django import contrib
 from django.shortcuts import render
 from .models import *
 from django.contrib.auth.models import User
@@ -146,6 +147,13 @@ def profile(request):
     }
     return render(request, 'profile/profile.html', context)
 
+@login_required
+def profile_detail(request, teacher_id):
+    teacher = Teacher.objects.get(pk=teacher_id)
+    context = {
+        'teacher_context': teacher
+    }
+    return render(request, 'profile/profile_detail.html', context)
 
 @login_required
 def teacher(request, teacher_id):
@@ -258,33 +266,14 @@ def week_lessons(request, subject, level):
 def open_lesson(request, id):
     teacher = request.user.teacher.id
     lesson = Lesson.objects.get(
-        pk=id
+        pk=id, teacher=teacher
     )
-    subjects = SubjectManager.objects.filter(
-        subject=lesson.subject.subject
-    ).values('subject__id')
-
-    list_subjects = []
-    
-    for subject in subjects:
-        list_subjects.append(subject['subject__id'])
-
-
-
-    print(list_subjects)
-
     context = {
         'lesson': lesson,
         'page_title': lesson.title
     }
-    print(lesson.subject.subject.id)
-    if lesson.teacher.id == teacher:
-        return render(request,'lesson/open_lesson.html',context)
-    elif lesson.subject.subject.id in list_subjects:
-        return render(request,'lesson/open_lesson.html',context)
 
-    else:
-        raise Http404
+    return render(request,'lesson/open_lesson.html',context)
 
 # Thêm giáo án tổng quan
 @login_required
@@ -642,10 +631,14 @@ def check_lessons(request, year):
     lessons = Lesson.objects.filter(
         schoolyear=schoolyear, subject__subject__id__in=subjects
     )
+    lessons_pending = lessons.filter(
+        status='pending'
+    )
     if subjects:
         context = {
             'subjects': subjects,
-            'lesson_list': lessons
+            'lesson_list': lessons,
+            'lessons_pending': lessons_pending
         }
         return render(request, 'lesson/check_lessons.html', context)
     else:
@@ -685,3 +678,18 @@ def check_lesson(request,lesson_id):
         return render(request, 'lesson/check_lesson.html', context)
     else:
         raise Http404
+
+@login_required
+def check_open_lesson(request, lesson_id):
+    checker = request.user.teacher.id
+    lesson = Lesson.objects.get(pk=lesson_id)
+    subjects = SubjectManager.objects.filter(
+        subject=lesson.subject.subject, teacher=checker, is_active=True
+    ).values('subject__id')
+    lesson = get_object_or_404(Lesson, pk=lesson_id, subject__subject__in=subjects
+        )
+    context = {
+        'lesson': lesson
+    }
+
+    return render(request, 'lesson/open_lesson_check.html', context)

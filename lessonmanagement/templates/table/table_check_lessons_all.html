@@ -3,9 +3,9 @@
     <thead>
         <tr>
             <th>Môn học</th>
-            <th>Tiết</th>
+            <th>Giáo án</th>
             <th>Giáo viên</th>
-            <th>Ngày thêm</th>
+            <th>Thời gian thêm</th>
             <th>Trạng thái</th>
             <th>Thao tác</th>
 
@@ -19,9 +19,14 @@
             <td>
                 <span class="badge rounded-pill bg-secondary me-2" style="width: 40px;">{{ lesson.number_lesson}} </span>{{ lesson.title }}
             </td>
-            <td class="text-muted">{{ lesson.teacher }}</td>
+            <td class="text-muted">
+                {% if lesson.teacher.avatar %}
+                <img src="{{ lesson.teacher.avatar.url }}" alt="" class="rounded-circle" width="25px">
+                {% endif %}
+                <a href="{% url 'profile_detail' lesson.teacher.id %}" class="text-decoration-none">{{ lesson.teacher }}</a>
+            </td>
 
-            <td> {{ lesson.upload_time|date:"SHORT_DATE_FORMAT"}}</td>
+            <td>{{ lesson.upload_time|date:"H:i" }} / {{ lesson.upload_time|date:"D" }} / {{ lesson.upload_time|date:"SHORT_DATE_FORMAT"}}</td>
             <td> {% if lesson.status == "pending" %}
                 <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i class="far fa-clock me-1"></i>{{lesson.get_status_display}}</span>
                 {% elif lesson.status == "acept" %}

@@ -7,6 +7,10 @@ from . import views
 urlpatterns = [
     path('', views.index, name="index"),
     path('profile/', views.profile, name="profile"),
+    path('profile/<int:teacher_id>/', views.profile_detail, name="profile_detail"),
+
+
+
     path('lessons/', views.alllessons, name="alllessons"),
     path('lessons/week/<str:subject>/<int:level>/', views.week_lessons, name='week_lessons'),
     path('lessons/<int:schoolyear>/', views.lessons_schoolyear, name="lessons_schoolyear"),
@@ -28,6 +32,7 @@ urlpatterns = [
      path('checklessons/<int:year>/', views.check_lessons, name='check_lessons'),
      path('checklessons/<int:year>/<str:subject>/', views.check_lessons_subject, name='check_lessons_subject'),
      path('checklesson/<int:lesson_id>/', views.check_lesson, name='check_lesson'),
+     path('checklesson/open/<int:lesson_id>/', views.check_open_lesson, name='check_open_lesson'),
     
     
     path('schedule/<int:year>/<int:week>/', views.schedule, name = 'schedule'),

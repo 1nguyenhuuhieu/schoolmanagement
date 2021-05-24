@@ -35,7 +35,10 @@
 </table>
 <script>
     $(document).ready(function () {
-        $('#all_table').DataTable();
+        $('#all_table').DataTable({
+            responsive: true,
+            "scrollX": true
+        });
     });
 </script>
 {% else %}
