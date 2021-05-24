@@ -258,13 +258,33 @@ def week_lessons(request, subject, level):
 def open_lesson(request, id):
     teacher = request.user.teacher.id
     lesson = Lesson.objects.get(
-        teacher=teacher, schoolyear=q_schoolyear(), pk=id
+        pk=id
     )
+    subjects = SubjectManager.objects.filter(
+        subject=lesson.subject.subject
+    ).values('subject__id')
+
+    list_subjects = []
+    
+    for subject in subjects:
+        list_subjects.append(subject['subject__id'])
+
+
+
+    print(list_subjects)
+
     context = {
         'lesson': lesson,
         'page_title': lesson.title
     }
-    return render(request,'lesson/open_lesson.html',context)
+    print(lesson.subject.subject.id)
+    if lesson.teacher.id == teacher:
+        return render(request,'lesson/open_lesson.html',context)
+    elif lesson.subject.subject.id in list_subjects:
+        return render(request,'lesson/open_lesson.html',context)
+
+    else:
+        raise Http404
 
 # Thêm giáo án tổng quan
 @login_required
@@ -617,15 +637,10 @@ def check_lessons(request, year):
     schoolyear = Schoolyear.objects.get(start_date__year=year)
     subjects = SubjectManager.objects.filter(
         teacher=teacher, schoolyear=schoolyear, is_active=True
-    ).values('id')
-    list_subjects = []
-    for subject in subjects:
-        list_subjects.append(subject['id'])
+    ).values('subject__id')
         
-
-    print(list_subjects)
     lessons = Lesson.objects.filter(
-        schoolyear=schoolyear, subject__subject__id__in=list_subjects
+        schoolyear=schoolyear, subject__subject__id__in=subjects
     )
     if subjects:
         context = {
