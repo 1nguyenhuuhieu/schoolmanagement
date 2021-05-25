@@ -101,12 +101,12 @@
           </div>
         </li>
         <li class="nav-item dropdown ms-2">
-          <a class="nav-link dropdown-toggle btn btn-warning text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+          <a class="nav-link dropdown-toggle btn {%if 'checklesson' in request.path %}btn-warning text-dark{%else%} btn-dark{%endif%}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             Quản lý
           </a>
           <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'check_lessons' request.user.teacher.current_schoolyear.start_date.year %}">Duyệt giáo án</a></li>
+            <li><a class="dropdown-item" href="{% url 'check_lessons_subject' request.user.teacher.current_schoolyear.start_date.year 'all' %}">Duyệt giáo án</a></li>
             <li><a class="dropdown-item" href="#">Another action</a></li>
             <li>
               <hr class="dropdown-divider">

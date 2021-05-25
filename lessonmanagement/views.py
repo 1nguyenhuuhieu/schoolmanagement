@@ -150,8 +150,13 @@ def profile(request):
 @login_required
 def profile_detail(request, teacher_id):
     teacher = Teacher.objects.get(pk=teacher_id)
+
+    subjects = SubjectManager.objects.filter(
+        teacher=teacher, schoolyear=q_schoolyear(), is_active=True
+    )
     context = {
-        'teacher_context': teacher
+        'teacher_context': teacher,
+        'subjects': subjects
     }
     return render(request, 'profile/profile_detail.html', context)
 
@@ -616,36 +621,41 @@ def guide(request):
 
 # DUYỆT GIÁO ÁN
 @login_required
-def check_lessons(request, year):
+def check_lessons_subject(request, year, subject):
     checker = request.user.teacher.id
     schoolyear = Schoolyear.objects.get(start_date__year=year)
-    lessons = Lesson.objects.filter(
-        schoolyear=schoolyear, subject__subject__subjectmanager__teacher=checker, subject__subject__subjectmanager__is_active=True
+    subjects = SubjectManager.objects.filter(
+        teacher=checker, schoolyear=schoolyear
     )
+    if subject == 'all':
+        subject_title = 'Tất cả môn học'
+        lessons = Lesson.objects.filter(
+            schoolyear=schoolyear, subject__subject__subjectmanager__teacher=checker, subject__subject__subjectmanager__is_active=True
+        )
+    else:
+        subject_title = Subject.objects.get(subject_slug=subject)
+        lessons = Lesson.objects.filter(
+            schoolyear=schoolyear, subject__subject__subjectmanager__teacher=checker, subject__subject__subjectmanager__is_active=True, subject__subject__subject_slug=subject
+        )
     lessons_pending = lessons.filter(
         status='pending'
     )
+    lessons_acept = lessons.filter(
+        status='acept'
+    )
+    lessons_deny = lessons.filter(
+        status='deny'
+    )
     context = {
         'lesson_list': lessons,
-        'lessons_pending': lessons_pending
+        'lessons_pending': lessons_pending,
+        'lessons_acept': lessons_acept,
+        'lessons_deny': lessons_deny,
+        'subjects': subjects,
+        'subject': subject_title,
+        'year': year
     }
     return render(request, 'lesson/check_lessons.html', context)
-
-@login_required
-def check_lessons_subject(request, year, subject):
-    teacher = request.user.teacher.id
-    schoolyear = Schoolyear.objects.get(start_date__year=year)
-    subject = SubjectManager.objects.get(
-        teacher=teacher, schoolyear=schoolyear, subject__subject_slug=subject
-    )
-    lessons = Lesson.objects.filter(
-        schoolyear=schoolyear, subject__subject=subject.subject
-    )
-    context = {
-        'subject': subject,
-        'lessons': lessons
-    }
-    return render(request, 'lesson/check_lessons_subject.html', context)
 
 @login_required
 def check_lesson(request,lesson_id):

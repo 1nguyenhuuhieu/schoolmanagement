@@ -22,7 +22,7 @@
         <div class="card homecard rounded-15 h-100" >
             <img src="{% static 'imgs/home/writing.png' %}" class=" px-4 pt-4" alt="..." style="max-height: 100px; object-fit: contain;" >
             <div class="card-body">
-              <h6 class="card-title text-center"><a href="{% url 'check_lessons' 2020%}" class="stretched-link text-decoration-none link-dark">Duyệt giáo án</a></h6>
+              <h6 class="card-title text-center"><a href="{% url 'check_lessons_subject' request.user.teacher.current_schoolyear.start_date.year 'all' %}" class="stretched-link text-decoration-none link-dark">Duyệt giáo án</a></h6>
             </div>
           </div>
     </div>

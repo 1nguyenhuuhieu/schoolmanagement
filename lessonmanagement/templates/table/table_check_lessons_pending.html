@@ -1,4 +1,4 @@
-{% if lesson_list %}
+{% if lessons_pending %}
 <table id="all_table" class="table table-hover" style="width:100%">
     <thead>
         <tr>
@@ -8,45 +8,43 @@
             <th>Giáo viên</th>
             <th>Thời gian thêm</th>
             <th>Tải về</th>
-
-
         </tr>
     </thead>
     <tbody>
         {% for lesson in lessons_pending %}
         <tr>
             <td> {% if lesson.status == "pending" %}
-                <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i class="far fa-clock me-1"></i>{{lesson.get_status_display}}</span>
+                <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i
+                        class="far fa-clock me-1"></i>{{lesson.get_status_display}}</span>
                 {% elif lesson.status == "acept" %}
-                <span class="badge bg-success  rounded-pill" style="width: 100px;"><i class="fas fa-check me-1"></i>{{lesson.get_status_display}}</span>
+                <span class="badge bg-success  rounded-pill" style="width: 100px;"><i
+                        class="fas fa-check me-1"></i>{{lesson.get_status_display}}</span>
                 {% elif lesson.status == "deny" %}
-                <span class="badge bg-danger  rounded-pill" style="width: 100px;"><i class="fas fa-times me-1"></i>{{lesson.get_status_display}}</span>
+                <span class="badge bg-danger  rounded-pill" style="width: 100px;"><i
+                        class="fas fa-times me-1"></i>{{lesson.get_status_display}}</span>
                 {% endif %}
             </td>
-            <td> <a href="{%url 'lessons_subject_level' lesson.subject.subject.title|slugify lesson.subject.level%}" class="text-decoration-none">{{lesson.subject}}</a>
+            <td> <a href="{%url 'lessons_subject_level' lesson.subject.subject.title|slugify lesson.subject.level%}"
+                    class="text-decoration-none">{{lesson.subject}}</a>
             </td>
             <td>
-                <span class="badge rounded-pill bg-secondary me-1" style="min-width: 40px;">{{ lesson.number_lesson}} </span>
+                <span class="badge rounded-pill bg-secondary me-1" style="min-width: 40px;">{{ lesson.number_lesson}}
+                </span>
                 <a href="{%url 'check_open_lesson' lesson.id%}" class="text-decoration-none">
-                {{ lesson.title }}
+                    {{ lesson.title }}
                 </a>
-                
             </td>
-
             <td class="text-muted">
                 {% if lesson.teacher.avatar %}
                 <img src="{{ lesson.teacher.avatar.url }}" alt="" class="rounded-circle" width="25px">
                 {% endif %}
-                <a href="{% url 'profile_detail' lesson.teacher.id %}" class="text-decoration-none">{{ lesson.teacher }}</a>
+                <a href="{% url 'profile_detail' lesson.teacher.id %}" class="text-decoration-none">{{lesson.teacher}}</a>
             </td>
-
-            <td>{{ lesson.upload_time|date:"H:i" }} / {{ lesson.upload_time|date:"D" }} / {{ lesson.upload_time|date:"SHORT_DATE_FORMAT"}}</td>
+            <td>{{ lesson.upload_time|date:"H:i" }} / {{ lesson.upload_time|date:"D" }} / {{lesson.upload_time|date:"SHORT_DATE_FORMAT"}}</td>
             <td>
-                <a href="{{lesson.lesson_path.url}}" class="btn btn-sm btn-outline-primary" download><i class="fas fa-download me-2"></i>Tải về</a>
+                <a href="{{lesson.lesson_path.url}}" class="btn btn-sm btn-outline-primary" download><i
+                        class="fas fa-download me-2"></i>Tải về</a>
             </td>
-
-
-
         </tr>
         {% endfor %}
     </tbody>
@@ -60,5 +58,5 @@
     });
 </script>
 {% else %}
-<h4 class="text-danger">Chưa có giáo án nào được tải lên</h4>
+<h4>Không có giáo án nào đang chờ duyệt</h4>
 {% endif %}

@@ -40,19 +40,15 @@
     <ul class="list-unstyled">
       <li><i class="fas fa-graduation-cap fa-fw me-2 text-muted"></i> {{ teacher.get_education_level_display }} {{teacher.main_subject}}
       </li>
-      {% if teacher.managers.school %}
-      <li>
-        <i class="fas fa-school fa-fw me-2 text-muted"></i> {{ teacher.managers.school.get_role_display }} <a href="#"
-          class="text-decoration-none"> {{ teacher.managers.school.school.title }}</a>.
-      </li>
-      {% endif %}
-        {%if teacher.managers.group%}{{ teacher.managers.group.get_role_display }} <a href="#" class="text-decoration-none">Bộ
-        môn {{ teacher.managers.group.group.title }}</a>.{% endif %}</li>
-      {% if teacher.managers.class %}
-      <li><i class="fas fa-users fa-fw me-2 text-muted"></i> Chủ nhiệm lớp <a href="#" class="text-decoration-none"> {{
-          teacher.managers.class }}</a>.</li>
-      {% endif %}
-
+      
+      {% if subjects %}
+      <li><i class="fas fa-pen-alt me-2 fa-fw text-muted"></i> Duyệt giáo án môn:
+        {% for subject in subjects %}
+        {{ subject.subject.title }}
+        {% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </li>
+    {% endif %}
     </ul>
   </div>
 </div>

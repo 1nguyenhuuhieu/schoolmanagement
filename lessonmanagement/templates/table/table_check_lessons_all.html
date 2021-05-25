@@ -2,11 +2,11 @@
 <table id="all_table" class="table table-hover" style="width:100%">
     <thead>
         <tr>
+            <th>Trạng thái</th>
             <th>Môn học</th>
             <th>Giáo án</th>
             <th>Giáo viên</th>
             <th>Thời gian thêm</th>
-            <th>Trạng thái</th>
             <th>Thao tác</th>
 
         </tr>
@@ -14,6 +14,14 @@
     <tbody>
         {% for lesson in lesson_list %}
         <tr>
+            <td> {% if lesson.status == "pending" %}
+                <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i class="far fa-clock me-1"></i>{{lesson.get_status_display}}</span>
+                {% elif lesson.status == "acept" %}
+                <span class="badge bg-success  rounded-pill" style="width: 100px;"><i class="fas fa-check me-1"></i>{{lesson.get_status_display}}</span>
+                {% elif lesson.status == "deny" %}
+                <span class="badge bg-danger  rounded-pill" style="width: 100px;"><i class="fas fa-times me-1"></i>{{lesson.get_status_display}}</span>
+                {% endif %}
+            </td>
             <td> <a href="{%url 'lessons_subject_level' lesson.subject.subject.title|slugify lesson.subject.level%}" class="text-decoration-none">{{lesson.subject}}</a>
             </td>
             <td>
@@ -27,14 +35,7 @@
             </td>
 
             <td>{{ lesson.upload_time|date:"H:i" }} / {{ lesson.upload_time|date:"D" }} / {{ lesson.upload_time|date:"SHORT_DATE_FORMAT"}}</td>
-            <td> {% if lesson.status == "pending" %}
-                <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i class="far fa-clock me-1"></i>{{lesson.get_status_display}}</span>
-                {% elif lesson.status == "acept" %}
-                <span class="badge bg-success  rounded-pill" style="width: 100px;"><i class="fas fa-check me-1"></i>{{lesson.get_status_display}}</span>
-                {% elif lesson.status == "deny" %}
-                <span class="badge bg-danger  rounded-pill" style="width: 100px;"><i class="fas fa-times me-1"></i>{{lesson.get_status_display}}</span>
-                {% endif %}
-            </td>
+
 
             <td>
                 <div class="d-flex">       
