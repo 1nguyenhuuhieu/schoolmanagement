@@ -622,27 +622,19 @@ def guide(request):
 # DUYỆT GIÁO ÁN
 @login_required
 def check_lessons(request, year):
-    teacher = request.user.teacher.id
+    checker = request.user.teacher.id
     schoolyear = Schoolyear.objects.get(start_date__year=year)
-    subjects = SubjectManager.objects.filter(
-        teacher=teacher, schoolyear=schoolyear, is_active=True
-    ).values('subject__id')
-        
     lessons = Lesson.objects.filter(
-        schoolyear=schoolyear, subject__subject__id__in=subjects
+        schoolyear=schoolyear, subject__subject__subjectmanager__teacher=checker, subject__subject__subjectmanager__is_active=True
     )
     lessons_pending = lessons.filter(
         status='pending'
     )
-    if subjects:
-        context = {
-            'subjects': subjects,
-            'lesson_list': lessons,
-            'lessons_pending': lessons_pending
-        }
-        return render(request, 'lesson/check_lessons.html', context)
-    else:
-        raise Http404
+    context = {
+        'lesson_list': lessons,
+        'lessons_pending': lessons_pending
+    }
+    return render(request, 'lesson/check_lessons.html', context)
 
 @login_required
 def check_lessons_subject(request, year, subject):
@@ -682,12 +674,21 @@ def check_lesson(request,lesson_id):
 @login_required
 def check_open_lesson(request, lesson_id):
     checker = request.user.teacher.id
-    lesson = Lesson.objects.get(pk=lesson_id)
-    subjects = SubjectManager.objects.filter(
-        subject=lesson.subject.subject, teacher=checker, is_active=True
-    ).values('subject__id')
-    lesson = get_object_or_404(Lesson, pk=lesson_id, subject__subject__in=subjects
+    lesson = get_object_or_404(Lesson,
+    pk=lesson_id, subject__subject__subjectmanager__teacher=checker
         )
+    if request.method == "POST" and 'btn_change_status' in request.POST:
+        status = request.POST['status']
+        note = request.POST['note']
+        lesson.status = status
+        lesson.checker = request.user.teacher
+        lesson.note_checker = note
+        lesson.save()
+        messages.add_message(request, messages.SUCCESS, 'Cập nhập trạng thái giáo án thành công.')
+        return redirect('check_open_lesson', lesson_id, permanent=True)
+
+
+
     context = {
         'lesson': lesson
     }

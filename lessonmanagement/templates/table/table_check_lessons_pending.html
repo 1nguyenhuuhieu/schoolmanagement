@@ -7,6 +7,8 @@
             <th>Giáo án</th>
             <th>Giáo viên</th>
             <th>Thời gian thêm</th>
+            <th>Tải về</th>
+
 
         </tr>
     </thead>
@@ -30,6 +32,7 @@
                 </a>
                 
             </td>
+
             <td class="text-muted">
                 {% if lesson.teacher.avatar %}
                 <img src="{{ lesson.teacher.avatar.url }}" alt="" class="rounded-circle" width="25px">
@@ -38,6 +41,9 @@
             </td>
 
             <td>{{ lesson.upload_time|date:"H:i" }} / {{ lesson.upload_time|date:"D" }} / {{ lesson.upload_time|date:"SHORT_DATE_FORMAT"}}</td>
+            <td>
+                <a href="{{lesson.lesson_path.url}}" class="btn btn-sm btn-outline-primary" download><i class="fas fa-download me-2"></i>Tải về</a>
+            </td>
 
 
 
