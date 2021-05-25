@@ -1,9 +1,0 @@
-<h1> check lessons subject</h1>
-
-{{ subject }}
-
-<ul>
-    {% for lesson in lessons %}
-    <li> <a href="{% url 'check_lesson' lesson.id %}">{{ lesson }} - {{ lesson.teacher }} - {{ lesson.status}}</a> </li>
-    {% endfor %}
-</ul>

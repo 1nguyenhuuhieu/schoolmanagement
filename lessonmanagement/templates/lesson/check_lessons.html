@@ -27,27 +27,34 @@
         </div>
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
-                    type="button" role="tab" aria-controls="nav-home" aria-selected="true">Chờ duyệt</button>
-                <button class="nav-link" id="nav-all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button"
+                <button class="nav-link active" id="nav-pending-tab" data-bs-toggle="tab" data-bs-target="#nav-pending"
+                    type="button" role="tab" aria-controls="nav-pending" aria-selected="true">Chờ duyệt</button>
+                <button class="nav-link" id="nav-all-tab" data-bs-toggle="tab" data-bs-target="#nav-all" type="button"
                     role="tab" aria-controls="nav-all" aria-selected="false">Tất cả</button>
-                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
-                    type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Đã duyệt</button>
-                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
-                    type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Từ chối</button>
+
+                    <button class="nav-link" id="nav-acept-tab" data-bs-toggle="tab" data-bs-target="#nav-acept" type="button"
+                    role="tab" aria-controls="nav-acept" aria-selected="false">Đã duyệt</button>
+                    
+                    <button class="nav-link" id="nav-deny-tab" data-bs-toggle="tab" data-bs-target="#nav-deny" type="button"
+                    role="tab" aria-controls="nav-deny" aria-selected="false">Từ chối</button>
+                    
             </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active  border rounded-bottom border-top-0 px-3 bg-white py-4 shadow-sm"
-                id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+            <div class="tab-pane fade show active  border rounded-bottom border-top-0 px-3 bg-white py-4 shadow-sm" id="nav-pending" role="tabpanel">
                 {% include "table/table_check_lessons_pending.html" %}
             </div>
-            <div class="tab-pane fade border rounded-bottom border-top-0 px-3 bg-white py-4 shadow-sm" id="all"
-                role="tabpanel" aria-labelledby="nav-home-tab">
+            
+            <div class="tab-pane fade border rounded-bottom border-top-0 px-3 bg-white py-4 shadow-sm" id="nav-all" role="tabpanel">
                 {% include "table/table_check_lessons_all.html" %}
             </div>
-            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+            <div class="tab-pane fade border rounded-bottom border-top-0 px-3 bg-white py-4 shadow-sm" id="nav-acept" role="tabpanel">
+                {% include "table/table_check_lessons_acept.html" %}
+            </div>
+            <div class="tab-pane fade border rounded-bottom border-top-0 px-3 bg-white py-4 shadow-sm" id="nav-deny" role="tabpanel">
+                {% include "table/table_check_lessons_deny.html" %}
+            </div>
+
         </div>
     </div>
 </div>

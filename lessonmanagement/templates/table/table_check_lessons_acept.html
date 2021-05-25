@@ -1,5 +1,5 @@
-{% if lessons_pending %}
-<table id="pending_table" class="table table-hover" style="width:100%">
+{% if lessons_acept %}
+<table id="acept_table" class="table table-hover" style="width:100%">
     <thead>
         <tr>
             <th>Trạng thái</th>
@@ -11,7 +11,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for lesson in lessons_pending %}
+        {% for lesson in lessons_acept %}
         <tr>
             <td> {% if lesson.status == "pending" %}
                 <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i
@@ -51,9 +51,9 @@
 </table>
 <script>
     $(document).ready(function () {
-        $('#pending_table').DataTable();
+        $('#acept_table').DataTable();
     });
 </script>
 {% else %}
-<h4>Không có giáo án nào đang chờ duyệt</h4>
+<h4>Không có giáo án nào đã duyệt</h4>
 {% endif %}
