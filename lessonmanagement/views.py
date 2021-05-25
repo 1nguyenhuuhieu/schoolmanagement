@@ -382,40 +382,35 @@ def no_permisson_add_lesson(request):
 def edit_lesson(request, lesson_id):
     now = datetime.datetime.now()
     teacher = request.user.teacher.id
-    schoolyear = q_schoolyear()
+    lesson = get_object_or_404(Lesson,
+    teacher=teacher, pk=lesson_id, status="deny")
 
-    try:
-        lesson = Lesson.objects.get(
-            teacher=teacher, pk=lesson_id)
-        context = {
-            'lesson': lesson,
-            'page_title': 'Sửa giáo án'}
-        if request.method == "POST":
-            title = request.POST['title_lesson']
-            start_lesson = request.POST['start_lesson']
-            count_lesson = request.POST['count_lesson']
-            description_lesson = request.POST['description_lesson']
-            lesson.title = title
-            lesson.start_number_lesson = start_lesson
-            lesson.cout_number_lesson = count_lesson
-            lesson.description = description_lesson
-            lesson.status = 'pending'
-            lesson.edit_time = now
+    context = {
+        'lesson': lesson,
+        'page_title': 'Sửa giáo án'}
+    if request.method == "POST":
+        title = request.POST['title_lesson']
+        start_lesson = request.POST['start_lesson']
+        description_lesson = request.POST['description_lesson']
+        lesson.title = title
+        lesson.start_number_lesson = start_lesson
+        lesson.description = description_lesson
+        lesson.status = 'pending'
+        lesson.edit_time = now
+        lesson.save()
+        if bool(request.FILES.get('file_lesson', False)) == True:
+            lesson_file_form = request.FILES['file_lesson']
+            teacher_location = 'media/lessons/' + \
+                str(request.user.username)
+            fs = FileSystemStorage(location=teacher_location)
+            lesson_file = fs.save(lesson_file_form.name, lesson_file_form)
+            lesson_path = teacher_location + '/' + \
+                fs.get_valid_name(lesson_file)
+            lesson.lesson_path = lesson_path
             lesson.save()
-            if bool(request.FILES.get('file_lesson', False)) == True:
-                lesson_file_form = request.FILES['file_lesson']
-                teacher_location = 'media/lessons/' + \
-                    str(request.user.username)
-                fs = FileSystemStorage(location=teacher_location)
-                lesson_file = fs.save(lesson_file_form.name, lesson_file_form)
-                lesson_path = teacher_location + '/' + \
-                    fs.get_valid_name(lesson_file)
-                lesson.lesson_path = lesson_path
-                lesson.save()
-            return redirect('lesson', id=lesson.id, permanent=True)
-        return render(request, 'lesson/edit_lesson.html', context)
-    except:
-        raise Http404("fuck wrong")
+        return redirect('lesson', id=lesson.id, permanent=True)
+    return render(request, 'lesson/edit_lesson.html', context)
+
 
 
 

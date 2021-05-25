@@ -6,20 +6,27 @@
 <div class="row justify-content-center mt-5">
     <div class="col-lg-9" id="top">
         <div class="row">
-            <div class="col-3 d-flex flex-column align-items-center border border-end-0 bg-white py-2 shadow-sm">
+            <div class="col-3 d-flex flex-column align-items-center border border-end-0 bg-white p-2 shadow-sm">
                 <img src="
                 {% if lesson.teacher.avatar %}
                 {{ lesson.teacher.avatar.url }}
                 {% else %}
                 {% static 'imgs/no-avatar.png' %}
                 {% endif %}
-                " alt="" class="rounded-circle me-2 img-fluid px-2">
-                <h5>{{ lesson.teacher.full_name }}</h5>
-                <small class="text-muted">@{{ lesson.teacher.user }}</small>
-                <p class="fw-bold">
-                    {{ lesson.teacher.get_education_level_display }} {{ lesson.teacher.main_subject }}
-                </p>
-               <span> <i class="fas fa-mobile-alt me-2 fa-fw"></i> <a href="tel:{{ lesson.teacher.zalo_number }}" class="text-decoration-none">{{ lesson.teacher.zalo_number }}</a> </span>
+                " alt="" class="rounded-circle me-2 img-fluid p-4">
+                <h5 >{{ lesson.teacher.full_name }} <small class="text-muted">@{{ lesson.teacher.user }}</small></h5>
+                
+                <ul class="list-unstyled mt-3">
+                    <li>
+                        <i class="fas fa-graduation-cap fa-fw me-2"></i>
+                        {{ lesson.teacher.get_education_level_display }} {{ lesson.teacher.main_subject }}
+                    </li>
+                    <li>
+                        <i class="fas fa-mobile-alt me-2 fa-fw"></i> <a href="tel:{{ lesson.teacher.zalo_number }}" class="text-decoration-none">{{ lesson.teacher.zalo_number }}</a> 
+                    </li>
+                </ul>
+
+      
             </div>
             <div class="col border bg-white p-4 shadow-sm">
                 <h5 >{{ lesson.subject.subject.title }} {{ lesson.subject.level }} - Bài
@@ -112,7 +119,7 @@
     </div>
     <div class="col-lg-8 text-end">
         <a href="#top" class="text-decoration-none ">
-            <h6>Về đầu trang <i class="fas fa-chevron-up ms-2"></i></h6>
+            <h6 class="mt-4">Về đầu trang <i class="fas fa-chevron-up ms-2"></i></h6>
         </a>
     </div>
 </div>
