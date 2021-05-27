@@ -15,6 +15,21 @@
     {%endfor%}
 
 </ul>
+<hr>
+<h6>giáo án theo tuần</h6>
+<ul>
+    {% for lesson in lessons_week %}
+    <li>{{ lesson }}</li>
+    {%endfor%}
 
+</ul>
+
+<hr>
+<h6>giaos án theo tuần query từ subjectclassyear</h6>
+<ul>
+    {% for lesson in lessons_week_subjectclassyear %}
+    <li>{{ lesson }}</li>
+    {% endfor %}
+</ul>
 
 {% endblock %}

@@ -124,6 +124,18 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
    });
 });
     </script>
+{% else %}
+
+<script>
+  $(document).ready(function(){
+    $("#morning_table").find("td").click(function(){
+  if ($(this).attr('name')){
+    var idLesson = $(this).attr('name');
+    window.location='/checklesson/open/' + idLesson + '/';
+  }
+ });
+});
+  </script>
 
 {% endif %}
 

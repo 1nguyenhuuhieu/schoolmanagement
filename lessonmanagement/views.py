@@ -719,9 +719,18 @@ def dashboard(request):
     teachers = Teacher.objects.filter(
         is_work=True
     )
+    schoolyear = q_schoolyear()
+    week = now_week_schoolyear(schoolyear)
+    now = datetime.datetime.now()
+    now_week = now.isocalendar()[1]
+    lessons_week = Lesson.objects.filter(
+        schoolyear=schoolyear, upload_time__week=now_week
+    ).order_by('teacher__id').values('teacher__id','teacher__firstname', 'teacher__lastname', 'subject__subject__title','subject__level','subject__week_lesson').distinct().annotate(Count('id'))
+
     context = {
         'manager': manager,
         'teachers': teachers,
+        'lessons_week': lessons_week,
 
     }
 
