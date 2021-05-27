@@ -727,6 +727,17 @@ def dashboard(request):
         schoolyear=schoolyear, upload_time__week=now_week
     ).order_by('teacher__id').values('teacher__id','teacher__firstname', 'teacher__lastname', 'subject__subject__title','subject__level','subject__week_lesson').distinct().annotate(Count('id'))
 
+    subject_classyear_teacher = SubjectClassyear.objects.all()
+    subject_classyear_teacher_week = subject_classyear_teacher.filter(
+        teacher__lesson__upload_time__week=now_week
+    )
+
+    empty_teacher_week = subject_classyear_teacher.difference(subject_classyear_teacher_week)
+
+
+    for i in empty_teacher_week:
+        print(i)
+
     context = {
         'manager': manager,
         'teachers': teachers,
