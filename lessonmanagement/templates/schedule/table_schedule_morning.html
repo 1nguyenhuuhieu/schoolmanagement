@@ -88,6 +88,8 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
 }
   </script>
   {% endfor %}
+
+  {% if is_change == True %}
   <script>
     $(document).ready(function(){
       $("#morning_table").find("td").click(function(){
@@ -123,6 +125,7 @@ x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}");
 });
     </script>
 
+{% endif %}
 
 
 

@@ -421,9 +421,15 @@ def edit_lesson(request, lesson_id):
 
 
 # lịch báo giảng của năm học hiện tại
-def schedule(request, year, week):
+def schedule(request, username_url, year, week):
+    username = request.user.username
+    teacher = Teacher.objects.get(
+        is_work=True, user__username=username_url
+    )
+    is_change = False
+    if username == username_url:
+        is_change = True
     if week <= 40:
-        teacher = request.user.teacher.id
         all_schoolyear = Schoolyear.objects.all()
         # năm học theo year
         schoolyear = Schoolyear.objects.get(start_date__year=year)
@@ -497,7 +503,9 @@ def schedule(request, year, week):
             'lessons_week': lessons_week_schoolyear,
             'schoolyear': schoolyear,
             'now_week': now_week,
-            'all_schoolyear': all_schoolyear
+            'all_schoolyear': all_schoolyear,
+            'username': username,
+            'is_change': is_change
         }
         if request.method == "GET" and 'btn_search_date' in request.GET:
             search_date = request.GET['search_date']
@@ -708,12 +716,12 @@ def dashboard(request):
         SchoolManager, is_active=True, schoolyear=q_schoolyear(), teacher=teacher_manager
     )
     schoolyear = q_schoolyear()
-    lessons = Lesson.objects.filter(
-        schoolyear=schoolyear, week=now_week_schoolyear(schoolyear)
-    ).order_by('teacher').values()
+    teachers = Teacher.objects.filter(
+        is_work=True
+    )
     context = {
         'manager': manager,
-        'lessons': lessons,
+        'teachers': teachers,
 
     }
 

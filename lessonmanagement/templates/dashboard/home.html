@@ -9,6 +9,12 @@
 <hr>
 <h3>Thống kê giáo viên</h3>
 <hr>
-{{lessons}}
-<br>
+<ul>
+    {% for teacher in teachers %}
+    <li><a href="{% url 'schedule' teacher.user.username  request.user.teacher.current_schoolyear.start_date.year 0 %}">{{ teacher }}</a></li>
+    {%endfor%}
+
+</ul>
+
+
 {% endblock %}

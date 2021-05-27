@@ -37,7 +37,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     
     
-    path('schedule/<int:year>/<int:week>/', views.schedule, name = 'schedule'),
+    path('schedule/<str:username_url>/<int:year>/<int:week>/', views.schedule, name = 'schedule'),
     path('emptyschedule/', views.emptyschedule, name = 'emptyschedule'),
 
     
