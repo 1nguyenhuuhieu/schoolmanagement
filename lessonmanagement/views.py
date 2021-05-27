@@ -398,7 +398,7 @@ def edit_lesson(request, lesson_id):
         start_lesson = request.POST['start_lesson']
         description_lesson = request.POST['description_lesson']
         lesson.title = title
-        lesson.start_number_lesson = start_lesson
+        lesson.number_lesson = start_lesson
         lesson.description = description_lesson
         lesson.status = 'pending'
         lesson.edit_time = now
@@ -699,3 +699,22 @@ def check_open_lesson(request, lesson_id):
     }
 
     return render(request, 'lesson/open_lesson_check.html', context)
+
+
+@login_required
+def dashboard(request):
+    teacher_manager = request.user.teacher.id
+    manager = get_object_or_404(
+        SchoolManager, is_active=True, schoolyear=q_schoolyear(), teacher=teacher_manager
+    )
+    schoolyear = q_schoolyear()
+    lessons = Lesson.objects.filter(
+        schoolyear=schoolyear, week=now_week_schoolyear(schoolyear)
+    ).order_by('teacher').values()
+    context = {
+        'manager': manager,
+        'lessons': lessons,
+
+    }
+
+    return render(request, 'dashboard/home.html', context)

@@ -32,6 +32,9 @@ urlpatterns = [
      path('checklessons/<int:year>/<str:subject>/', views.check_lessons_subject, name='check_lessons_subject'),
      path('checklesson/<int:lesson_id>/', views.check_lesson, name='check_lesson'),
      path('checklesson/open/<int:lesson_id>/', views.check_open_lesson, name='check_open_lesson'),
+
+    # THỐNG KÊ LỊCH BÁO GIẢNG
+    path('dashboard/', views.dashboard, name='dashboard'),
     
     
     path('schedule/<int:year>/<int:week>/', views.schedule, name = 'schedule'),

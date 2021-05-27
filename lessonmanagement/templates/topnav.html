@@ -107,7 +107,11 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="{% url 'check_lessons_subject' request.user.teacher.current_schoolyear.start_date.year 'all' %}">Duyệt giáo án</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
+
+            <li><a class="dropdown-item" href="{% url 'dashboard'%}">Thống kê</a></li>
+
+
+            <li><a class="dropdown-item" href="{% url 'admin:index'%}">Quản trị</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
