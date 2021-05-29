@@ -18,8 +18,8 @@
 <hr>
 <h6>giáo án theo tuần</h6>
 <ul>
-    {% for lesson in lessons_week %}
-    <li>{{ lesson }}</li>
+    {% for i in subject_classyear_teacher_week_count %}
+    <li>{{ i }}, {{ i.subject__lesson__count}}</li>
     {%endfor%}
 
 </ul>

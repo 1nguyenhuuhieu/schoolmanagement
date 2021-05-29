@@ -729,19 +729,26 @@ def dashboard(request):
 
     subject_classyear_teacher = SubjectClassyear.objects.all()
     subject_classyear_teacher_week = subject_classyear_teacher.filter(
-        teacher__lesson__upload_time__week=now_week
+        schoolyear=schoolyear, subject__lesson__upload_time__week=now_week
     )
 
-    empty_teacher_week = subject_classyear_teacher.difference(subject_classyear_teacher_week)
+    subject_classyear_teacher_week_count = subject_classyear_teacher.filter(
+        schoolyear=schoolyear, subject__lesson__upload_time__week=now_week
+    ).annotate(Count('subject__lesson'))
+    
+
+    empty_week_lesson = subject_classyear_teacher.difference(subject_classyear_teacher_week)
 
 
-    for i in empty_teacher_week:
+    for i in empty_week_lesson:
         print(i)
+        print("+++")
 
     context = {
         'manager': manager,
         'teachers': teachers,
         'lessons_week': lessons_week,
+        'subject_classyear_teacher_week_count': subject_classyear_teacher_week_count
 
     }
 
