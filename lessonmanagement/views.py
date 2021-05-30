@@ -723,32 +723,24 @@ def dashboard(request):
     week = now_week_schoolyear(schoolyear)
     now = datetime.datetime.now()
     now_week = now.isocalendar()[1]
-    lessons_week = Lesson.objects.filter(
+
+    # giáo án đã gửi lên tuần hiện tại
+    subjectclassyear = SubjectClassyear.objects.filter(
+        schoolyear=schoolyear
+    ).order_by('teacher').values(
+        'teacher__id'
+    ).distinct().annotate(Count('subject'))
+
+    lessons_now_week_count = Lesson.objects.filter(
         schoolyear=schoolyear, upload_time__week=now_week
-    ).order_by('teacher__id').values('teacher__id','teacher__firstname', 'teacher__lastname', 'subject__subject__title','subject__level','subject__week_lesson').distinct().annotate(Count('id'))
-
-    subject_classyear_teacher = SubjectClassyear.objects.all()
-    subject_classyear_teacher_week = subject_classyear_teacher.filter(
-        schoolyear=schoolyear, subject__lesson__upload_time__week=now_week
-    )
-
-    subject_classyear_teacher_week_count = subject_classyear_teacher.filter(
-        schoolyear=schoolyear, subject__lesson__upload_time__week=now_week
-    ).annotate(Count('subject__lesson'))
-    
-
-    empty_week_lesson = subject_classyear_teacher.difference(subject_classyear_teacher_week)
-
-
-    for i in empty_week_lesson:
-        print(i)
-        print("+++")
+    ).order_by('teacher').values(
+        'teacher__id','teacher__firstname', 'teacher__lastname'
+    ).annotate(Count('id'))
 
     context = {
         'manager': manager,
         'teachers': teachers,
-        'lessons_week': lessons_week,
-        'subject_classyear_teacher_week_count': subject_classyear_teacher_week_count
+        'subjectclassyear': subjectclassyear
 
     }
 

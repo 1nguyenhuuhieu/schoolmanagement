@@ -16,10 +16,10 @@
 
 </ul>
 <hr>
-<h6>giáo án theo tuần</h6>
+<h6>giáo án tuần này đã gửi lên</h6>
 <ul>
-    {% for i in subject_classyear_teacher_week_count %}
-    <li>{{ i }}, {{ i.subject__lesson__count}}</li>
+    {% for i in subjectclassyear     %}
+    <li>{{ i }}, {{ i.teacher }}</li>
     {%endfor%}
 
 </ul>
