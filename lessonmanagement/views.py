@@ -491,7 +491,7 @@ def schedule(request, username_url, year, week):
             q.week = d_week
             q.save()
             messages.success(request, 'Lịch báo giảng đã được thêm.')
-            return redirect('schedule', year=year, week=week ,permanent=True)
+            return redirect('schedule',username_url=username,year=year, week=week ,permanent=True)
         context = {
             'week': week,
             'year': year,
@@ -505,7 +505,8 @@ def schedule(request, username_url, year, week):
             'now_week': now_week,
             'all_schoolyear': all_schoolyear,
             'username': username,
-            'is_change': is_change
+            'is_change': is_change,
+            'username_url': username_url
         }
         if request.method == "GET" and 'btn_search_date' in request.GET:
             search_date = request.GET['search_date']
@@ -517,12 +518,12 @@ def schedule(request, username_url, year, week):
             date_search = date_search.date()
             schoolyear = Schoolyear.objects.get(start_date__year=year)
             week = day_week_schoolyear(schoolyear, date_search)
-            return redirect('schedule', year=year, week=week, permanent=True)
+            return redirect('schedule',username_url=username, year=year, week=week, permanent=True)
 
         if request.method == "GET" and 'week_search' in request.GET:
             week_search = request.GET['week_search']
             year_week = request.GET['year_week']
-            return redirect('schedule', year=year_week, week=week_search, permanent=True)
+            return redirect('schedule',username_url=username, year=year_week, week=week_search, permanent=True)
         return render(request, 'schedule/schedule.html', context)
     else:
         raise Http404
@@ -725,23 +726,9 @@ def dashboard(request):
     now_week = now.isocalendar()[1]
 
     # giáo án đã gửi lên tuần hiện tại
-    subjectclassyear = SubjectClassyear.objects.filter(
-        schoolyear=schoolyear
-    ).order_by('teacher').values(
-        'teacher__id'
-    ).distinct().annotate(Count('subject'))
 
-    lessons_now_week_count = Lesson.objects.filter(
-        schoolyear=schoolyear, upload_time__week=now_week
-    ).order_by('teacher').values(
-        'teacher__id','teacher__firstname', 'teacher__lastname'
-    ).annotate(Count('id'))
 
     context = {
-        'manager': manager,
-        'teachers': teachers,
-        'subjectclassyear': subjectclassyear
-
     }
 
     return render(request, 'dashboard/home.html', context)
