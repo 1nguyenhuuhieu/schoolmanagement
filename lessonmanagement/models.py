@@ -352,7 +352,7 @@ class Lesson(models.Model):
     def classyear_list(self):
         return LessonSchedule.objects.filter(lesson=self.id)
     def __str__(self):
-        return '%s : Bài %s - %s' % (self.subject, self.number_lesson,self.title)
+        return '%s : Bài %s - %s - %s' % (self.subject, self.number_lesson,self.title, self.teacher)
 
 # LỊCH BÁO GIẢNG
 class LessonSchedule(models.Model):

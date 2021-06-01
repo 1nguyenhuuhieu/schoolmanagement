@@ -17,6 +17,8 @@ from django.http import JsonResponse
 import os
 from django.db import models
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
+
 
 # đổi từ class level sang năm vào trường của một lớp
 def level_to_startyear(level):
@@ -725,10 +727,9 @@ def dashboard(request):
     now = datetime.datetime.now()
     now_week = now.isocalendar()[1]
 
-    # giáo án đã gửi lên tuần hiện tại
-
-
+    #giáo án đã gửi lên tuần hiện tại
     context = {
+        
     }
 
     return render(request, 'dashboard/home.html', context)
