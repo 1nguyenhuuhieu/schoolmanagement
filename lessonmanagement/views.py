@@ -718,14 +718,14 @@ def dashboard(request):
     manager = get_object_or_404(
         SchoolManager, is_active=True, schoolyear=q_schoolyear(), teacher=teacher_manager
     )
-    schoolyear = q_schoolyear()
     teachers = Teacher.objects.filter(
         is_work=True
     )
-    schoolyear = q_schoolyear()
-    week = now_week_schoolyear(schoolyear)
-    now = datetime.datetime.now()
-    now_week = now.isocalendar()[1]
+
+    for i in teachers:
+        print(i.week_lesson)
+
+ 
 
     #giáo án đã gửi lên tuần hiện tại
     context = {

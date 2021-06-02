@@ -147,6 +147,15 @@ class Teacher(models.Model):
         count['month'] = lesson_current_month.count()
         return count
 
+    def week_lesson(self):
+        now = datetime.datetime.now()
+        now_week = now.isocalendar()[1]
+        teacher=self.id
+        lesson_week = Lesson.objects.filter(
+            teacher=teacher
+        )
+        return('test')
+
     class Meta:
         verbose_name = "Giáo viên"
         verbose_name_plural = "Giáo viên"
@@ -301,6 +310,7 @@ class SubjectClassyear(models.Model):
     schoolyear = models.ForeignKey("Schoolyear", on_delete=models.CASCADE)
     def classyear_list(self):
         return ', '.join(classyear.__str__() for classyear in self.classyear.all())
+
 
     class Meta:
         verbose_name = "Phân công giảng dạy"
