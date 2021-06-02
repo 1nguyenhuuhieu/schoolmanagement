@@ -154,7 +154,7 @@ class Teacher(models.Model):
         lesson_week = Lesson.objects.filter(
             teacher=teacher
         )
-        return('test')
+        return(lesson_week.count())
 
     class Meta:
         verbose_name = "Giáo viên"

@@ -723,7 +723,7 @@ def dashboard(request):
     )
 
     for i in teachers:
-        print(i.week_lesson)
+        print(i.week_lesson())
 
  
 
