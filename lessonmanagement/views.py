@@ -722,13 +722,9 @@ def dashboard(request):
         is_work=True
     )
 
-    for i in teachers:
-        print(i.week_lesson())
-
- 
-
     #giáo án đã gửi lên tuần hiện tại
     context = {
+        'teachers': teachers
         
     }
 

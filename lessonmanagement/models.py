@@ -147,12 +147,22 @@ class Teacher(models.Model):
         count['month'] = lesson_current_month.count()
         return count
 
+    def target_lesson_week(self):
+        subjectclassyear = SubjectClassyear.objects.filter(
+            schoolyear=self.current_schoolyear(), teacher=self.id
+        )
+        count = 0
+        for i in subjectclassyear:
+            count += i.subject.week_lesson
+
+        return count
+
     def week_lesson(self):
         now = datetime.datetime.now()
         now_week = now.isocalendar()[1]
         teacher=self.id
         lesson_week = Lesson.objects.filter(
-            teacher=teacher
+            teacher=teacher, upload_time__week=now_week
         )
         return(lesson_week.count())
 
@@ -289,7 +299,7 @@ class SubjectDetail(models.Model):
         verbose_name = "Chi tiết môn học"
         verbose_name_plural = "Chi tiết môn học"
     def __str__(self):
-        return '%s %s' % (self.subject, self.level)
+        return '%s %s: %s' % (self.subject, self.level, self.week_lesson)
 
 # chương trình giảng dạy
 class SubjectLesson(models.Model):

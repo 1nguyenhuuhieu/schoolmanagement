@@ -18,8 +18,8 @@
 <hr>
 <h6>giáo án tuần này đã gửi lên</h6>
 <ul>
-    {% for i in subjectclassyear     %}
-    <li>{{ i }}, {{ i.id.subjectclassyear }}</li>
+    {% for i in teachers     %}
+    <li>{{ i.week_lesson }} /  {{ i.target_lesson_week }}</li>
     {%endfor%}
 
 </ul>
