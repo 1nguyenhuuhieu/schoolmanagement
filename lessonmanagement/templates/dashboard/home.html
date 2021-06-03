@@ -5,31 +5,68 @@
 {% load humanize %}
 {% load lessonmanagement_extras %}
 
-<h1> trang thống kê </h1>
-<hr>
-<h3>Thống kê giáo viên</h3>
-<hr>
-<ul>
-    {% for teacher in teachers %}
-    <li><a href="{% url 'schedule' teacher.user.username  request.user.teacher.current_schoolyear.start_date.year 0 %}">{{ teacher }}</a></li>
-    {%endfor%}
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-11">
+        <h4><i class="far fa-chart-bar fa-fw me-2"></i>Thống kê giáo án</h4>
+        <hr>
+        <h5>Tuần này</h5>
+        <hr>
+        <div class="row">
+            <div class="col">
+                {% widthratio  complete_teacher_lesson|length teachers|length 100  as width %}
+                <div class="d-flex justify-content-between">
+                    <h6>Giáo viên hoàn thiện tuần này <small class="text-muted">{{complete_teacher_lesson|length}}/{{teachers|length}}</small></h6>
+                    {{ width }}%
 
-</ul>
-<hr>
-<h6>giáo án tuần này đã gửi lên</h6>
-<ul>
-    {% for i in teachers     %}
-    <li>{{ i.week_lesson }} /  {{ i.target_lesson_week }}</li>
-    {%endfor%}
+                </div>
 
-</ul>
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar" role="progressbar" style="width: {{ width }}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+               
 
-<hr>
-<h6>giaos án theo tuần query từ subjectclassyear</h6>
-<ul>
-    {% for lesson in lessons_week_subjectclassyear %}
-    <li>{{ lesson }}</li>
-    {% endfor %}
-</ul>
+            </div>
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h5>Hoàn thành</h5>
+                        <table class="table bg-white">
+                            <tbody>
+                            {% for teacher in complete_teacher_lesson %}
+                         
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ teacher }}</td>
+                                <td>{{ teacher.week_lesson }} / {{ teacher.target_lesson_week }} </td>
+                              </tr>
+                    
+                            {% endfor %}
+                            </tbody>
+                          </table>
+                    </div>
+                    <div class="col-lg-6">
+                        <h5>Chưa hoàn thành</h5>
+                        <ol class="list-group list-group-numbered">
+                            {% for teacher in incomplete_teacher_lesson %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start list-group-item-action">
+                              <div class="ms-2 me-auto">
+                                <div class="fw-bold">
+                                    <a href="{{ teacher.id }}" class="stretched-link">
+                                    {{ teacher }}
+                                </a>
+                                </div>
+                              </div>
+                              <span class="badge bg-primary rounded-pill">{{ teacher.week_lesson }} / {{ teacher.target_lesson_week }} </span>
+                            </li>
+                            {% endfor %}
+                          </ol>
+                    </div>
+                </div>
+            </div>
+  
+        </div>
+
+    </div>
+</div>
 
 {% endblock %}

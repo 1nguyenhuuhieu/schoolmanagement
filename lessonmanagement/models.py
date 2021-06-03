@@ -44,7 +44,7 @@ def level_to_startyear(level):
 def is_learning_def(class_level):
     return class_level in [6,7,8,9]
 
-# ABSTRACT MODEL ----------------------------------------------------------
+# ABSTRACT MODEL ---------------------------------------------------------------
 
 # Abstract for: School, Subject, GroupSubject
 class SchoolAbstract(models.Model):

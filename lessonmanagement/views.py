@@ -703,12 +703,9 @@ def check_open_lesson(request, lesson_id):
         messages.add_message(request, messages.SUCCESS, 'Cập nhập trạng thái giáo án thành công.')
         return redirect('check_open_lesson', lesson_id, permanent=True)
 
-
-
     context = {
         'lesson': lesson
     }
-
     return render(request, 'lesson/open_lesson_check.html', context)
 
 
@@ -721,10 +718,23 @@ def dashboard(request):
     teachers = Teacher.objects.filter(
         is_work=True
     )
+    complete_teacher_lesson = teachers
+    incomplete_teacher_lesson = teachers
+
+    for teacher in complete_teacher_lesson:
+        if teacher.target_lesson_week() > teacher.week_lesson():
+            complete_teacher_lesson = complete_teacher_lesson.exclude(pk=teacher.id)
+        else:
+            incomplete_teacher_lesson = incomplete_teacher_lesson.exclude(pk=teacher.id)
+
+
+
 
     #giáo án đã gửi lên tuần hiện tại
     context = {
-        'teachers': teachers
+        'teachers': teachers,
+        'complete_teacher_lesson': complete_teacher_lesson,
+        'incomplete_teacher_lesson': incomplete_teacher_lesson
         
     }
 
