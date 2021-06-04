@@ -38,7 +38,11 @@
                                     <a href="{{ teacher.id }}" class="stretched-link">
                                     {{ teacher }}
                                 </a>
+                                
                                 </div>
+                                {% for j in teacher.subject_classyear_list %}
+                                {{ j.subject__subject__title }} {{ j.classyear__startyear__start_date__year|classlevel }}{% if not forloop.last %},{% endif %}
+                                {% endfor %}
                               </div>
                               <span class="badge bg-primary rounded-pill">{{ teacher.week_lesson }} / {{ teacher.target_lesson_week }} </span>
                             </li>
@@ -56,6 +60,7 @@
                                     {{ teacher }}
                                 </a>
                                 </div>
+                                sdfsadfd
                               </div>
                               <span class="badge bg-primary rounded-pill">{{ teacher.week_lesson }} / {{ teacher.target_lesson_week }} </span>
                             </li>
