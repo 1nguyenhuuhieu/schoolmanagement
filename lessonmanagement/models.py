@@ -40,6 +40,13 @@ def level_to_startyear(level):
     else:
         return (now.year + 6 - level)
 
+def q_schoolyear():
+    now = datetime.datetime.now()
+    current_startyear = school_year_def(now)
+    schoolyear = Schoolyear.objects.get(start_date__year=current_startyear)
+    return schoolyear
+    
+
 # có đang đào tạo tại trường
 def is_learning_def(class_level):
     return class_level in [6,7,8,9]
@@ -166,6 +173,9 @@ class Teacher(models.Model):
         )
         return(lesson_week.count())
 
+    def is_complete_subjectclassyear(self):
+        return self.week_lesson() >= self.target_lesson_week()
+
     class Meta:
         verbose_name = "Giáo viên"
         verbose_name_plural = "Giáo viên"
@@ -211,6 +221,21 @@ class Schoolyear(models.Model):
     def __str__(self):
         return '%s - %s' % (self.start_date.year, self.start_date.year + 1)
 
+
+# HỌC KÌ
+class Semester(models.Model):
+    schoolyear = models.ForeignKey(Schoolyear, on_delete=models.CASCADE, verbose_name="năm học")
+    ORDER_CHOICES = [
+        (1,1),
+        (2,2)
+    ]
+    order = models.IntegerField(choices=ORDER_CHOICES)
+    def __str__(self):
+        return '%s - %s' % (self.schoolyear, self.order)
+
+# TUẦN HỌC
+class WeekSchoolyear(models.Model):
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE, verbose_name="kì học")
 # LỚP HỌC
 class Classyear(models.Model):
     TITLE_CHOICES = [
@@ -271,6 +296,10 @@ class GroupSubjectManager(MembershipAbstract):
 class Subject(SchoolAbstract):
     group = models.ForeignKey(GroupSubject,on_delete=models.CASCADE, verbose_name='Bộ môn')
     subject_slug = models.SlugField(max_length=50, null=True, blank=True)
+    def teachers(self):
+        return Teacher.objects.filter(
+            subjectclassyear__subject__subject=self.id
+        )
     class Meta:
         verbose_name = "Môn học"
         verbose_name_plural = "Môn học"
@@ -295,6 +324,7 @@ class SubjectDetail(models.Model):
     level = models.IntegerField(choices=LEVEL_CHOICES, verbose_name="Khối học")
     total_lesson = models.IntegerField(verbose_name="Tổng số tiết")
     week_lesson = models.IntegerField(verbose_name="Số tiết mỗi tuần")
+
     class Meta:
         verbose_name = "Chi tiết môn học"
         verbose_name_plural = "Chi tiết môn học"

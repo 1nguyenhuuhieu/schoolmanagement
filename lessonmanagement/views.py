@@ -718,15 +718,16 @@ def dashboard(request):
     teachers = Teacher.objects.filter(
         is_work=True
     )
+
     complete_teacher_lesson = teachers
     incomplete_teacher_lesson = teachers
 
+
     for teacher in complete_teacher_lesson:
-        if teacher.target_lesson_week() > teacher.week_lesson():
+        if not teacher.is_complete_subjectclassyear():
             complete_teacher_lesson = complete_teacher_lesson.exclude(pk=teacher.id)
         else:
             incomplete_teacher_lesson = incomplete_teacher_lesson.exclude(pk=teacher.id)
-
 
 
 
@@ -734,7 +735,7 @@ def dashboard(request):
     context = {
         'teachers': teachers,
         'complete_teacher_lesson': complete_teacher_lesson,
-        'incomplete_teacher_lesson': incomplete_teacher_lesson
+        'incomplete_teacher_lesson': incomplete_teacher_lesson,
         
     }
 
