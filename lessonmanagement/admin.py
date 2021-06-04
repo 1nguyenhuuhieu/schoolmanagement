@@ -137,3 +137,6 @@ class SubjectDetailAdmin(ImportExportModelAdmin):
 @admin.register(Semester)
 class SemesterAdmin(admin.ModelAdmin):
     pass
+@admin.register(WeekSchoolyear)
+class WeekSchoolyearAdmin(admin.ModelAdmin):
+    pass

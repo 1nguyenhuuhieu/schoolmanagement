@@ -236,6 +236,11 @@ class Semester(models.Model):
 # TUẦN HỌC
 class WeekSchoolyear(models.Model):
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE, verbose_name="kì học")
+    week = models.IntegerField()
+    start_date = models.DateField()
+
+    def __str__(self):
+        return self.week
 # LỚP HỌC
 class Classyear(models.Model):
     TITLE_CHOICES = [
