@@ -4,7 +4,6 @@ import datetime
 from django.conf import settings
 from django.db.models import F
 from django.utils.text import slugify
-from django.forms import ModelForm
 
 LEVEL_CHOICES = [
         (6, 6),
@@ -237,10 +236,10 @@ class Semester(models.Model):
 class WeekSchoolyear(models.Model):
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE, verbose_name="kì học")
     week = models.IntegerField()
-    start_date = models.DateField()
+    monday = models.DateField(verbose_name="Thứ 2 của tuần là ngày nào")
 
     def __str__(self):
-        return self.week
+        return '%s' % (self.week)
 # LỚP HỌC
 class Classyear(models.Model):
     TITLE_CHOICES = [
@@ -374,7 +373,7 @@ class Lesson(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(SubjectDetail, on_delete=models.CASCADE)
     number_lesson = models.IntegerField(help_text="Bài giảng số mấy")
-    schoolyear = models.ForeignKey(Schoolyear, on_delete=models.CASCADE, blank=True, null=True)
+    week = models.ForeignKey(WeekSchoolyear, on_delete=models.CASCADE, blank=True, null=True)
     classyear = models.ManyToManyField(Classyear, through="LessonSchedule")
     #Kiểm tra giáo án
     STATUS_CHOICES = [
