@@ -373,7 +373,7 @@ class Lesson(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(SubjectDetail, on_delete=models.CASCADE)
     number_lesson = models.IntegerField(help_text="Bài giảng số mấy")
-    week = models.ForeignKey(WeekSchoolyear, on_delete=models.CASCADE, blank=True, null=True)
+    week = models.ForeignKey(WeekSchoolyear, on_delete=models.CASCADE, blank=True, null=True, help_text="Sử dụng vào tuần nào")
     classyear = models.ManyToManyField(Classyear, through="LessonSchedule")
     #Kiểm tra giáo án
     STATUS_CHOICES = [
