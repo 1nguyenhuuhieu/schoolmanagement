@@ -206,6 +206,7 @@ class SchoolManager(MembershipAbstract):
 # NĂM HỌC        
 class Schoolyear(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE, verbose_name="Trường")
+    total_week = models.IntegerField("Tổng số tuần học")
     start_date = models.DateField(help_text="Tuần 1 học kì 1 sẽ tính từ tuần này",  unique_for_year='start_date', verbose_name="Ngày học đầu tiên" )
     start_date_2 = models.DateField(help_text="Tuần 1 học kì 2 sẽ tính từ tuần này", blank=True, null=True, verbose_name="Ngày học đầu tiên học kì 2")
     end_date = models.DateField(blank=True, null=True, verbose_name="Ngày kết thúc năm học")
@@ -220,26 +221,6 @@ class Schoolyear(models.Model):
     def __str__(self):
         return '%s - %s' % (self.start_date.year, self.start_date.year + 1)
 
-
-# HỌC KÌ
-class Semester(models.Model):
-    schoolyear = models.ForeignKey(Schoolyear, on_delete=models.CASCADE, verbose_name="năm học")
-    ORDER_CHOICES = [
-        (1,1),
-        (2,2)
-    ]
-    order = models.IntegerField(choices=ORDER_CHOICES)
-    def __str__(self):
-        return '%s - %s' % (self.schoolyear, self.order)
-
-# TUẦN HỌC
-class WeekSchoolyear(models.Model):
-    semester = models.ForeignKey(Semester, on_delete=models.CASCADE, verbose_name="kì học")
-    week = models.IntegerField()
-    monday = models.DateField(verbose_name="Thứ 2 của tuần là ngày nào")
-
-    def __str__(self):
-        return '%s' % (self.week)
 # LỚP HỌC
 class Classyear(models.Model):
     TITLE_CHOICES = [
@@ -333,7 +314,7 @@ class SubjectDetail(models.Model):
         verbose_name = "Chi tiết môn học"
         verbose_name_plural = "Chi tiết môn học"
     def __str__(self):
-        return '%s %s: %s' % (self.subject, self.level, self.week_lesson)
+        return '%s %s' % (self.subject, self.level)
 
 # chương trình giảng dạy
 class SubjectLesson(models.Model):
@@ -373,7 +354,8 @@ class Lesson(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(SubjectDetail, on_delete=models.CASCADE)
     number_lesson = models.IntegerField(help_text="Bài giảng số mấy")
-    week = models.ForeignKey(WeekSchoolyear, on_delete=models.CASCADE, blank=True, null=True, help_text="Sử dụng vào tuần nào")
+    schoolyear = models.ForeignKey(Schoolyear, on_delete=models.CASCADE)
+    week = models.IntegerField("Tuần")
     classyear = models.ManyToManyField(Classyear, through="LessonSchedule")
     #Kiểm tra giáo án
     STATUS_CHOICES = [

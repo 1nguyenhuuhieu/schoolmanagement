@@ -133,10 +133,3 @@ class SchoolyearAdmin(ImportExportModelAdmin):
 class SubjectDetailAdmin(ImportExportModelAdmin):
 
     resource_class = SubjectDetailResource
-
-@admin.register(Semester)
-class SemesterAdmin(admin.ModelAdmin):
-    pass
-@admin.register(WeekSchoolyear)
-class WeekSchoolyearAdmin(admin.ModelAdmin):
-    pass
