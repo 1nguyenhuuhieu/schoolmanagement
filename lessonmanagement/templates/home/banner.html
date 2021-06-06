@@ -2,14 +2,13 @@
 <div class="row mt-5  align-items-end">
     <div class="col-lg-2"></div>
     <div class="col-lg-5 text-end pb-3">
-        <h4 >Hệ Thống Quản Lý Trường Học Kim Nhan</h4>
+        <h4 >Hệ Thống Quản Lý Giáo án: {{ school }}</h4>
         <h1 class="display-1 text-primary">Xin chào {{ request.user.teacher.lastname }}!</h1>
-        <p class="lead text-muted">Bây giờ là {% now 'P' %} {% now 'D' %} {% now "DATE_FORMAT" %}.</p>
-
+        <p class="lead text-muted">
+        Hiện tại là tuần thứ {{ week }} của năm học {{ schoolyear }}.</p>
         <figure class="text-end">
             <blockquote class="blockquote">
                 {% now "H" as current_hour %}
-
                 {% if current_hour|add:0 < 12 %}
                 Chúc bạn có một ngày mới làm việc hiệu quả và tràn đầy niềm vui.
                 {% elif current_hour|add:0 < 18 %}
@@ -17,7 +16,6 @@
                 {% else %}
                 Đừng làm việc quá sức nhé, chúc bạn có một đêm ngon giấc.
                 {% endif %}
-
             </blockquote>
             <figcaption class="blockquote-footer">
           Cô trợ lý áo hồng tại  <cite title="Source Title">Hệ thống quản lý trường học Kim Nhan</cite>

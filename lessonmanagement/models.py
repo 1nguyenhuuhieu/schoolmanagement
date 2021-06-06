@@ -340,7 +340,14 @@ class SubjectClassyear(models.Model):
     class Meta:
         verbose_name = "Phân công giảng dạy"
         verbose_name_plural = "Phân công giảng dạy"
-        unique_together = ('subject', 'teacher')
+        unique_together = ('subject', 'teacher', 'schoolyear')
+
+    # def save(self, *args, **kwargs):
+    #     subject_level = self.subject.level
+    #     for i in self.classyear.all():
+    #         print(i.class_level())
+
+    #     super().save(*args, **kwargs)
     def __str__(self):
         return '%s : %s - %s' % (self.subject, self.classyear_list(), self.teacher.full_name())
         
@@ -387,6 +394,7 @@ class Lesson(models.Model):
     # giáo án này lên lịch cho những lớp
     def classyear_list(self):
         return LessonSchedule.objects.filter(lesson=self.id)
+
     def __str__(self):
         return '%s : Bài %s - %s - %s' % (self.subject, self.number_lesson,self.title, self.teacher)
 

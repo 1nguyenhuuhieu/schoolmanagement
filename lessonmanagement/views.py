@@ -50,11 +50,14 @@ def current_schoolyear():
     else:
         return year - 1
 
+# lấy object Schoolyear của năm hiện tại
 def q_schoolyear():
-    schoolyear = current_schoolyear()
+    now = datetime.datetime.now()
+    year = now.year
+    month = now.month
+    schoolyear = year if month > 8 else year - 1
     now_school_year = Schoolyear.objects.get(start_date__year=schoolyear)
     return now_school_year
-
 
 # đổi ngày hiện tại sang tuần tương ứng của năm học
 def now_week_schoolyear(schoolyear):
@@ -78,15 +81,22 @@ def monday_week_schoolyear(schoolyear, week):
     now_monday = start_monday + datetime.timedelta(days = week*7)
     return now_monday
 
-
-
 # TRANG CHỦ
 @login_required
 def index(request):
     page_title = 'Trang chủ'
-    context = {'page_title': page_title}
+    school = get_object_or_404(School, pk=1)
+    schoolyear = q_schoolyear()
+    week = now_week_schoolyear(schoolyear)
+    monday = monday_week_schoolyear(schoolyear, week)
+    context = {
+        'page_title': page_title,
+        'schoolyear': schoolyear,
+        'week': week,
+        'monday': monday,
+        'school': school
+    }
     return render(request, 'index.html', context)
-
 
 # PROFILE
 @login_required
@@ -152,7 +162,6 @@ def profile(request):
 @login_required
 def profile_detail(request, teacher_id):
     teacher = Teacher.objects.get(pk=teacher_id)
-
     subjects = SubjectManager.objects.filter(
         teacher=teacher, schoolyear=q_schoolyear(), is_active=True
     )
@@ -321,35 +330,49 @@ def addlesson(request):
 @login_required
 def add_lesson_subject_level(request, subject, level):
     schoolyear = q_schoolyear()
-    print(now_week_schoolyear(schoolyear))
+    #tuần tiếp theo của tuần hiện tại
+    week = now_week_schoolyear(schoolyear) + 1
+    monday = monday_week_schoolyear(schoolyear, week)
+    now = datetime.datetime.now()
+    teacher = request.user.teacher.id
+    # kiểm tra phân công giảng dạy
+    subjectclassyear = get_object_or_404(SubjectClassyear,
+    teacher=teacher, subject__subject__subject_slug=subject, subject__level=level, schoolyear=schoolyear
+    )
+    # lấy bài giảng đã thêm trong subject và level này
+    q2 = Lesson.objects.filter(
+        teacher=teacher, subject=subjectclassyear.subject, schoolyear=schoolyear
+    )
+    last_lesson = q2.all()[:5]
+    #kiểm tra số giáo án tải lên tuần này
+    lessons_week_count = Lesson.objects.filter(
+        subject=subjectclassyear.subject, week=week, schoolyear=schoolyear
+    ).count()
+    subject_title = subjectclassyear.subject.subject.title
+
+    is_add = True if lessons_week_count < subjectclassyear.subject.week_lesson else False
     
     context = {
         'subject': subject,
-        'level': level
+        'level': level,
+        'schoolyear': schoolyear,
+        'week': week,
+        'monday': monday,
+        'lessons_week_count': lessons_week_count,
+        'subjectclassyear': subjectclassyear,
+        'subject_title': subject_title,
+        'is_add': is_add,
+        'last_lesson': last_lesson,
+        'page_title': "Thêm giáo án %s" % (subjectclassyear.subject)
         }
-    now = datetime.datetime.now()
-    teacher = request.user.teacher.id
-    # lấy bài giảng đã thêm trong subject và level này
-    q2 = Lesson.objects.filter(teacher=teacher, subject__subject__subject_slug=subject, subject__level=level)
-    # kiểm tra phân công giảng dạy
-    subjectclassyear = SubjectClassyear.objects.filter(teacher=teacher, subject__subject__subject_slug=subject).values('classyear__startyear__start_date__year')
-    subjectclassyear_list = []
-    for i in subjectclassyear:
-        class_level = class_level_def(i['classyear__startyear__start_date__year'])
-        subjectclassyear_list.append(class_level)
-    if level in subjectclassyear_list:
-        # lấy số bài giảng của giáo án gần nhất
+    # lấy số bài giảng của giáo án gần nhất để thêm vào default input HTML Template
+    if is_add:
         if q2:
             latest_lesson = q2.latest('number_lesson')
-            last_lesson = q2.all()[:5]
-            context['last_lesson'] = last_lesson
             new_number_lesson = latest_lesson.number_lesson + 1
         else:
             new_number_lesson = 1
         context['new_number_lesson'] = new_number_lesson
-        
-        subject_title = Subject.objects.get(subject_slug=subject)
-        context['subject_title'] = subject_title
         q_subject_level = SubjectLesson.objects.filter(subject__subject__subject_slug=subject, subject__level=level)
         try:  
             current_title_lesson = q_subject_level.get(number_lesson=new_number_lesson)
@@ -369,18 +392,15 @@ def add_lesson_subject_level(request, subject, level):
             fs = FileSystemStorage(location=lesson_location)
             lesson_file = fs.save(lesson.name.replace(" ", "_"), lesson)
             lesson_path = lesson_location_withoutmedia + fs.get_valid_name(lesson_file).replace(" ", "_")
-            year = Schoolyear.objects.get(start_date__year=current_schoolyear())
-            q_subject = SubjectDetail.objects.get(subject__subject_slug=subject, level=level)
-            new_lesson = Lesson(title=title, upload_time=now, description=description_lesson, teacher=request.user.teacher,subject=q_subject, number_lesson=start_lesson, lesson_path=lesson_path, schoolyear=year)
+            q_subject = subjectclassyear.subject
+            new_lesson = Lesson(title=title, upload_time=now, description=description_lesson, teacher=request.user.teacher,subject=q_subject, number_lesson=start_lesson, lesson_path=lesson_path, schoolyear=schoolyear, week=week)
             new_lesson.save()
             messages.success(request, 'Vui lòng chờ giáo án của bạn được duyệt.')
             if 'add' in request.POST:
                 return redirect('lesson', id=new_lesson.id, permanent=True)
             if 'continue' in request.POST:
                 return redirect('add_lesson_subject_level', subject, level)
-        return render(request, 'lesson/add_lesson_subject.html', context)
-    else:
-        return redirect('no_permisson_add_lesson')
+    return render(request, 'lesson/add_lesson_subject.html', context)
 
 @login_required
 def no_permisson_add_lesson(request):
@@ -397,7 +417,6 @@ def edit_lesson(request, lesson_id):
     teacher = request.user.teacher.id
     lesson = get_object_or_404(Lesson,
     teacher=teacher, pk=lesson_id, status="deny")
-
     context = {
         'lesson': lesson,
         'page_title': 'Sửa giáo án'}
@@ -423,10 +442,6 @@ def edit_lesson(request, lesson_id):
             lesson.save()
         return redirect('lesson', id=lesson.id, permanent=True)
     return render(request, 'lesson/edit_lesson.html', context)
-
-
-
-
 
 # lịch báo giảng của năm học hiện tại
 def schedule(request, username_url, year, week):
