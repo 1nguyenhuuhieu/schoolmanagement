@@ -320,7 +320,13 @@ def addlesson(request):
 # THÊM GIÁO ÁN VÀO SUBJECT VÀ LEVEL
 @login_required
 def add_lesson_subject_level(request, subject, level):
-    context = {'subject': subject, 'level': level}
+    schoolyear = q_schoolyear()
+    print(now_week_schoolyear(schoolyear))
+    
+    context = {
+        'subject': subject,
+        'level': level
+        }
     now = datetime.datetime.now()
     teacher = request.user.teacher.id
     # lấy bài giảng đã thêm trong subject và level này
