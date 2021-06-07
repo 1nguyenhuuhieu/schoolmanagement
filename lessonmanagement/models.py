@@ -319,7 +319,7 @@ class SubjectDetail(models.Model):
         verbose_name = "Chi tiết môn học"
         verbose_name_plural = "Chi tiết môn học"
     def __str__(self):
-        return '%s - %s' % (self.subject, self.level)
+        return '%s %s' % (self.subject, self.level)
 
 
 # chương trình giảng dạy
