@@ -48,7 +48,9 @@ class LessonScheduleResource(resources.ModelResource):
     class Meta:
         model = LessonSchedule
         fields = ('id', 'classyear', 'classyear__startyear__start_date','classyear__title','week','session', 'order_schedule', 'teach_date_schedule'  )
-
+class SubjectResource(resources.ModelResource):
+    class Meta:
+        model = Subject
 class SchoolyearResource(resources.ModelResource):
     class Meta:
         model = Schoolyear
@@ -56,6 +58,7 @@ class SchoolyearResource(resources.ModelResource):
 class SubjectLessonResource(resources.ModelResource):
     class Meta:
         model = SubjectLesson
+        fields = ('id', 'subject', 'subject__subject__title','subject__level', 'number_lesson', 'title')
         
 
 class SubjectDetailResource(resources.ModelResource):
@@ -66,21 +69,18 @@ class TeacherResource(resources.ModelResource):
     class Meta:
         model = Teacher
 
-class SubjectClassyearResource(resources.ModelResource):
-    class Meta:
-        model = SubjectClassyear
-
 
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
     inlines = [SchoolManagerInline,]
 @admin.register(Subject)
-class SubjectAdmin(admin.ModelAdmin):
+class SubjectAdmin(ImportExportModelAdmin):
     list_display = ('title', 'group' )
     list_filter = ('group', )
     exclude = ('subject_slug',)
     inlines = [SubjectDetailInline, SubjectManagerInline ]
+    resource_class = SubjectResource
   
 @admin.register(SubjectLesson)
 class SubjectLesson(ImportExportModelAdmin):
@@ -130,11 +130,10 @@ class LessonScheduleAdmin(ImportExportModelAdmin):
    
 
 @admin.register(SubjectClassyear)
-class SubjectClassyearAdmin(ImportExportModelAdmin):
+class SubjectClassyearAdmin(admin.ModelAdmin):
     list_display = ('teacher','subject', 'classyear_list', 'schoolyear')
     list_filter = ('classyear', 'subject__subject__title', 'schoolyear')
     form = SubjectClassyearForm
-    resource_class = SubjectClassyearResource
 
 @admin.register(SchoolManager)
 class SchoolManagerAdmin(admin.ModelAdmin):

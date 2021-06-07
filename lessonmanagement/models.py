@@ -24,6 +24,18 @@ def class_level_def(year):
     else:
         return year
 
+# năm học đang đào tạo
+def schoolyear_learning():
+    now = datetime.datetime.now()
+    listyear = []
+    for i in [1,2,3,4]:
+        if now.month < 9:
+            listyear.append(now.year - i)
+        else:
+            listyear.append(now.year + 1 -i )
+    return listyear
+
+
 #lấy niên khoá từ class level
 def school_year_def(upload_time):
     if (upload_time.month < 9):
@@ -73,7 +85,11 @@ class MembershipAbstract(models.Model):
     startdate = models.DateField(blank=True, null=True, verbose_name='Ngày bắt đầu')
     enddate = models.DateField(blank=True, null=True, verbose_name='Ngày kết thúc')
     is_active = models.BooleanField(default=True, blank=True, verbose_name="Có hiệu lực không")
-    schoolyear = models.ForeignKey('Schoolyear', on_delete=models.CASCADE)
+    schoolyear = models.ForeignKey(
+        'Schoolyear',
+        on_delete=models.CASCADE,
+        default=q_schoolyear
+    )
 
     class Meta:
         abstract = True
@@ -322,7 +338,7 @@ class SubjectDetail(models.Model):
         return '%s %s' % (self.subject, self.level)
 
 
-# chương trình giảng dạy
+# PHÂN PHỐI CHƯƠNG TRÌNH
 class SubjectLesson(models.Model):
     subject = models.ForeignKey(SubjectDetail, on_delete=models.CASCADE, verbose_name="Môn học")
     number_lesson = models.IntegerField()
@@ -337,7 +353,8 @@ class SubjectLesson(models.Model):
 class SubjectClassyear(MembershipAbstract):
     subject = models.ForeignKey(SubjectDetail, on_delete=models.CASCADE)
     classyear = models.ManyToManyField(
-        Classyear
+        Classyear,
+        limit_choices_to={'startyear__start_date__year__in': schoolyear_learning()}
         )
     
     def classyear_list(self):
