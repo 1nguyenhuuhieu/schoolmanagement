@@ -305,15 +305,15 @@ def addlesson(request):
     )
     
     subjectclassyear_count = subjectclassyear.filter(
-        subject__lesson__schoolyear=schoolyear
+        subject__lesson__schoolyear=schoolyear, subject__lesson__teacher=teacher
     ).annotate(models.Count('subject__lesson'))
 
     subjectclassyear_week_count = subjectclassyear.filter(
-        subject__lesson__schoolyear=schoolyear, subject__lesson__upload_time__week=now_week
+        subject__lesson__schoolyear=schoolyear, subject__lesson__upload_time__week=now_week, subject__lesson__teacher=teacher
     ).annotate(models.Count('subject__lesson'))
 
     subjectclassyear_week = subjectclassyear.filter(
-        subject__lesson__schoolyear=schoolyear, subject__lesson__upload_time__week=now_week
+        subject__lesson__schoolyear=schoolyear, subject__lesson__upload_time__week=now_week, subject__lesson__teacher=teacher
     )
     
     empty_week = subjectclassyear.difference(subjectclassyear_week)
