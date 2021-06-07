@@ -342,8 +342,6 @@ class SubjectClassyear(models.Model):
         verbose_name_plural = "Phân công giảng dạy"
         unique_together = ('subject', 'teacher', 'schoolyear')
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
     def __str__(self):
         return '%s : %s - %s' % (self.subject, self.classyear_list(), self.teacher.full_name())
         
