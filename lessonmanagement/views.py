@@ -297,8 +297,9 @@ def addlesson(request):
     now = datetime.datetime.now()
     now_week = now.isocalendar()[1]
     teacher = request.user.teacher.id
-    schoolyear = current_schoolyear()
-    schoolyear = Schoolyear.objects.get(start_date__year=schoolyear)
+    schoolyear = q_schoolyear()
+    #tuần tiếp theo của tuần hiện tại
+    week = now_week_schoolyear(schoolyear) + 1
     subjectclassyear = SubjectClassyear.objects.filter(
         teacher=teacher, schoolyear=schoolyear
     )
@@ -322,7 +323,8 @@ def addlesson(request):
         'subjectclassyear_count': subjectclassyear_count,
         'subjectclassyear_week_count': subjectclassyear_week_count,
         'empty_week': empty_week,
-        'page_title': 'Thêm giáo án'
+        'page_title': 'Thêm giáo án',
+        'week': week
     }
     return render(request, 'lesson/add_lesson.html', context)
 
@@ -343,15 +345,15 @@ def add_lesson_subject_level(request, subject, level):
     q2 = Lesson.objects.filter(
         teacher=teacher, subject=subjectclassyear.subject, schoolyear=schoolyear
     )
-    last_lesson = q2.all()[:5]
+    last_lesson = q2.filter(
+        week=week
+    )[:5]
     #kiểm tra số giáo án tải lên tuần này
     lessons_week_count = Lesson.objects.filter(
         subject=subjectclassyear.subject, week=week, schoolyear=schoolyear
     ).count()
     subject_title = subjectclassyear.subject.subject.title
-
     is_add = True if lessons_week_count < subjectclassyear.subject.week_lesson else False
-    
     context = {
         'subject': subject,
         'level': level,
@@ -409,7 +411,6 @@ def no_permisson_add_lesson(request):
         'cause': 'Bạn không được phân công giảng dạy lớp này',
     }
     return render(request, 'error/notfound.html', context)
-
 
 @login_required
 def edit_lesson(request, lesson_id):

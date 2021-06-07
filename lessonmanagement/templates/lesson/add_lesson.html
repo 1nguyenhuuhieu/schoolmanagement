@@ -26,9 +26,6 @@
         <h6> <a href="{%url 'lessons_subject_level' i.subject.subject.title|slugify i.subject.level|classlevel%}"
             class="text-decoration-none link-dark ">{{i.subject}}</a>  <small class="text-muted">Bài
             {{i.subject__lesson__count}}/{{i.subject.total_lesson}}</small> </h6>
-
-         
-
         {{width_year}}%
       </div>
       <div class="progress" style="height: 4px;">
@@ -44,7 +41,7 @@
   </div>
   <div class="col-lg-6">
     <div class="bg-white border p-4 shadow-sm rounded-15 h-100">
-      <h5><i class="fas fa-calendar-week me-3 text-muted"></i>Tuần này</h5>
+      <h5><i class="fas fa-calendar-week me-3 text-muted"></i>Tuần {{ week }}</h5>
       <hr>
       {%for i in subjectclassyear_week_count%}
       {% widthratio i.subject__lesson__count i.subject.week_lesson 100 as width_week %}

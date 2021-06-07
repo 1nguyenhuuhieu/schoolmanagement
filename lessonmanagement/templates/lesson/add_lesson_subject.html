@@ -14,10 +14,8 @@
     <p class="text-center text-danger"><i class="far fa-lightbulb me-2"></i>Giáo án {{ subjectclassyear.subject }} tuần {{ week }} đã được thêm đủ: {{ lessons_week_count }}/{{subjectclassyear.subject.week_lesson}}. Bạn không thể thêm nữa
     </p>
     {% endif %}
- 
   </div>
 </div>
-
 <div class="row pt-5 justify-content-center">
   <div class="col-lg-6">
     <form id='addLesson' method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
@@ -45,29 +43,20 @@
                   </ul>
                 </div>
               </div>
-
         <div class="me-3">
-
           <label for="startLesson" class="form-label">Bài giảng số</label>
           <input type="number" class="form-control" id="startLesson" name="start_lesson"
             onchange="getLessonTitle()" value='{{ new_number_lesson }}' required>
           <div class="invalid-feedback">
             Phải chọn bài giảng số mấy
           </div>
-
         </div>
-
             </div>
             <div class="col">
-
               <label for="startLesson" class="form-label">Tuần</label>
               <input type="text" class="form-control"  value='{{week}} / từ ngày {{ monday|date:"SHORT_DATE_FORMAT" }}' disabled>
-    
-
             </div>
           </div>
-
-  
         </div>
         <div class="col-12">
           <label for="titleLesson" class="form-label mt-4">Tên giáo án</label>

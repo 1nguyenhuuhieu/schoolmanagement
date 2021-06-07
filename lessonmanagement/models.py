@@ -64,10 +64,15 @@ class SchoolAbstract(models.Model):
 
 # Abstract for: SubjectTeacher, ClassyearManager, GroupSubjectManager, SchoolManager
 class MembershipAbstract(models.Model):
-    teacher = models.ForeignKey("Teacher", on_delete=models.CASCADE, verbose_name='Giáo viên')
+    teacher = models.ForeignKey(
+        "Teacher",
+        on_delete=models.CASCADE,
+        verbose_name='Giáo viên',
+        limit_choices_to={'is_work': True}
+        )
     startdate = models.DateField(blank=True, null=True, verbose_name='Ngày bắt đầu')
     enddate = models.DateField(blank=True, null=True, verbose_name='Ngày kết thúc')
-    is_active = models.BooleanField(default=True, blank=True, verbose_name="Có hiệu lực không", help_text="Không: Nếu giáo viên đã nghỉ hưu hoặc thôi việc")
+    is_active = models.BooleanField(default=True, blank=True, verbose_name="Có hiệu lực không")
     schoolyear = models.ForeignKey('Schoolyear', on_delete=models.CASCADE)
 
     class Meta:
@@ -272,8 +277,8 @@ class GroupSubjectManager(MembershipAbstract):
     ]
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     class Meta:
-        verbose_name = "Thành Viên/Quản lý Bộ Môn"
-        verbose_name_plural = "Thành Viên/Quản lý Bộ Môn"
+        verbose_name = "Quản lý Bộ Môn"
+        verbose_name_plural = "Quản lý Bộ Môn"
     def __str__(self):
         return '%s %s ' % (self.teacher.full_name(),  self.group.title)
 
@@ -314,7 +319,8 @@ class SubjectDetail(models.Model):
         verbose_name = "Chi tiết môn học"
         verbose_name_plural = "Chi tiết môn học"
     def __str__(self):
-        return '%s %s' % (self.subject, self.level)
+        return '%s - %s' % (self.subject, self.level)
+
 
 # chương trình giảng dạy
 class SubjectLesson(models.Model):
@@ -328,14 +334,14 @@ class SubjectLesson(models.Model):
         return '%s - Tiết %s' % (self.subject, self.number_lesson)
 
 # PHÂN CÔNG GIẢNG DẠY
-class SubjectClassyear(models.Model):
+class SubjectClassyear(MembershipAbstract):
     subject = models.ForeignKey(SubjectDetail, on_delete=models.CASCADE)
-    classyear = models.ManyToManyField(Classyear)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    schoolyear = models.ForeignKey("Schoolyear", on_delete=models.CASCADE)
+    classyear = models.ManyToManyField(
+        Classyear
+        )
+    
     def classyear_list(self):
         return ', '.join(classyear.__str__() for classyear in self.classyear.all())
-
 
     class Meta:
         verbose_name = "Phân công giảng dạy"
@@ -344,6 +350,8 @@ class SubjectClassyear(models.Model):
 
     def __str__(self):
         return '%s : %s - %s' % (self.subject, self.classyear_list(), self.teacher.full_name())
+
+
         
 # GIÁO ÁN
 class Lesson(models.Model):

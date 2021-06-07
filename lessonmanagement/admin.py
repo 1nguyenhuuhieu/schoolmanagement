@@ -1,8 +1,23 @@
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 from django.db.models import fields
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from .models import *
+from django import forms
+
+class SubjectClassyearForm(forms.ModelForm):
+    class Meta:
+        model = SubjectClassyear
+        fields = ['schoolyear','teacher','subject', 'classyear','startdate','enddate','is_active']
+    def clean(self):
+        # kiểm tra đã chọn đúng lớp tương ứng môn học
+        classyears = self.cleaned_data.get('classyear')
+        subject = self.cleaned_data.get('subject')
+        for classyear in classyears:
+            if classyear.class_level != subject.level:
+                raise ValidationError("Chọn lớp học tương ứng với môn học")
+        return self.cleaned_data
 
 class SubjectManagerInline(admin.TabularInline):
     model = SubjectManager
@@ -118,6 +133,7 @@ class LessonScheduleAdmin(ImportExportModelAdmin):
 class SubjectClassyearAdmin(ImportExportModelAdmin):
     list_display = ('teacher','subject', 'classyear_list', 'schoolyear')
     list_filter = ('classyear', 'subject__subject__title', 'schoolyear')
+    form = SubjectClassyearForm
     resource_class = SubjectClassyearResource
 
 @admin.register(SchoolManager)
