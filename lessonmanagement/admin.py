@@ -19,6 +19,7 @@ class SubjectClassyearForm(forms.ModelForm):
                 raise ValidationError("Chọn lớp học tương ứng với môn học")
         return self.cleaned_data
 
+
 class SubjectManagerInline(admin.TabularInline):
     model = SubjectManager
     extra = 1
@@ -141,7 +142,7 @@ class SchoolManagerAdmin(admin.ModelAdmin):
 
 @admin.register(Schoolyear)
 class SchoolyearAdmin(ImportExportModelAdmin):
-    list_display = ('__str__', 'school')
+    list_display = ('__str__','is_active', 'school')
     resource_class = SchoolyearResource
 
 @admin.register(SubjectDetail)

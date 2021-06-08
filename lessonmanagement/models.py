@@ -233,12 +233,25 @@ class Schoolyear(models.Model):
     end_date = models.DateField(blank=True, null=True, verbose_name="Ngày kết thúc năm học")
     spring_start = models.DateTimeField(help_text="Giờ mùa hè. Buổi sáng bắt đầu từ ngày nào, mấy giờ", blank=True, null=True, verbose_name="Giờ mùa hè") 
     winter_start = models.DateTimeField(help_text="Giờ mùa đông. Buổi sáng bắt đầu từ ngày nào, mấy giờ", blank=True, null=True,verbose_name="Giờ mùa đông") 
+    is_active = models.BooleanField('Năm học hiện tại')
     
     # tuần của năm học
  
     class Meta:
         verbose_name = "Năm học"
         verbose_name_plural = "Năm học"
+
+    def save(self, *args, **kwargs):
+        if self.is_active:
+            try:
+                q = Schoolyear.objects.get(is_active=True)
+                if self != q:
+                    q.is_active = False
+                    q.save()
+            except Schoolyear.DoesNotExist:
+                pass
+        super(Schoolyear, self).save(*args, **kwargs)
+
     def __str__(self):
         return '%s - %s' % (self.start_date.year, self.start_date.year + 1)
 
