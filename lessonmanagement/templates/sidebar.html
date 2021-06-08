@@ -36,7 +36,7 @@
    </div>
    <hr>
     <a href="{%url 'week_lessons' 'all' 0%}" class="btn btn-outline-success me-2 mb-3 {%if 'lessons/week' in request.path%}active{%endif%} "><i class="fas fa-calendar-week me-2 fa-fw"></i>Tuần này</a>
-    <a href="{% url 'alllessons' %}" class="btn btn-outline-success mb-3 {%if request.path == '/lessons/'%} active {%endif%}"><i class="fas fa-archive me-2 fa-fw"></i>Thư viện giáo án</a>
+    <a href="{% url 'lessons_schoolyear' 0 %}" class="btn btn-outline-success mb-3 {%if request.path == '/lessons/0/'%} active {%endif%}"><i class="fas fa-archive me-2 fa-fw"></i>Thư viện giáo án</a>
       <h6 class="fw-bold mt-4"><i class="far fa-lightbulb me-2"></i>Bạn muốn xem các giáo án cũ hơn?</h6>
    <p class="text-muted pe-3">Hệ thống lưu trữ toàn bộ các giáo án bạn đã tải lên. Đến thư viện giáo án và tìm lại.</p>
 </div>

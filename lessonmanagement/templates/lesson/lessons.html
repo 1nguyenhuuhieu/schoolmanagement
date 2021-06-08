@@ -12,16 +12,15 @@
     </ol>
   </nav>
 </div>
-{% if lesson_list %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h3 class="m-0"><i class="fas fa-archive me-2 "></i>Thư viện giáo án</h3>
+  <h4 class="m-0"><i class="fas fa-archive me-2 "></i>Thư viện giáo án{%if current_year|length == 0 %} năm {{current_year}}{%endif%}</h4>
   <div class="dropdown">
     <button class="btn btn-primary dropdown-toggle" type="button" id="schoolyear" data-bs-toggle="dropdown"
       aria-expanded="false">
-      {%if current_year%}{{current_year}}{%else%}Tất cả năm học{%endif%}
+      {%if current_year|length == 0 %}{{current_year}}{%else%}Tất cả năm học{%endif%}
     </button>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="schoolyear">
-      <li><a class="dropdown-item" href="{%url 'alllessons'%}">Tất cả</a></li>
+      <li><a class="dropdown-item" href="{% url 'lessons_schoolyear' 0 %}">Tất cả</a></li>
       <li>
         <hr class="dropdown-divider">
       </li>
@@ -34,8 +33,6 @@
 <div class="border py-4 px-3 rounded-15 shadow-sm bg-white">
   {% include "table/table_all.html" %}
 </div>
-{% else %}
-{% include 'lesson/empty_lesson.html' %}
-{% endif %}
+
 {% endwith %}
 {% endblock %}

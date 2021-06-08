@@ -52,12 +52,7 @@ def current_schoolyear():
 
 # lấy object Schoolyear của năm hiện tại
 def q_schoolyear():
-    now = datetime.datetime.now()
-    year = now.year
-    month = now.month
-    schoolyear = year if month > 8 else year - 1
-    now_school_year = Schoolyear.objects.get(start_date__year=schoolyear)
-    return now_school_year
+    return Schoolyear.objects.get(is_active=True)
 
 # đổi ngày hiện tại sang tuần tương ứng của năm học
 def now_week_schoolyear(schoolyear):
@@ -94,7 +89,7 @@ def index(request):
         'schoolyear': schoolyear,
         'week': week,
         'monday': monday,
-        'school': school
+        'school': school,
     }
     return render(request, 'index.html', context)
 
@@ -180,35 +175,34 @@ def teacher(request, teacher_id):
     except:
         raise Http404("Lesson does not exist")
 
-@login_required
-def alllessons(request):
-    teacher = request.user.teacher.id
-    lesson_list = Lesson.objects.filter(
-        teacher=teacher).order_by('-upload_time')
-    schoolyear = Schoolyear.objects.all()
-    page_title = 'Thư viện giáo án'
-    context = {
-        'lesson_list': lesson_list,
-        'schoolyear': schoolyear,
-        'page_title': page_title
-        }
-    return render(request, 'lesson/all_lessons.html', context)
+# THƯ VIỆN GIÁO ÁN
 
 @login_required
 def lessons_schoolyear(request, schoolyear):
     teacher = request.user.teacher.id
-    all_schoolyear = Schoolyear.objects.all()
-    q_schoolyear = Schoolyear.objects.get(
-        start_date__year=schoolyear)
-    lessons = Lesson.objects.filter(
-        teacher=teacher, schoolyear=q_schoolyear).order_by('-upload_time')
+    schoolyears = Schoolyear.objects.filter(
+        subjectclassyear__teacher=teacher
+    )
+    if schoolyear == 0:
+        q_schoolyear = schoolyears
+        lessons = Lesson.objects.filter(
+        teacher=teacher, schoolyear__in=q_schoolyear
+        ).order_by('-upload_time')
+        page_title = "Thư viện giáo án"
+    else:
+        q_schoolyear = schoolyears.get(start_date__year=schoolyear)
+        lessons = Lesson.objects.filter(
+        teacher=teacher, schoolyear=q_schoolyear
+        ).order_by('-upload_time')
+        page_title = 'Giáo án năm'
+
     context = {
         'current_year': q_schoolyear,
         'lesson_list': lessons,
-        'schoolyear': all_schoolyear,
-        'page_title': 'Giáo án năm %s' % (q_schoolyear)
+        'schoolyear': schoolyears,
+        'page_title': page_title
     }
-    return render(request, 'lesson/all_lessons.html', context)
+    return render(request, 'lesson/lessons.html', context)
 
 @login_required
 def lessons_subject_level(request, subject, level):
@@ -253,13 +247,13 @@ def lesson(request, id):
 @login_required
 def week_lessons(request, subject, level):
     teacher = request.user.teacher.id
-    now = datetime.datetime.now()
-    week = now.isocalendar()[1]
+    schoolyear = q_schoolyear()
+    week = now_week_schoolyear(schoolyear) + 1
     subjects = SubjectClassyear.objects.filter(
         teacher=teacher, schoolyear=q_schoolyear()
     )
     lessons = Lesson.objects.filter(
-        teacher=teacher, schoolyear=q_schoolyear(), upload_time__week=week)
+        teacher=teacher, schoolyear=q_schoolyear(), week=week)
     if subject != 'all':
         lessons = lessons.filter(
             subject__subject__subject_slug=subject, subject__level=level

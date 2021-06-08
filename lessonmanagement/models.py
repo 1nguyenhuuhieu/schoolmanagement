@@ -11,6 +11,7 @@ LEVEL_CHOICES = [
         (8, 8),
         (9, 9)
     ]
+
 # Lấy khối học từ năm bắt đầu vào trường
 def class_level_def(year):
     now = datetime.datetime.now()
@@ -51,11 +52,9 @@ def level_to_startyear(level):
     else:
         return (now.year + 6 - level)
 
+# NĂM HỌC HIỆN TẠI
 def q_schoolyear():
-    now = datetime.datetime.now()
-    current_startyear = school_year_def(now)
-    schoolyear = Schoolyear.objects.get(start_date__year=current_startyear)
-    return schoolyear
+    return Schoolyear.objects.get(is_active=True)
     
 
 # có đang đào tạo tại trường
@@ -128,10 +127,7 @@ class Teacher(models.Model):
         return self.lesson_set.filter(teacher = self.user.id)
     #môn dạy và lớp dạy phục vụ cho sidebar.html
     def current_schoolyear(self):
-        now = datetime.datetime.now()
-        current_startyear = school_year_def(now)
-        schoolyear = Schoolyear.objects.get(start_date__year=current_startyear)
-        return schoolyear
+        return q_schoolyear()
     
     def subject_classyear_list(self):
         return self.subjectclassyear_set.filter(
@@ -170,7 +166,7 @@ class Teacher(models.Model):
         current_year = [school_year_def(now), school_year_def(now)+1]
         lesson_current_year = lessons.filter(upload_time__year__in = current_year )
         count['year'] = lesson_current_year.count()
-        lesson_current_month =  lessons.filter(upload_time__year__in = current_year).filter(upload_time__month = now.month)
+        lesson_current_month = lessons.filter(upload_time__year__in = current_year).filter(upload_time__month = now.month)
         count['month'] = lesson_current_month.count()
         return count
 
