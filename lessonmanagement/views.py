@@ -23,7 +23,7 @@ from django.db.models import Q
 # đổi từ class level sang năm vào trường của một lớp
 def level_to_startyear(level):
     now = datetime.datetime.now()
-    if now.month < 9:
+    if now.month < 8:
         return (now.year + 5 - level)
     else:
         return (now.year + 6 - level)
@@ -31,7 +31,7 @@ def level_to_startyear(level):
 def class_level_def(year):
     now = datetime.datetime.now()
     i = 0
-    if (now.month < 9):
+    if (now.month < 8):
         i = (now.year - year) + 5
     else:
         i = (now.year - year) + 6
