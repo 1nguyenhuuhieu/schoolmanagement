@@ -133,6 +133,11 @@ class Teacher(models.Model):
         return self.subjectclassyear_set.filter(
             schoolyear=self.current_schoolyear()).order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title').distinct()
 
+    def subjectclassyear(self):
+        return SubjectClassyear.objects.filter(
+            teacher=self, is_active=True, schoolyear=q_schoolyear()
+        )
+
     def subject_classyeartitle_list(self):
         return self.subjectclassyear_set.filter(
             schoolyear=self.current_schoolyear()).order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title', 'classyear__title','subject__total_lesson', 'subject__week_lesson').distinct()
@@ -336,6 +341,7 @@ class SubjectManager(MembershipAbstract):
 # CHI TIẾT MÔN HỌC CỤ THỂ
 class SubjectDetail(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name="Môn học")
+    slug = models.SlugField(max_length=50, null=True, blank=True)
     level = models.IntegerField(choices=LEVEL_CHOICES, verbose_name="Khối học")
     total_lesson = models.IntegerField(verbose_name="Tổng số tiết")
     week_lesson = models.IntegerField(verbose_name="Số tiết mỗi tuần")
@@ -343,6 +349,9 @@ class SubjectDetail(models.Model):
     class Meta:
         verbose_name = "Chi tiết môn học"
         verbose_name_plural = "Chi tiết môn học"
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.subject) + '-' + slugify(self.level)
+        super().save(*args, **kwargs)
     def __str__(self):
         return '%s %s' % (self.subject, self.level)
 

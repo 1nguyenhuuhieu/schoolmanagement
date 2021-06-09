@@ -248,7 +248,7 @@ def lesson(request, id):
 def week_lessons(request, subject, level):
     teacher = request.user.teacher.id
     schoolyear = q_schoolyear()
-    week = now_week_schoolyear(schoolyear) + 1
+    week = now_week_schoolyear(schoolyear)
     subjects = SubjectClassyear.objects.filter(
         teacher=teacher, schoolyear=q_schoolyear()
     )
@@ -268,6 +268,7 @@ def week_lessons(request, subject, level):
         'subjects': subjects,
         'subject_title': subject_title,
         'subject_level': subject_level,
+        'week': week,
         'page_title': 'Giáo án tuần này'
     }
     return render(request, 'lesson/week_lessons.html', context)

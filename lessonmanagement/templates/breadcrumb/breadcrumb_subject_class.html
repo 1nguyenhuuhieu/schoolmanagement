@@ -2,7 +2,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb m-0 ">
         <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i class="fas fa-home me-2"></i>Trang chủ</a></li>
-        <li class="breadcrumb-item"> <a href="{% url 'lessons' %}" class="text-decoration-none">Giáo án</a></li>
+        <li class="breadcrumb-item"> <a href="{% url 'lessons_schoolyear' 0 %}" class="text-decoration-none">Giáo án</a></li>
         <li class="breadcrumb-item active" aria-current="page">  {{lesson_list.0.subject}}</li>
       </ol>
     </nav>
