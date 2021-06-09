@@ -1,4 +1,6 @@
 {% load static %}
+{% load lessonmanagement_extras %}
+{% now_schoolyear_tag as schoolyear_tag %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark  ">
   <div class="container-fluid ">
     <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'imgs/logo_thcsanhson.png'%}" alt=""
@@ -14,7 +16,7 @@
             href="{% url 'index' %}">Trang Chủ</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if '/lesson' in request.path %} active {% endif %}" href="{% url 'lessons' request.user.teacher.current_schoolyear.start_date.year %}">Giáo án</a>
+          <a class="nav-link {% if '/lesson' in request.path %} active {% endif %}" href="{% url 'lessons_schoolyear' schoolyear_tag  %}">Giáo án</a>
         </li>
         <li class="nav-item ">
 

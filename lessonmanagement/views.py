@@ -178,17 +178,18 @@ def teacher(request, teacher_id):
 
 # THƯ VIỆN GIÁO ÁN
 @login_required
-def lessons(request, schoolyear):
+def lessons(request, schoolyear='all'):
     teacher = request.user.teacher.id
     schoolyears = Schoolyear.objects.filter(
-        subjectclassyear__teacher=teacher
+        subjectclassyear__teacher=teacher,
+        subjectclassyear__teacher__is_work=True
     ).distinct()
-    if schoolyear == 0:
+    if schoolyear == 'all':
         q_schoolyear = schoolyears
         lessons = Lesson.objects.filter(
         teacher=teacher, schoolyear__in=q_schoolyear
         ).order_by('-upload_time')
-        page_title = "Thư viện giáo án"
+        page_title = 'GT'
     else:
         q_schoolyear = schoolyears.get(
             start_date__year=schoolyear
@@ -245,31 +246,27 @@ def lesson(request, id):
 
 
 @login_required
-def week_lessons(request, subject, level):
-    teacher = request.user.teacher.id
+def week_lessons(request, week=99):
+    if request.user.teacher.is_work == True:
+        teacher = request.user.teacher.id
     schoolyear = q_schoolyear()
-    week = now_week_schoolyear(schoolyear)
-    subjects = SubjectClassyear.objects.filter(
-        teacher=teacher, schoolyear=q_schoolyear()
-    )
+    page_title = 'Giáo án tuần %s' % (week)
+    if week == 99:
+        week = now_week_schoolyear(schoolyear)
+        page_title = 'Giáo án tuần này'
     lessons = Lesson.objects.filter(
-        teacher=teacher, schoolyear=q_schoolyear(), week=week)
-    if subject != 'all':
-        lessons = lessons.filter(
-            subject__subject__subject_slug=subject, subject__level=level
+        teacher=teacher,
+        schoolyear=q_schoolyear()
+    )
+    lessons_week = lessons.filter(
+        week=week
         )
-        subject_title = Subject.objects.get(subject_slug=subject)
-        subject_level = level
-    else:
-        subject_title = 'Tất cả'
-        subject_level = ''
+    weeks = lessons.values('week').order_by('week').distinct()
     context = {
-        'lesson_list': lessons,
-        'subjects': subjects,
-        'subject_title': subject_title,
-        'subject_level': subject_level,
+        'lesson_list': lessons_week,
+        'weeks': weeks,
         'week': week,
-        'page_title': 'Giáo án tuần này'
+        'page_title': page_title
     }
     return render(request, 'lesson/week_lessons.html', context)
 

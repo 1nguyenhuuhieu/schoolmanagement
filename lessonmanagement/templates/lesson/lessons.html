@@ -20,12 +20,12 @@
       {%if current_year|length == 0 %}{{current_year}}{%else%}Tất cả năm học{%endif%}
     </button>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="schoolyear">
-      <li><a class="dropdown-item" href="{% url 'lessons' 0 %}">Tất cả</a></li>
+      <li><a class="dropdown-item" href="{% url 'lessons' %}">Tất cả</a></li>
       <li>
         <hr class="dropdown-divider">
       </li>
       {%for i in schoolyear%}
-      <li><a class="dropdown-item" href="{%url 'lessons' i.start_date.year%}">{{i}}</a></li>
+      <li><a class="dropdown-item" href="{%url 'lessons_schoolyear' i.start_date.year %}">{{i}}</a></li>
       {%endfor%}
     </ul>
   </div>

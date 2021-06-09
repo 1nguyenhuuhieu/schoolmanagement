@@ -6,7 +6,7 @@
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb m-0 ">
       <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i class="fas fa-home me-2"></i>Trang chủ</a></li>
-      <li class="breadcrumb-item active"><a href="{% url 'lessons_schoolyear' 0 %}" class="text-decoration-none">Giáo án</a></li>
+      <li class="breadcrumb-item active"><a href="{% url 'lessons' %}" class="text-decoration-none">Giáo án</a></li>
       <li class="breadcrumb-item active">Tuần này</li>
     </ol>
   </nav>
@@ -15,18 +15,29 @@
     <div class="col-lg-12">
         <div class="d-flex justify-content-between align-items-center mb-4" >
             <h3 class="m-0"><i class="fas fa-calendar-week me-2"></i>Tải lên tuần {{week}}</h3>
-              <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" id="schoolyear" data-bs-toggle="dropdown" aria-expanded="false">
-                    {{subject_title}} {{subject_level}}
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="schoolyear">
-                  <li><a class="dropdown-item" href="{%url 'week_lessons' 'all' 0 %}">Tất cả</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  {% for subject in subjects %}
-                  <li><a class="dropdown-item" href="{%url 'week_lessons' subject.subject.subject.title|slugify subject.subject.level %}">{{subject.subject}}</a></li>
-                  {% endfor %}
-                </ul>
+            <div class="d-flex">
+
+              <!-- Example split danger button -->
+<div class="btn-group">
+  <a href="{% url 'now_week_lessons' %}" class="btn btn-outline-primary {%if request.path == '/lessons/week/'%}active{%endif%}" >Tuần này</a>
+  <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    {% for week in weeks %}
+    <li><a class="dropdown-item" href="{% url 'week_lessons' week.week %}">Tuần {{week.week}}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+
+
+              <div class="btn-group ms-2" role="group" aria-label="Basic example">
+                
+                <a href="{% url 'week_lessons' week|add:-1 %}" class="btn btn-outline-primary"><i class="fas fa-chevron-left"></i></a>
+                <a href="{% url 'week_lessons' week|add:1 %}" class="btn btn-outline-primary"><i class="fas fa-chevron-right"></i> </a>
+              </div>
             </div>
+
             </div>
         <div class="border py-4 px-3 rounded-15 shadow-sm bg-white">
             {% include "table/table_all.html"%}

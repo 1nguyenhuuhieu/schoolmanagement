@@ -3,9 +3,9 @@
     <thead>
         <tr>
             <th>Môn học</th>
+            <th>Tuần</th>
             <th>Tiết</th>
             <th>Tên giáo án</th>
-            <th>Ngày thêm</th>
             <th>Năm học</th>
             <th>Trạng thái</th>
         </tr>
@@ -16,11 +16,16 @@
             <td> <a href="{%url 'lessons_subject' lesson.subject.slug %}" class="text-decoration-none">{{lesson.subject}}</a>
             </td>
             <td>
+                <a href="#" class="text-decoration-none">{{ lesson.week}} </a>
+            </td>
+            <td>
                 <span class="badge rounded-pill bg-secondary" style="width: 40px;">{{ lesson.number_lesson}}</span>
             </td>
             <td><a href="{% url 'lesson' lesson.id %}" class="text-decoration-none">{{ lesson.title }} </a></td>
-            <td> {{ lesson.upload_time|date:"SHORT_DATE_FORMAT"}}</td>
-            <td class="text-muted">{{ lesson.schoolyear }}</td>
+            <td>
+                <a  href="{% url 'lessons_schoolyear' lesson.schoolyear.start_date.year %}" class="text-decoration-none">{{ lesson.schoolyear }}</a>
+                
+            </td>
             <td> {% if lesson.status == "pending" %}
                 <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i class="far fa-clock me-1"></i>{{lesson.get_status_display}}</span>
                 {% elif lesson.status == "acept" %}

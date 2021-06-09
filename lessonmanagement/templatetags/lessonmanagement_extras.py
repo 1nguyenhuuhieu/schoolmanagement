@@ -1,5 +1,6 @@
 import datetime
 from django import template
+from lessonmanagement.models import Schoolyear
 register = template.Library()
 
 
@@ -31,3 +32,10 @@ def plus_days(value, days):
 
 
 
+@register.simple_tag
+def now_schoolyear_tag():
+    year =  Schoolyear.objects.get(
+        is_active=True
+    ).start_date.year
+
+    return year

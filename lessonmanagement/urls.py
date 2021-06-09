@@ -5,8 +5,12 @@ urlpatterns = [
     path('', views.index, name="index"),
     path('profile/', views.profile, name="profile"),
     path('profile/<int:teacher_id>/', views.profile_detail, name="profile_detail"),
-    path('lessons/week/<str:subject>/<int:level>/', views.week_lessons, name='week_lessons'),
-    path('lessons/<int:schoolyear>/', views.lessons, name="lessons"),
+    path('lessons/', views.lessons, name='lessons'),
+    path('lessons/<int:schoolyear>/', views.lessons, name="lessons_schoolyear"),
+    
+    path('lessons/week/', views.week_lessons, name='now_week_lessons'),
+    path('lessons/week/<int:week>', views.week_lessons, name='week_lessons'),
+
     path('lessons/empty/', views.emptylesson, name="emptylesson"),
     path('lesson/open/<int:id>/', views.open_lesson, name="open_lesson"),
     path('lesson/<int:id>/', views.lesson, name="lesson"),
