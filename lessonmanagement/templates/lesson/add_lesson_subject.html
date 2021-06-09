@@ -31,14 +31,13 @@
               <div class="me-3">
                 <label for="subjectLevel" class="form-label">Môn học</label>
                 <input type="hidden" name="subject" value='{{ subject }}'>
-                <input type="hidden" name="level" value="{{ level }}">
                 <div id="subjectLevel">
                   <button class="btn btn-success dropdown-toggle " type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">{{ subject_title }} {{ level }}</button>
+                    aria-expanded="false">{{ subjectclassyear.subject }}</button>
                   <ul class="dropdown-menu">
-                    {% for i in teacher.subject_classyear_list %}
+                    {% for subjectclassyear in subjectsclassyear %}
                     <li><a class="dropdown-item"
-                        href="{%url 'add_lesson_subject_level' i.subject__subject__title|slugify i.classyear__startyear__start_date__year|classlevel%}">{{i.subject__subject__title}} {{i.classyear__startyear__start_date__year|classlevel}}</a></li>
+                        href="{% url 'add_lesson_subject' subjectclassyear.subject.slug %}">{{ subjectclassyear.subject }}</a></li>
                     {% endfor %}
                   </ul>
                 </div>

@@ -322,38 +322,53 @@ def addlesson(request):
 
 # THÊM GIÁO ÁN VÀO SUBJECT VÀ LEVEL
 @login_required
-def add_lesson_subject_level(request, subject, level):
+def add_lesson_subject(request, subject):
     schoolyear = q_schoolyear()
+    if request.user.teacher.is_work is True:
+        teacher = request.user.teacher.id
     #tuần tiếp theo của tuần hiện tại
     week = now_week_schoolyear(schoolyear) + 1
     monday = monday_week_schoolyear(schoolyear, week)
     now = datetime.datetime.now()
-    teacher = request.user.teacher.id
     # kiểm tra phân công giảng dạy
-    subjectclassyear = get_object_or_404(SubjectClassyear,
-    teacher=teacher, subject__subject__subject_slug=subject, subject__level=level, schoolyear=schoolyear
+    subjectclassyear = get_object_or_404(
+        SubjectClassyear,
+        teacher=teacher,
+        subject__slug=subject,
+        schoolyear=schoolyear
     )
-    # lấy bài giảng đã thêm trong subject và level này
+    # lấy bài giảng đã thêm trong subject này
     q2 = Lesson.objects.filter(
-        teacher=teacher, subject=subjectclassyear.subject, schoolyear=schoolyear
+        teacher=teacher,
+        subject=subjectclassyear.subject,
+        schoolyear=schoolyear
     )
     last_lesson = q2.filter(
         week=week
-    )[:5]
+    )
+
+    # những môn học được phân công giảng dạy cho dropdown môn học
+    subjectsclassyear = SubjectClassyear.objects.filter(
+        teacher=teacher,
+        schoolyear=schoolyear,
+        is_active=True
+    )
     #kiểm tra số giáo án tải lên tuần này
     lessons_week_count = Lesson.objects.filter(
-        subject=subjectclassyear.subject, week=week, schoolyear=schoolyear
+        subject=subjectclassyear.subject,
+        week=week,
+        schoolyear=schoolyear
     ).count()
     subject_title = subjectclassyear.subject.subject.title
     is_add = True if lessons_week_count < subjectclassyear.subject.week_lesson else False
     context = {
         'subject': subject,
-        'level': level,
         'schoolyear': schoolyear,
         'week': week,
         'monday': monday,
         'lessons_week_count': lessons_week_count,
         'subjectclassyear': subjectclassyear,
+        'subjectsclassyear': subjectsclassyear,
         'subject_title': subject_title,
         'is_add': is_add,
         'last_lesson': last_lesson,
@@ -366,11 +381,13 @@ def add_lesson_subject_level(request, subject, level):
             new_number_lesson = latest_lesson.number_lesson + 1
         else:
             new_number_lesson = 1
+        
+        print(new_number_lesson)
         context['new_number_lesson'] = new_number_lesson
-        q_subject_level = SubjectLesson.objects.filter(subject__subject__subject_slug=subject, subject__level=level)
+        q_subject_level = SubjectLesson.objects.filter(subject__slug=subject)
         try:  
             current_title_lesson = q_subject_level.get(number_lesson=new_number_lesson)
-            new_title_lesson = list(SubjectLesson.objects.filter(subject__subject__subject_slug=subject, subject__level=level).values('number_lesson', 'title'))
+            new_title_lesson = list(SubjectLesson.objects.filter(subject__slug=subject).values('number_lesson', 'title'))
             context['new_title_lesson'] = new_title_lesson
             context['current_title_lesson'] = current_title_lesson
         except:
@@ -393,7 +410,7 @@ def add_lesson_subject_level(request, subject, level):
             if 'add' in request.POST:
                 return redirect('lesson', id=new_lesson.id, permanent=True)
             if 'continue' in request.POST:
-                return redirect('add_lesson_subject_level', subject, level)
+                return redirect('add_lesson_subject', subject)
     return render(request, 'lesson/add_lesson_subject.html', context)
 
 @login_required

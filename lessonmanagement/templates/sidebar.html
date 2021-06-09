@@ -14,8 +14,8 @@
         <li>
           <hr class="dropdown-divider">
         </li>
-        {% for i in teacher.subject_classyear_list %}
-        <li><a class="dropdown-item" href="{%url 'add_lesson_subject_level' i.subject__subject__title|slugify i.classyear__startyear__start_date__year|classlevel%}">{{ i.subject__subject__title }} {{i.classyear__startyear__start_date__year|classlevel}}</a></li>
+        {% for i in teacher.subjectclassyear %}
+        <li><a class="dropdown-item" href="{% url 'add_lesson_subject' i.subject.slug %}">{{ i.subject}}</a></li>
         {% endfor %}
       </ul>
     </div>

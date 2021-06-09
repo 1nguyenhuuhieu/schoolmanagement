@@ -412,7 +412,7 @@ class Lesson(models.Model):
         verbose_name = "Giáo Án"
         verbose_name_plural = "Giáo Án"
         ordering = ["-upload_time"]
-        unique_together = ['subject', 'number_lesson', 'teacher']
+        unique_together = ['subject', 'number_lesson', 'teacher', 'schoolyear']
 
     #niên khoá hiện tại
     def school_year(self):

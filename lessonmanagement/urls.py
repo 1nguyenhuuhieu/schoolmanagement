@@ -16,7 +16,7 @@ urlpatterns = [
     path('lesson/<int:id>/', views.lesson, name="lesson"),
     path('lesson/edit/<int:lesson_id>/', views.edit_lesson, name="edit_lesson"),
     path('lesson/add/', views.addlesson, name="addlesson"),
-    path('lessons/add/<str:subject>/<int:level>/', views.add_lesson_subject_level, name="add_lesson_subject_level"),
+    path('lessons/add/<str:subject>/', views.add_lesson_subject, name="add_lesson_subject"),
     path('lessons/add/error/', views.no_permisson_add_lesson, name = 'no_permisson_add_lesson'),
     path('lessons/<str:subject>/', views.lessons_subject, name="lessons_subject"),
 
