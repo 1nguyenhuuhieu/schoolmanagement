@@ -4,7 +4,7 @@
         <tr>
             <th>Môn học</th>
             <th>Tuần</th>
-            <th>Tiết</th>
+            <th>Bài</th>
             <th>Tên giáo án</th>
             <th>Năm học</th>
             <th>Trạng thái</th>
@@ -16,7 +16,7 @@
             <td> <a href="{%url 'lessons_subject' lesson.subject.slug %}" class="text-decoration-none">{{lesson.subject}}</a>
             </td>
             <td>
-                <a href="#" class="text-decoration-none">{{ lesson.week}} </a>
+                <a href="{% url 'week_lessons' lesson.week %}" class="text-decoration-none">{{ lesson.week}} </a>
             </td>
             <td>
                 <span class="badge rounded-pill bg-secondary" style="width: 40px;">{{ lesson.number_lesson}}</span>

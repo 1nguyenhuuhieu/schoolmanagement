@@ -3,17 +3,8 @@
 {% load static %}
 {% load lessonmanagement_extras %}
 {% with teacher=request.user.teacher %}
-<div class="bg-white border shadow-sm p-3 rounded-pill mb-4">
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb m-0 ">
-      <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i
-            class="fas fa-home me-2"></i>Trang chủ</a></li>
-      <li class="breadcrumb-item active">Giáo án</li>
-    </ol>
-  </nav>
-</div>
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h4 class="m-0"><i class="fas fa-archive me-2 "></i>Thư viện giáo án{%if current_year|length == 0 %} năm {{current_year}}{%endif%}</h4>
+  <h4 class="m-0">Giáo án{%if current_year|length == 0 %} năm {{current_year}}{%endif%}</h4>
   <div class="dropdown">
     <button class="btn btn-primary dropdown-toggle" type="button" id="schoolyear" data-bs-toggle="dropdown"
       aria-expanded="false">

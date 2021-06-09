@@ -176,20 +176,20 @@ def teacher(request, teacher_id):
     except:
         raise Http404("Lesson does not exist")
 
-# THƯ VIỆN GIÁO ÁN
+# GIÁO ÁN
 @login_required
 def lessons(request, schoolyear='all'):
-    teacher = request.user.teacher.id
+    if request.user.teacher.is_work is True:
+        teacher = request.user.teacher.id
     schoolyears = Schoolyear.objects.filter(
-        subjectclassyear__teacher=teacher,
-        subjectclassyear__teacher__is_work=True
+        subjectclassyear__teacher=teacher
     ).distinct()
     if schoolyear == 'all':
         q_schoolyear = schoolyears
         lessons = Lesson.objects.filter(
         teacher=teacher, schoolyear__in=q_schoolyear
         ).order_by('-upload_time')
-        page_title = 'GT'
+        page_title = 'Thư viện giáo án'
     else:
         q_schoolyear = schoolyears.get(
             start_date__year=schoolyear
@@ -286,28 +286,30 @@ def open_lesson(request, id):
 # Thêm giáo án tổng quan
 @login_required
 def addlesson(request):
-    now = datetime.datetime.now()
-    now_week = now.isocalendar()[1]
-    teacher = request.user.teacher.id
+    if request.user.teacher.is_work is True: teacher = request.user.teacher.id
     schoolyear = q_schoolyear()
     #tuần tiếp theo của tuần hiện tại
     week = now_week_schoolyear(schoolyear) + 1
     subjectclassyear = SubjectClassyear.objects.filter(
         teacher=teacher, schoolyear=schoolyear
     )
-    
+    # Số giáo án tải lên trong năm
     subjectclassyear_count = subjectclassyear.filter(
-        subject__lesson__schoolyear=schoolyear, subject__lesson__teacher=teacher
+        subject__lesson__schoolyear=schoolyear,
+        subject__lesson__teacher=teacher
     ).annotate(models.Count('subject__lesson'))
-
+    # Số giáo án tải lên trong tuần <week>
     subjectclassyear_week_count = subjectclassyear.filter(
-        subject__lesson__schoolyear=schoolyear, subject__lesson__upload_time__week=now_week, subject__lesson__teacher=teacher
+        subject__lesson__schoolyear=schoolyear,
+        subject__lesson__week=week,
+        subject__lesson__teacher=teacher
     ).annotate(models.Count('subject__lesson'))
 
     subjectclassyear_week = subjectclassyear.filter(
-        subject__lesson__schoolyear=schoolyear, subject__lesson__upload_time__week=now_week, subject__lesson__teacher=teacher
+        subject__lesson__schoolyear=schoolyear,
+        subject__lesson__week=week, subject__lesson__teacher=teacher
     )
-    
+    # môn học chưa có giáo án tải lên tuần này
     empty_week = subjectclassyear.difference(subjectclassyear_week)
 
     context = {
