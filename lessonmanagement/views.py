@@ -140,9 +140,9 @@ def profile(request):
         lesson_location_withoutmedia = 'avatar/' + \
             str(request.user.username) + '/'
         fs = FileSystemStorage(location=lesson_location)
-        lesson_file = fs.save(lesson.name.replace(" ", "_"), lesson)
+        lesson_file = fs.save(slugify(lesson.name) + '.png', lesson)
         lesson_path = lesson_location_withoutmedia + \
-            fs.get_valid_name(lesson_file).replace(" ", "_")
+            fs.get_valid_name(lesson_file)
         current_user.avatar = lesson_path
         current_user.save()
         messages.add_message(request, messages.SUCCESS,
@@ -384,7 +384,6 @@ def add_lesson_subject(request, subject):
         else:
             new_number_lesson = 1
         
-        print(new_number_lesson)
         context['new_number_lesson'] = new_number_lesson
         q_subject_level = SubjectLesson.objects.filter(subject__slug=subject)
         try:  
@@ -403,8 +402,8 @@ def add_lesson_subject(request, subject):
             lesson_location = teacher_location + '/'
             lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
             fs = FileSystemStorage(location=lesson_location)
-            lesson_file = fs.save(lesson.name.replace(" ", "_"), lesson)
-            lesson_path = lesson_location_withoutmedia + fs.get_valid_name(lesson_file).replace(" ", "_")
+            lesson_file = fs.save(slugify(lesson.name)+'.pptx', lesson)
+            lesson_path = lesson_location_withoutmedia + fs.get_valid_name(lesson_file)
             q_subject = subjectclassyear.subject
             new_lesson = Lesson(title=title, upload_time=now, description=description_lesson, teacher=request.user.teacher,subject=q_subject, number_lesson=start_lesson, lesson_path=lesson_path, schoolyear=schoolyear, week=week)
             new_lesson.save()

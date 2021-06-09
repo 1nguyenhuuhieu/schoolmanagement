@@ -13,17 +13,17 @@
     <tbody>
         {% for lesson in lesson_list %}
         <tr>
-            <td> <a href="{%url 'lessons_subject' lesson.subject.slug %}" class="text-decoration-none">{{lesson.subject}}</a>
+            <td> {{lesson.subject}}
             </td>
             <td>
-                <a href="{% url 'week_lessons' lesson.week %}" class="text-decoration-none">{{ lesson.week}} </a>
+                <span class="badge rounded-pill bg-primary" style="width: 40px;">{{ lesson.week}}</span>
             </td>
             <td>
                 <span class="badge rounded-pill bg-secondary" style="width: 40px;">{{ lesson.number_lesson}}</span>
             </td>
             <td><a href="{% url 'lesson' lesson.id %}" class="text-decoration-none">{{ lesson.title }} </a></td>
             <td>
-                <a  href="{% url 'lessons_schoolyear' lesson.schoolyear.start_date.year %}" class="text-decoration-none">{{ lesson.schoolyear }}</a>
+               {{ lesson.schoolyear }}
                 
             </td>
             <td> {% if lesson.status == "pending" %}
