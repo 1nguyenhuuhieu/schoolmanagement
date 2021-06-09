@@ -6,7 +6,7 @@
     <ol class="breadcrumb m-0 ">
       <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none"><i
             class="fas fa-home me-2"></i>Trang chủ</a></li>
-      <li class="breadcrumb-item"> <a href="{% url 'lessons_schoolyear' 0 %}" class="text-decoration-none">Giáo án</a></li>
+      <li class="breadcrumb-item"> <a href="{% url 'lessons' 0 %}" class="text-decoration-none">Giáo án</a></li>
       <li class="breadcrumb-item active" aria-current="page">Thêm Giáo án</li>
     </ol>
   </nav>
@@ -23,7 +23,7 @@
       {%for i in subjectclassyear_count%}
       {% widthratio i.subject__lesson__count i.subject.total_lesson 100 as width_year %}
       <div class="d-flex justify-content-between mt-4">
-        <h6> <a href="{%url 'lessons_subject_level' i.subject.subject.title|slugify i.subject.level|classlevel%}"
+        <h6> <a href="{%url 'lessons_subject' i.subject.slug i.subject.level|classlevel%}"
             class="text-decoration-none link-dark ">{{i.subject}}</a>  <small class="text-muted">Bài
             {{i.subject__lesson__count}}/{{i.subject.total_lesson}}</small> </h6>
         {{width_year}}%
@@ -49,7 +49,7 @@
         <h6 class="m-0">{% if width_week|add:0 >= 100 %}<span class="badge bg-success" style="min-width: 70px;">Hoàn
             tất</span>{% elif width_week|add:0 > 0 %}<span class="badge bg-warning text-dark"
             style="min-width: 70px;">Thiếu</span>{% else %}<span class="badge bg-danger">Chưa có</span>{% endif %}<a
-            href="{%url 'lessons_subject_level' i.subject.subject.title|slugify i.subject.level|classlevel%}"
+            href="{%url 'lessons_subject' i.subject.slug i.subject.level|classlevel%}"
             class="text-decoration-none link-dark ms-2">{{i.subject}}</a> <small class="text-muted">Tải lên
             {{i.subject__lesson__count}}/{{i.subject.week_lesson}}</small> </h6>
         {%if width_week|add:0 < 100%}

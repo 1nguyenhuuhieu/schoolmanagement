@@ -14,7 +14,7 @@
             href="{% url 'index' %}">Trang Chủ</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if '/lesson' in request.path %} active {% endif %}" href="{% url 'lessons_schoolyear' request.user.teacher.current_schoolyear.start_date.year %}">Giáo án</a>
+          <a class="nav-link {% if '/lesson' in request.path %} active {% endif %}" href="{% url 'lessons' request.user.teacher.current_schoolyear.start_date.year %}">Giáo án</a>
         </li>
         <li class="nav-item ">
 

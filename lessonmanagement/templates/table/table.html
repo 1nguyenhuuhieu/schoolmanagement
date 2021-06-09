@@ -1,6 +1,7 @@
 <table id="exampletable" class="table table-hover  " style="width:100%">
     <thead>
         <tr>
+            <th>Tuần</th>
             <th>Tiết</th>
             <th>Tên giáo án</th>
             <th>Ngày tải lên</th>
@@ -10,6 +11,10 @@
     <tbody>
         {% for i in lesson_list %}
         <tr>
+            <td>
+                <span class="badge rounded-pill bg-primary" style="width: 40px;">{{i.week}}</span>
+
+            </td>
             <td>
                 <span class="badge rounded-pill bg-secondary" style="width: 40px;">{{i.number_lesson}}</span>
             </td>

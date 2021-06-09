@@ -13,7 +13,7 @@
     <tbody>
         {% for lesson in lesson_list %}
         <tr>
-            <td> <a href="{%url 'lessons_subject_level' lesson.subject.subject.title|slugify lesson.subject.level%}" class="text-decoration-none">{{lesson.subject}}</a>
+            <td> <a href="{%url 'lessons_subject' lesson.subject.slug %}" class="text-decoration-none">{{lesson.subject}}</a>
             </td>
             <td>
                 <span class="badge rounded-pill bg-secondary" style="width: 40px;">{{ lesson.number_lesson}}</span>

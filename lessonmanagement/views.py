@@ -1,4 +1,5 @@
 from django import contrib
+from django import shortcuts
 from django.shortcuts import render
 from .models import *
 from django.contrib.auth.models import User
@@ -176,13 +177,12 @@ def teacher(request, teacher_id):
         raise Http404("Lesson does not exist")
 
 # THƯ VIỆN GIÁO ÁN
-
 @login_required
-def lessons_schoolyear(request, schoolyear):
+def lessons(request, schoolyear):
     teacher = request.user.teacher.id
     schoolyears = Schoolyear.objects.filter(
         subjectclassyear__teacher=teacher
-    )
+    ).distinct()
     if schoolyear == 0:
         q_schoolyear = schoolyears
         lessons = Lesson.objects.filter(
@@ -190,7 +190,9 @@ def lessons_schoolyear(request, schoolyear):
         ).order_by('-upload_time')
         page_title = "Thư viện giáo án"
     else:
-        q_schoolyear = schoolyears.get(start_date__year=schoolyear)
+        q_schoolyear = schoolyears.get(
+            start_date__year=schoolyear
+            )
         lessons = Lesson.objects.filter(
         teacher=teacher, schoolyear=q_schoolyear
         ).order_by('-upload_time')
@@ -205,20 +207,18 @@ def lessons_schoolyear(request, schoolyear):
     return render(request, 'lesson/lessons.html', context)
 
 @login_required
-def lessons_subject_level(request, subject, level):
+def lessons_subject(request, subject):
     teacher = request.user.teacher.id
-    subject_title = Subject.objects.get(subject_slug=subject)
-    schoolyear = current_schoolyear()
-    now_school_year = Schoolyear.objects.get(start_date__year=schoolyear)
+    schoolyear = q_schoolyear()
     # giáo án phù hợp với môn học và lớp học, giáo viên, niên khóa hiện tại
-    lessons = Lesson.objects.filter(teacher=teacher, subject__subject__subject_slug=subject, subject__level=level, schoolyear=now_school_year)
-    # sử dụng cho đường dẫn tới các lớp cụ thể
-    classyear_list = SubjectClassyear.objects.filter(teacher=teacher, subject__subject__subject_slug=subject, classyear__startyear__start_date__year=level_to_startyear(level))
+    lessons = Lesson.objects.filter(
+        teacher=teacher, subject__slug=subject, schoolyear=schoolyear
+        )
     context = {
-        'lesson_list': lessons, 'classyear_list': classyear_list, 'subject': subject, 'level': level,
-        'page_title': 'Giáo án %s %s' % (subject_title.title, level)
+        'lesson_list': lessons,
+        'subject': subject
     }
-    return render(request, 'lesson/lesson_subject_level.html', context)
+    return render(request, 'lesson/lessons_subject.html', context)
 
 def lesson_classyear(request, subject, level, title):
     context = {}

@@ -128,10 +128,6 @@ class Teacher(models.Model):
     #môn dạy và lớp dạy phục vụ cho sidebar.html
     def current_schoolyear(self):
         return q_schoolyear()
-    
-    def subject_classyear_list(self):
-        return self.subjectclassyear_set.filter(
-            schoolyear=self.current_schoolyear()).order_by('subject__subject__title').values('subject__subject__title', 'classyear__startyear__start_date__year','subject__subject__group__title').distinct()
 
     def subjectclassyear(self):
         return SubjectClassyear.objects.filter(

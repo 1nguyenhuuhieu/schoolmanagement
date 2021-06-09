@@ -6,16 +6,16 @@ urlpatterns = [
     path('profile/', views.profile, name="profile"),
     path('profile/<int:teacher_id>/', views.profile_detail, name="profile_detail"),
     path('lessons/week/<str:subject>/<int:level>/', views.week_lessons, name='week_lessons'),
-    path('lessons/<int:schoolyear>/', views.lessons_schoolyear, name="lessons_schoolyear"),
+    path('lessons/<int:schoolyear>/', views.lessons, name="lessons"),
     path('lessons/empty/', views.emptylesson, name="emptylesson"),
     path('lesson/open/<int:id>/', views.open_lesson, name="open_lesson"),
-    path('lessons/<str:subject>/<int:level>/', views.lessons_subject_level, name="lessons_subject_level"),
-    path('lessons/<str:subject>/<int:level>/<str:title>/', views.lesson_classyear, name="lesson_classyear"),
     path('lesson/<int:id>/', views.lesson, name="lesson"),
     path('lesson/edit/<int:lesson_id>/', views.edit_lesson, name="edit_lesson"),
     path('lesson/add/', views.addlesson, name="addlesson"),
     path('lessons/add/<str:subject>/<int:level>/', views.add_lesson_subject_level, name="add_lesson_subject_level"),
     path('lessons/add/error/', views.no_permisson_add_lesson, name = 'no_permisson_add_lesson'),
+    path('lessons/<str:subject>/', views.lessons_subject, name="lessons_subject"),
+
     # lịch báo giảng
     # DUYệt GIÁO ÁN
      path('checklessons/<int:year>/<str:subject>/', views.check_lessons_subject, name='check_lessons_subject'),
