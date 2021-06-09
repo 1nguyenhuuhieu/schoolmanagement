@@ -55,7 +55,6 @@ def level_to_startyear(level):
 # NĂM HỌC HIỆN TẠI
 def q_schoolyear():
     return Schoolyear.objects.get(is_active=True)
-    
 
 # có đang đào tạo tại trường
 def is_learning_def(class_level):

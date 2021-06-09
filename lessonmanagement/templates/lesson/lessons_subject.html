@@ -9,7 +9,7 @@
     {{lesson_list.0.subject}}
   </h3>
   <div>
-    <a href="{%url 'add_lesson_subject_level' lesson_list.0.subject.subject.title|slugify lesson_list.0.subject.level|classlevel%}" class="btn btn-primary">Thêm giáo án</a>
+    <a href="{%url 'add_lesson_subject' lesson_list.0.subject.slug %}" class="btn btn-primary">Thêm giáo án</a>
   </div>
 </div>
 <ul class="nav nav-tabs" id="myTab" role="tablist">
