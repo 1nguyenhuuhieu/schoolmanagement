@@ -327,8 +327,10 @@ class SubjectManager(MembershipAbstract):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     
     class Meta:
+        unique_together = ('teacher', 'subject', 'schoolyear')
         verbose_name = "Người duyệt giáo án"
         verbose_name_plural = "Người duyệt giáo án"
+    
     
     def __str__(self):
         return '%s %s' % (self.teacher.full_name(), self.subject.title)
