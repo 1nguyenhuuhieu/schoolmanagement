@@ -84,8 +84,9 @@
           <li>Tổng số bài: {{i.subject.total_lesson}} </li>
           <li>Bộ môn: {{i.subject.subject.group.title}}</li>
           <li>Giáo viên: {{i.teacher}}</li>
-          <li>Người duyệt giáo án:  {% for manager in i.subject.subject.subjectmanager_set.all %} {{manager.teacher}}{% if not forloop.last %}, {% endif %} {% endfor %}</li>
           <li>Dạy các lớp: {{i.classyear_list}}</li>
+          <li>Người duyệt giáo án:  {% for manager in i.subject.subject.subjectmanager_set.all %} {{manager.teacher}}{% if not forloop.last %}, {% endif %} {% endfor %}</li>
+
         </ul>
         <hr>
         <div class="mt-auto d-flex justify-content-between align-items-center">
