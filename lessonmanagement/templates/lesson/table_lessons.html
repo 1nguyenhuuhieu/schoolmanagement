@@ -1,0 +1,79 @@
+{% if lesson_list %}
+<table id="table_lessons" class="table table-hover" style="width:100%">
+    <thead>
+        <tr>
+            <th>Môn học</th>
+            <th>Tuần</th>
+            <th>Bài</th>
+            <th>Tên giáo án</th>
+            <th>Năm học</th>
+            <th>Trạng thái</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lesson in lesson_list %}
+        <tr>
+            <td> {{lesson.subject}}
+            </td>
+            <td>
+                <span class="badge rounded-pill bg-primary" style="width: 40px;">{{ lesson.week}}</span>
+            </td>
+            <td>
+                <span class="badge rounded-pill bg-secondary" style="width: 40px;">{{ lesson.number_lesson}}</span>
+            </td>
+            <td><a href="{% url 'lesson' lesson.id %}" class="text-decoration-none">{{ lesson.title }} </a></td>
+            <td>
+               {{ lesson.schoolyear }}
+                
+            </td>
+            <td> {% if lesson.status == "pending" %}
+                <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i class="far fa-clock me-1"></i>{{lesson.get_status_display}}</span>
+                {% elif lesson.status == "acept" %}
+                <span class="badge bg-success  rounded-pill" style="width: 100px;"><i class="fas fa-check me-1"></i>{{lesson.get_status_display}}</span>
+                {% elif lesson.status == "deny" %}
+                <span class="badge bg-danger  rounded-pill" style="width: 100px;"><i class="fas fa-times me-1"></i>{{lesson.get_status_display}}</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>Môn học</th>
+            <th>Tuần</th>
+            <th>Bài</th>
+            <th>Tên giáo án</th>
+            <th>Năm học</th>
+            <th>Trạng thái</th>
+        </tr>
+    </tfoot>
+</table>
+<script>
+$(document).ready(function() {
+    $('#table_lessons').DataTable( {
+        initComplete: function () {
+            this.api().columns().every( function () {
+                var column = this;
+                var select = $('<select><option value=""></option></select>')
+                    .appendTo( $(column.footer()).empty() )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+ 
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+ 
+                column.data().unique().sort().each( function ( d, j ) {
+                    select.append( '<option value="'+d+'">'+d+'</option>' )
+                } );
+            } );
+        }
+    } );
+} );
+</script>
+{% else %}
+<h4 class="text-danger">Chưa có giáo án nào được tải lên</h4>
+{% endif %}
