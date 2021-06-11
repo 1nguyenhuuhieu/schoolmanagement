@@ -13,7 +13,6 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
-from .forms import *
 from django.http import JsonResponse
 import os
 from django.db import models
@@ -21,69 +20,17 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
 
-# đổi từ class level sang năm vào trường của một lớp
-def level_to_startyear(level):
-    now = datetime.datetime.now()
-    if now.month < 8:
-        return (now.year + 5 - level)
-    else:
-        return (now.year + 6 - level)
-
-def class_level_def(year):
-    now = datetime.datetime.now()
-    i = 0
-    if (now.month < 8):
-        i = (now.year - year) + 5
-    else:
-        i = (now.year - year) + 6
-    if i in [6, 7, 8, 9]:
-        return i
-    else:
-        return year
-
-# năm bắt đầu của niên khóa hiện tại
-def current_schoolyear():
-    now = datetime.datetime.now()
-    year = now.year
-    month = now.month
-    if month > 8:
-        return year
-    else:
-        return year - 1
-
-# lấy object Schoolyear của năm hiện tại
-def q_schoolyear():
-    return Schoolyear.objects.get(is_active=True)
-
-# đổi ngày hiện tại sang tuần tương ứng của năm học
-def now_week_schoolyear(schoolyear):
-    start_day = schoolyear.start_date
-    start_monday = start_day + datetime.timedelta(days=-start_day.weekday())
-    today = datetime.date.today()
-    week = (today - start_monday)/7
-    return week.days
-
-# đổi ngày bất kì sang tuần tương ứng của năm học
-def day_week_schoolyear(schoolyear, d):
-    start_day = schoolyear.start_date
-    start_monday = start_day + datetime.timedelta(days=-start_day.weekday())
-    week = (d - start_monday)/7
-    return week.days
-
-# lấy ngày thứ hai của tuần năm học
-def monday_week_schoolyear(schoolyear, week):
-    start_day = schoolyear.start_date
-    start_monday = start_day + datetime.timedelta(days=-start_day.weekday())
-    now_monday = start_monday + datetime.timedelta(days = week*7)
-    return now_monday
+# năm học hiện tại
+schoolyear = q_schoolyear()
+# tuần hiện tại
+week = now_week_schoolyear(schoolyear)
 
 # TRANG CHỦ
 @login_required
 def index(request):
     page_title = 'Trang chủ'
     school = get_object_or_404(School, pk=1)
-    schoolyear = q_schoolyear()
-    week = now_week_schoolyear(schoolyear)
+
     monday = monday_week_schoolyear(schoolyear, week)
     context = {
         'page_title': page_title,
@@ -221,9 +168,6 @@ def lessons_subject(request, subject):
     }
     return render(request, 'lesson/lessons_subject.html', context)
 
-def lesson_classyear(request, subject, level, title):
-    context = {}
-    return render(request, 'lesson/lessons_classyear.html', context)
 
 def emptylesson(request):
     return render(request, 'lesson/no_lesson.html', {})
@@ -249,7 +193,6 @@ def lesson(request, id):
 def week_lessons(request, week=99):
     if request.user.teacher.is_work == True:
         teacher = request.user.teacher.id
-    schoolyear = q_schoolyear()
     page_title = 'Giáo án tuần %s' % (week)
     if week == 99:
         week = now_week_schoolyear(schoolyear)
@@ -287,9 +230,8 @@ def open_lesson(request, id):
 @login_required
 def addlesson(request):
     if request.user.teacher.is_work is True: teacher = request.user.teacher.id
-    schoolyear = q_schoolyear()
     #tuần tiếp theo của tuần hiện tại
-    week = now_week_schoolyear(schoolyear) + 1
+    next_week = week + 1
     subjectclassyear = SubjectClassyear.objects.filter(
         teacher=teacher, schoolyear=schoolyear
     )
@@ -298,16 +240,16 @@ def addlesson(request):
         subject__lesson__schoolyear=schoolyear,
         subject__lesson__teacher=teacher
     ).annotate(models.Count('subject__lesson'))
-    # Số giáo án tải lên trong tuần <week>
+    # Số giáo án tải lên trong tuần <next_week>
     subjectclassyear_week_count = subjectclassyear.filter(
         subject__lesson__schoolyear=schoolyear,
-        subject__lesson__week=week,
+        subject__lesson__week=next_week,
         subject__lesson__teacher=teacher
     ).annotate(models.Count('subject__lesson'))
 
     subjectclassyear_week = subjectclassyear.filter(
         subject__lesson__schoolyear=schoolyear,
-        subject__lesson__week=week, subject__lesson__teacher=teacher
+        subject__lesson__week=next_week, subject__lesson__teacher=teacher
     )
     # môn học chưa có giáo án tải lên tuần này
     empty_week = subjectclassyear.difference(subjectclassyear_week)
@@ -318,7 +260,7 @@ def addlesson(request):
         'subjectclassyear_week_count': subjectclassyear_week_count,
         'empty_week': empty_week,
         'page_title': 'Thêm giáo án',
-        'week': week
+        'week': next_week
     }
     return render(request, 'lesson/add_lesson.html', context)
 
@@ -742,7 +684,7 @@ def check_open_lesson(request, lesson_id):
 
 
 @login_required
-def dashboard(request):
+def dashboard(request, week=99):
     teacher_manager = request.user.teacher.id
     manager = get_object_or_404(
         SchoolManager, is_active=True, schoolyear=q_schoolyear(), teacher=teacher_manager
@@ -750,6 +692,7 @@ def dashboard(request):
     teachers = Teacher.objects.filter(
         is_work=True
     )
+    
 
     complete_teacher_lesson = teachers
     incomplete_teacher_lesson = teachers
@@ -768,6 +711,7 @@ def dashboard(request):
         'teachers': teachers,
         'complete_teacher_lesson': complete_teacher_lesson,
         'incomplete_teacher_lesson': incomplete_teacher_lesson,
+        'week': week
         
     }
 

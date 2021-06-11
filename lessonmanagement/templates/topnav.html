@@ -31,83 +31,6 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="{% url 'guide' %}">Hướng dẫn</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-      </ul>
-      <ul class="navbar-nav  mb-2 mb-lg-0">
-      
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            <i class="fas fa-plus"></i>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end mt-lg-2" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'addlesson' %}">Thêm Giáo án</a></li>
-            <li><a class="dropdown-item" href="{%url 'add_schedule'%}">Thêm lịch báo giảng</a></li>
-            
-          </ul>
-        </li>
-        <li class="nav-item">
-          <div class="btn-group">
-            {% if request.path == '/profile/' %}
-            <a href="{% url 'profile' %}" class="nav-link btn btn-light text-dark btn-sm">
-              <img src="
-                    {% if request.user.teacher.avatar %}
-                    {{ request.user.teacher.avatar.url }}
-                    {% else %}
-                    {% static 'imgs/no-avatar.png' %}
-                    {% endif %}
-                    " class="rounded-circle" alt="" height="25px">
-              {{ request.user.teacher.full_name }}
-            </a>
-            <button type="button" class="btn  btn-sm btn-light text-dark dropdown-toggle dropdown-toggle-split"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              <span class="visually-hidden">Toggle Dropdown</span>
-            </button>
-            {% else %}
-            <a href="{% url 'profile' %}" class="nav-link btn btn-dark ">
-              <img src="
-                    {% if request.user.teacher.avatar %}
-                    {{ request.user.teacher.avatar.url }}
-                    {% else %}
-                    {% static 'imgs/no-avatar.png' %}
-                    {% endif %}
-                    " class="rounded-circle" alt="" height="25px">
-              {{ request.user.teacher.full_name }}
-            </a>
-            <button type="button" class="btn  btn-dark dropdown-toggle dropdown-toggle-split"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              <span class="visually-hidden">Toggle Dropdown</span>
-            </button>
-            {% endif %}
-            <ul class="dropdown-menu dropdown-menu-end mt-2">
-              <li class="dropdown-item disabled text-muted">{{ request.user }} / {{request.user.teacher.full_name}}</li>
-              <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="far fa-user me-2"></i>Trang cá nhân</a>
-              </li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
-            </ul>
-          </div>
-        </li>
-        <li class="nav-item dropdown ms-2">
-          <a class="nav-link dropdown-toggle btn {%if 'checklesson' in request.path %}btn-warning text-dark{%else%} btn-dark{%endif%}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            Quản lý
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="{% url 'check_lessons_subject' request.user.teacher.current_schoolyear.start_date.year 'all' %}">Duyệt giáo án</a></li>
 
             <li><a class="dropdown-item" href="{% url 'dashboard'%}">Thống kê</a></li>
@@ -119,8 +42,20 @@
             </li>
             <li><a class="dropdown-item" href="#">Something else here</a></li>
           </ul>
-        </li> 
+        </li>
       </ul>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <a href="{% url 'profile' %}" class=" btn btn-outline-light me-2
+        {% if request.path == '/profile/'%}
+        active
+        {% endif %}
+        ">
+       {{ request.user.teacher.full_name }}
+        </a>
+        <a class=" btn btn-outline-secondary
+        " href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a>
+      </div>
     </div>
   </div>
 </nav>

@@ -23,13 +23,10 @@
    <div class="list-group">
     <hr>
     <!-- Giáo án năm học này -->
-    {% now "m" as current_month %}
-    {% now "Y" as current_year %}
     <span class="fw-bold mb-3">Năm {{teacher.current_schoolyear}} </span>
     {% for i in teacher.subjectclassyear %}
     <a href="{% url 'lessons_subject' i.subject.slug %}"
-      class="list-group-item list-group-item-action border-0 text-primary ps-0 {%if i.subject__subject__title|slugify in request.path and level_sidebar|safe in request.path %} fw-bolder {%endif%}"><i
-        class="fas fa-book fa-fw me-2 text-muted"></i>{{ i.subject }}  </a>
+      class="list-group-item list-group-item-action border-0 text-primary ps-0 {%if i.subject.slug in request.path %} fw-bolder {%endif%}"><i class="fas fa-book fa-fw me-2 text-muted"></i>{{ i.subject }}  </a>
     {% endfor %}
    </div>
    <hr>

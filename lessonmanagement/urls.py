@@ -27,6 +27,7 @@ urlpatterns = [
      path('checklesson/open/<int:lesson_id>/', views.check_open_lesson, name='check_open_lesson'),
     # THỐNG KÊ LỊCH BÁO GIẢNG
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('dashboard/<int:week>/', views.dashboard, name='dashboard_week'),
     path('schedule/<str:username_url>/<int:year>/<int:week>/', views.schedule, name = 'schedule'),
     path('emptyschedule/', views.emptyschedule, name = 'emptyschedule'),
     path('schedule/add/', views.add_schedule, name = 'add_schedule'),

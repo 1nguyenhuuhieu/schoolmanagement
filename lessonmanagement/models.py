@@ -52,13 +52,67 @@ def level_to_startyear(level):
     else:
         return (now.year + 6 - level)
 
-# NĂM HỌC HIỆN TẠI
-def q_schoolyear():
-    return Schoolyear.objects.get(is_active=True)
 
 # có đang đào tạo tại trường
 def is_learning_def(class_level):
     return class_level in [6,7,8,9]
+
+def q_schoolyear():
+    return Schoolyear.objects.get(is_active=True)
+# đổi từ class level sang năm vào trường của một lớp
+def level_to_startyear(level):
+    now = datetime.datetime.now()
+    if now.month < 8:
+        return (now.year + 5 - level)
+    else:
+        return (now.year + 6 - level)
+
+def class_level_def(year):
+    now = datetime.datetime.now()
+    i = 0
+    if (now.month < 8):
+        i = (now.year - year) + 5
+    else:
+        i = (now.year - year) + 6
+    if i in [6, 7, 8, 9]:
+        return i
+    else:
+        return year
+
+# năm bắt đầu của niên khóa hiện tại
+def current_schoolyear():
+    now = datetime.datetime.now()
+    year = now.year
+    month = now.month
+    if month > 8:
+        return year
+    else:
+        return year - 1
+
+# đổi ngày hiện tại sang tuần tương ứng của năm học
+def now_week_schoolyear(schoolyear):
+    start_day = schoolyear.start_date
+    start_monday = start_day + datetime.timedelta(days=-start_day.weekday())
+    today = datetime.date.today()
+    week = (today - start_monday)/7
+    return week.days
+
+# đổi ngày bất kì sang tuần tương ứng của năm học
+def day_week_schoolyear(schoolyear, d):
+    start_day = schoolyear.start_date
+    start_monday = start_day + datetime.timedelta(days=-start_day.weekday())
+    week = (d - start_monday)/7
+    return week.days
+
+# lấy ngày thứ hai của tuần năm học
+def monday_week_schoolyear(schoolyear, week):
+    start_day = schoolyear.start_date
+    start_monday = start_day + datetime.timedelta(days=-start_day.weekday())
+    now_monday = start_monday + datetime.timedelta(days = week*7)
+    return now_monday
+
+
+
 
 # ABSTRACT MODEL ---------------------------------------------------------------
 
@@ -181,11 +235,11 @@ class Teacher(models.Model):
         return count
 
     def week_lesson(self):
-        now = datetime.datetime.now()
-        now_week = now.isocalendar()[1]
+        schoolyear = q_schoolyear()
+        week= now_week_schoolyear(schoolyear)
         teacher=self.id
         lesson_week = Lesson.objects.filter(
-            teacher=teacher, upload_time__week=now_week
+            teacher=teacher, week=week
         )
         return(lesson_week.count())
 
