@@ -40,7 +40,11 @@
 </div>
 <script>
 $(document).ready( function () {
-    $('#table_lessons').DataTable();
+    $('#table_lessons').DataTable(
+        {
+        "order": [[ 0, "desc" ]]
+    }
+    );
 } );
 </script>
 {% else %}

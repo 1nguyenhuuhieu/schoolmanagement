@@ -19,12 +19,20 @@
 <div class="row pt-5 justify-content-center">
   <div class="col-lg-6">
 
-      <h4 class="mb-4"><i class="fas fa-calendar-week me-3 text-muted"></i>Tuần {{ week }}</h4>
+      <h4 class="mb-4"><i class="fas fa-calendar-week me-3 text-muted"></i>Tuần {{ week }} <small class="text-muted">
+        {% with satday=monday|plus_days:5 %}
+        {{ monday|date:"SHORT_DATE_FORMAT" }} đến {{ satday|date:"SHORT_DATE_FORMAT" }}
+        {% endwith %}
+      </small> </h4>
 
       <div >
-        <a href="{% url 'add_lesson_subject_week' subject week|add:-1 %}" class="btn btn-primary  me-2" >Tuần trước</a>
-        <a href="{% url 'add_lesson_subject_week' subject week|add:1 %}"  class=" btn btn-primary">Tuần sau</a>
+        <a href="{% url 'add_lesson_subject' subject%}" class="btn btn-outline-dark  me-2" >Tuần này</a>
+        <a href="{% url 'add_lesson_subject_week' subject week|add:-1 %}" class="btn btn-outline-dark  me-2" ><i
+          class="fas fa-step-backward me-2"></i>Tuần trước</a>
+        <a href="{% url 'add_lesson_subject_week' subject week|add:1 %}"  class=" btn btn-outline-dark">Tuần sau<i
+          class="fas fa-step-forward ms-2"></i></a>
       </div>
+
 
 
 <hr>
@@ -48,7 +56,7 @@
                   <ul class="dropdown-menu">
                     {% for subjectclassyear in subjectsclassyear %}
                     <li><a class="dropdown-item"
-                        href="{% url 'add_lesson_subject' subjectclassyear.subject.slug %}">{{ subjectclassyear.subject }}</a></li>
+                        href="{% url 'add_lesson_subject_week' subjectclassyear.subject.slug week %}">{{ subjectclassyear.subject }}</a></li>
                     {% endfor %}
                   </ul>
                 </div>
@@ -61,10 +69,6 @@
             Phải chọn bài giảng số mấy
           </div>
         </div>
-            </div>
-            <div class="col">
-              <label for="startLesson" class="form-label">Tuần</label>
-              <input type="text" class="form-control"  value='{{week}} / từ ngày {{ monday|date:"SHORT_DATE_FORMAT" }}' disabled>
             </div>
           </div>
         </div>

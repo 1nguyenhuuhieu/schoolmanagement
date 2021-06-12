@@ -135,7 +135,7 @@ def lessons(request, schoolyear='all'):
         q_schoolyear = schoolyears
         lessons = Lesson.objects.filter(
         teacher=teacher, schoolyear__in=q_schoolyear
-        ).order_by('-upload_time')
+        ).order_by('-week')
         page_title = 'Thư viện giáo án'
     else:
         q_schoolyear = schoolyears.get(
@@ -143,7 +143,7 @@ def lessons(request, schoolyear='all'):
             )
         lessons = Lesson.objects.filter(
         teacher=teacher, schoolyear=q_schoolyear
-        ).order_by('-upload_time')
+        ).order_by('-week')
         page_title = 'Giáo án năm'
 
     context = {
