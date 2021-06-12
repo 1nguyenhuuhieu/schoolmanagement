@@ -205,11 +205,13 @@ def week_lessons(request, week=99):
         week=week
         )
     weeks = lessons.values('week').order_by('week').distinct()
+    monday = monday_week_schoolyear(schoolyear, week)
     context = {
         'lesson_list': lessons_week,
         'weeks': weeks,
         'week': week,
-        'page_title': page_title
+        'page_title': page_title,
+        'monday': monday
     }
     return render(request, 'lesson/week_lessons.html', context)
 
@@ -228,10 +230,12 @@ def open_lesson(request, id):
 
 # Thêm giáo án tổng quan
 @login_required
-def addlesson(request):
+def addlesson(request, url_week=99):
     if request.user.teacher.is_work is True: teacher = request.user.teacher.id
     #tuần tiếp theo của tuần hiện tại
-    next_week = week + 1
+    next_week = week + 1 if url_week is 99 else url_week
+        
+    
     subjectclassyear = SubjectClassyear.objects.filter(
         teacher=teacher, schoolyear=schoolyear
     )
@@ -266,12 +270,12 @@ def addlesson(request):
 
 # THÊM GIÁO ÁN VÀO SUBJECT VÀ LEVEL
 @login_required
-def add_lesson_subject(request, subject):
+def add_lesson_subject(request, subject, url_week=99):
     schoolyear = q_schoolyear()
     if request.user.teacher.is_work is True:
         teacher = request.user.teacher.id
     #tuần tiếp theo của tuần hiện tại
-    week = now_week_schoolyear(schoolyear) + 1
+    week = now_week_schoolyear(schoolyear) + 1 if url_week is 99 else url_week
     monday = monday_week_schoolyear(schoolyear, week)
     now = datetime.datetime.now()
     # kiểm tra phân công giảng dạy
@@ -423,11 +427,11 @@ def schedule(request, username_url, year, week):
         monday = monday_week_schoolyear(schoolyear, week)
         #dữ liệu để thêm vào lịch báo giảng
         all_lesson = Lesson.objects.filter(
-            teacher=teacher, schoolyear=schoolyear
+            teacher=teacher, schoolyear=schoolyear, week=week
             ).order_by(
                 'subject__subjectclassyear__classyear'
                 ).values(
-                    'subject__subjectclassyear__classyear','subject__subjectclassyear__classyear__startyear__start_date__year','subject__subjectclassyear__classyear__title','id',  'subject__subject__title', 'subject__level','title').distinct()
+                    'subject__subjectclassyear__classyear','subject__subjectclassyear__classyear__startyear__start_date__year','subject__subjectclassyear__classyear__title','id',  'subject__subject__title', 'subject__level', 'number_lesson','title').distinct()
         classyear = SubjectClassyear.objects.filter(
             teacher=teacher, schoolyear=schoolyear
             ).order_by(

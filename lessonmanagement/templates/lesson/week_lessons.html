@@ -2,6 +2,7 @@
 {% block content %}
 {% load static %}
 {% load humanize%}
+{% load lessonmanagement_extras %}
 <div class="row">
     <div class="col-lg-12">
             <div class="d-flex mb-4 justify-content-end">
@@ -18,7 +19,7 @@
 </div>
               <div class="btn-group ms-3" role="group" aria-label="Basic example">
                 <a href="{% url 'week_lessons' week|add:-1 %}" class="btn btn-outline-primary"><i class="fas fa-chevron-left"></i></a>
-                <a href="#" class="btn btn-outline-primary">Tuần {{ week }}</a>
+                <a href="#" class="btn btn-outline-primary">Tuần {{ week }} ngày {{monday|date:"SHORT_DATE_FORMAT"}}</a>
                 <a href="{% url 'week_lessons' week|add:1 %}" class="btn btn-outline-primary"><i class="fas fa-chevron-right"></i> </a>
               </div>
             </div>

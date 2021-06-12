@@ -102,7 +102,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-book fa-fw text-muted me-2"></i>Thêm
-                    lịch báo giảng</h5>
+                    lịch báo giảng tuần {{ week }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -125,7 +125,7 @@
                                     <select class="form-select mb-3" size="5" aria-label="size 5 select example"
                                         name="lesson_id" id="lesson_id">
                                         {% for j in i.list reversed %}
-                                        <option value="{{j.id}}">{{j.subject__subject__title}} {{j.subject__level}}:
+                                        <option value="{{j.id}}">{{j.subject__subject__title}} {{j.subject__level}} - Bài {{ j.number_lesson}} :
                                             {{j.title}} </option>
                                         {% endfor %}
                                     </select>

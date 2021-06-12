@@ -31,9 +31,17 @@
   </div>
   <div class="col-lg-6">
     <div class="bg-white border p-4 shadow-sm rounded-15 h-100">
-      <h5><i class="fas fa-calendar-week me-3 text-muted"></i>Tuần {{ week }}</h5>
-      <hr>
+      <div class="d-flex justify-content-between align-items-center">
+      <h5 class="m-0"><i class="fas fa-calendar-week me-3 text-muted"></i>Tuần {{ week }}</h5>
+
+      <div >
+        <a href="{% url 'addlesson_week' week|add:-1 %}" class="text-decoration-none me-2 link-dark" ><i class="fas fa-chevron-left me-1"></i>Tuần trước</a>
+        <a href="{% url 'addlesson_week' week|add:1 %}"  class=" text-decoration-none link-dark">Tuần sau<i class="fas fa-chevron-right ms-1"></i> </a>
+      </div>
+
+      </div>
       {%for i in subjectclassyear_week_count%}
+      <hr>
       {% widthratio i.subject__lesson__count i.subject.week_lesson 100 as width_week %}
       <div class="d-flex justify-content-between align-items-center">
         <h6 class="m-0">{% if width_week|add:0 >= 100 %}<span class="badge bg-success" style="min-width: 70px;">Hoàn
@@ -43,15 +51,13 @@
             class="text-decoration-none link-dark ms-2">{{i.subject}}</a> <small class="text-muted">Tải lên
             {{i.subject__lesson__count}}/{{i.subject.week_lesson}}</small> </h6>
         {%if width_week|add:0 < 100%}
-        <a href="{% url 'add_lesson_subject' i.subject.slug %}" class="btn btn-sm btn-success"><i
+        <a href="{% url 'add_lesson_subject_week' i.subject.slug week %}" class="btn btn-sm btn-success"><i
             class="fas fa-plus me-2"></i>Thêm</a>
           {%else%}
           <button class="btn btn-sm btn-success" disabled><i class="fas fa-plus me-2"></i>Thêm</button>
           {%endif%}
       </div>
-      {% if not forloop.last %}
-      <hr class="my-3">
-      {%endif%}
+ 
       {%endfor%}
       {%for i in empty_week%}
       <hr class="my-3">
@@ -61,7 +67,7 @@
             href="{%url 'lessons_subject' i.subject.slug %}"
             class="text-decoration-none link-dark ms-2">{{i.subject}}</a> <small class="text-muted">Tải lên
             0/{{i.subject.week_lesson}}</small> </h6>
-        <a href="{% url 'add_lesson_subject' i.subject.slug %}" class="btn btn-sm btn-success"><i class="fas fa-plus me-2"></i>Thêm</a>
+        <a href="{% url 'add_lesson_subject_week' i.subject.slug week %}" class="btn btn-sm btn-success"><i class="fas fa-plus me-2"></i>Thêm</a>
       </div>
       {%endfor%}
     </div>

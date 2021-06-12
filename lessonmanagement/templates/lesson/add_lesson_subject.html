@@ -8,7 +8,7 @@
   <div class="col-lg-4 border-bottom">
     <h2 class="mt-5 text-center"><i class="fas fa-book me-2"></i>Thêm Giáo Án</h2>
     {% if is_add %}
-    <p class="text-center text-muted"><i class="far fa-lightbulb me-2"></i>Giáo án này sẽ được sử dụng vào tuần <span class="fw-bold">{{ week }}</span> của năm học {{ schoolyear }}. Bạn không thể thay đổi được thông tin này.
+    <p class="text-center text-muted"><i class="far fa-lightbulb me-2"></i>Giáo án này sẽ được sử dụng vào tuần <span class="fw-bold">{{ week }}</span> của năm học {{ schoolyear }}.
     </p>
     {% else %}
     <p class="text-center text-danger"><i class="far fa-lightbulb me-2"></i>Giáo án {{ subjectclassyear.subject }} tuần {{ week }} đã được thêm đủ: {{ lessons_week_count }}/{{subjectclassyear.subject.week_lesson}}. Bạn không thể thêm nữa
@@ -18,10 +18,21 @@
 </div>
 <div class="row pt-5 justify-content-center">
   <div class="col-lg-6">
+
+      <h4 class="mb-4"><i class="fas fa-calendar-week me-3 text-muted"></i>Tuần {{ week }}</h4>
+
+      <div >
+        <a href="{% url 'add_lesson_subject_week' subject week|add:-1 %}" class="btn btn-primary  me-2" >Tuần trước</a>
+        <a href="{% url 'add_lesson_subject_week' subject week|add:1 %}"  class=" btn btn-primary">Tuần sau</a>
+      </div>
+
+
+<hr>
+<h5 class="mb-3">Thông tin giáo án</h5>
+
     <form id='addLesson' method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
       {% csrf_token %}
       <div class="row">
-        <h4 class="mb-4">Thông tin giáo án</h4>
         <div class="col-12">
           {% include 'notification/success.html' %}
         </div>
