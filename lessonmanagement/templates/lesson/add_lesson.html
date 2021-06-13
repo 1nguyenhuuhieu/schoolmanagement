@@ -35,8 +35,8 @@
       <h5 class="m-0"><i class="fas fa-calendar-week me-3 text-muted"></i>Tuần {{ week }}</h5>
 
       <div >
-        <a href="{% url 'addlesson_week' week|add:-1 %}" class="text-decoration-none me-2 link-dark" ><i class="fas fa-chevron-left me-1"></i>Tuần trước</a>
-        <a href="{% url 'addlesson_week' week|add:1 %}"  class=" text-decoration-none link-dark">Tuần sau<i class="fas fa-chevron-right ms-1"></i> </a>
+        <a href="{% url 'addlesson_week' week|add:-1 %}" class="text-decoration-none me-2 link-secondary fw-bolder" ><i class="fas fa-chevron-left me-1"></i>Tuần trước</a>
+        <a href="{% url 'addlesson_week' week|add:1 %}"  class=" text-decoration-none link-secondary fw-bolder">Tuần sau<i class="fas fa-chevron-right ms-1"></i> </a>
       </div>
 
       </div>
