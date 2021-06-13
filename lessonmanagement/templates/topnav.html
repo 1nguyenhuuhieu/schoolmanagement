@@ -20,7 +20,7 @@
         </li>
         <li class="nav-item ">
 
-          <a class="nav-link {% if 'schedule' in request.path %} active {% endif %}" href="{% url 'schedule' request.user.username request.user.teacher.current_schoolyear.start_date.year 0 %}">
+          <a class="nav-link {% if 'schedule' in request.path %} active {% endif %}" href="{% url 'now_schedule' request.user.username %}">
             Lịch báo giảng
           </a>
         </li>

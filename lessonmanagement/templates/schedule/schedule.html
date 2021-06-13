@@ -5,37 +5,24 @@
 {% load humanize %}
 {% load lessonmanagement_extras %}
 {% with teacher=request.user.teacher %}
-<div class="d-flex justify-content-between align-items-center mt-4">
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-center mt-4 mb-3">
     <h4><i class="far fa-fw fa-calendar-check me-3"></i>Lịch báo giảng của {{ request.user.teacher.full_name }} <small
             class="text-muted">Năm học {{ schoolyear }} </small></h4>
             <div class="d-flex align-items-center">
     <a href="{%url 'add_schedule'%}" class="btn btn-outline-primary me-3">Thêm lịch báo giảng</a>
 
-    <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdown_schoolyear" data-bs-toggle="dropdown" aria-expanded="false">
-          Năm học {{ schoolyear }}
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown_schoolyear">
-            {% for schoolyear in all_schoolyear %}
-          <li><a class="dropdown-item" href="{% url 'schedule' username schoolyear.start_date.year 1%}">{{ schoolyear }}</a></li>
-          {% endfor %}
-        </ul>
-      </div>
 
             </div>
 </div>
-<p class="text-muted">
-    <i class="far fa-fw fa-lightbulb me-2 mb-4"></i>Tuần trong lịch báo giảng là số tuần của năm học. Tuần 1 bắt đầu từ {{schoolyear.start_date}}
-</p>
 {% include 'notification/success.html' %}
 <div class="card rounded shadow-sm py-2 bg-info bg-gradient border-0 mb-3">
     <div class="card-body">
         <div class="row justify-content-center align-items-end">
             <div class="col-lg-5 ps-4">
                 <h4>Tuần {{ week }}</h4>
-                <a href="{% url 'schedule' username_url request.user.teacher.current_schoolyear.start_date.year 0 %}" class="btn {% if week == now_week %}btn-dark{%else%} btn-light {%endif%} me-2">Tuần này</a>
+                <a href="{% url 'now_schedule' username_url %}" class="btn {% if week == now_week %}btn-dark{%else%} btn-light {%endif%} me-2">Tuần này</a>
                 {% if week|add:0 > 1 %}
-                <a href="{% url 'schedule' username_url year week|add:-1 %}" class="btn btn-light me-2"><i
+                <a href="{% url 'schedule' username_url week|add:-1 %}" class="btn btn-light me-2"><i
                         class="fas fa-step-backward me-2"></i>Tuần trước</a>
                     {% else %}
                     <button class="btn btn-light me-2" disabled><i
@@ -45,23 +32,9 @@
                     <button class="btn btn-light me-2" disabled>Tuần sau<i
                         class="fas fa-step-forward ms-2"></i></button>
                         {% else %}
-                <a href="{% url 'schedule' username_url year week|add:1 %}" class="btn btn-light me-2">Tuần sau<i
+                <a href="{% url 'schedule' username_url week|add:1 %}" class="btn btn-light me-2">Tuần sau<i
                         class="fas fa-step-forward ms-2"></i></a>
                         {% endif %}
-            </div>
-            <div class="col-lg-3">
-                <form method="GET">
-                    {% csrf_token %}
-                    <div class="row ">
-                        <label for="search_date" class="form-label  fw-bold">
-                            Chọn ngày
-                        </label>
-                        <div class="col-12 d-flex">
-                            <input type="date" class="form-control" name="search_date" id="search_date">
-                            <button type="submit" name="btn_search_date" class="btn btn-light ms-2">Tìm</button>
-                        </div>
-                    </div>
-                </form>
             </div>
             <div class="col">
           
@@ -74,7 +47,6 @@
                             <datalist id="datalistWeek">
                                 {% for i in lessons_week %}
                                 <option value="{{ i.0.week }}">
-                                    <input type="hidden" name="year_week" value="{{ year }}">
                              {% with sat=i.1.monday|plus_days:5 %}  {{i.1.monday|date:"SHORT_DATE_FORMAT"}} đến {{sat|date:"SHORT_DATE_FORMAT"}} {%endwith%}
                                 </option>
                                 {% endfor %}

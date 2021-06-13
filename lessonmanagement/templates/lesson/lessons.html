@@ -2,12 +2,11 @@
 {% block content %}
 {% load static %}
 {% load lessonmanagement_extras %}
-{% with teacher=request.user.teacher %}
 <div class="d-flex justify-content-end  mb-4">
   <div class="dropdown">
     <button class="btn btn-primary dropdown-toggle" type="button" id="schoolyear" data-bs-toggle="dropdown"
       aria-expanded="false">
-      {%if current_year|length == 0 %}{{current_year}}{%else%}Tất cả năm học{%endif%}
+     {{current_year}}
     </button>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="schoolyear">
       <li><a class="dropdown-item" href="{% url 'lessons' %}">Tất cả</a></li>
@@ -23,5 +22,4 @@
     <div class="border py-4 px-3 rounded-15 shadow-sm bg-white">
       {% include "lesson/table_lessons.html" %}
     </div>
-{% endwith %}
 {% endblock %}

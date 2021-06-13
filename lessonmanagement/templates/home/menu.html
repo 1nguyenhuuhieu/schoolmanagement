@@ -16,7 +16,7 @@
             <div class="card-body">
                 {% now 'W' as w %}
                 {% now 'Y' as y %}
-              <h6 class="card-title text-center"><a href="{% url 'schedule' request.user.username request.user.teacher.current_schoolyear.start_date.year 0 %}" class="stretched-link text-decoration-none link-dark">Lịch báo giảng</a></h6>
+              <h6 class="card-title text-center"><a href="{% url 'now_schedule' request.user.username %}" class="stretched-link text-decoration-none link-dark">Lịch báo giảng</a></h6>
             </div>
           </div>
     </div>

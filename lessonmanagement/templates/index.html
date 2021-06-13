@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-{% with teacher=request.user.teacher %}
 {% include 'home/banner.html' %}
 <div class="row justify-content-center mb-4">
   <div class="col-lg-6">
@@ -10,17 +9,7 @@
 </div>
 <div class="row justify-content-center mb-4">
   <div class="col-lg-6">
-
     {% include 'home/menu.html' %}
 </div>
 </div>
-
-
-
-
-
-
-
-      
-{% endwith %}
 {% endblock %}

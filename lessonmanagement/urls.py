@@ -9,7 +9,7 @@ urlpatterns = [
     path('lessons/<int:schoolyear>/', views.lessons, name="lessons_schoolyear"),
     
     path('lessons/week/', views.week_lessons, name='now_week_lessons'),
-    path('lessons/week/<int:week>', views.week_lessons, name='week_lessons'),
+    path('lessons/week/<int:url_week>', views.week_lessons, name='week_lessons'),
 
     path('lessons/empty/', views.emptylesson, name="emptylesson"),
     path('lesson/open/<int:id>/', views.open_lesson, name="open_lesson"),
@@ -23,6 +23,9 @@ urlpatterns = [
     path('lessons/<str:subject>/', views.lessons_subject, name="lessons_subject"),
 
     # lịch báo giảng
+    path('schedule/<str:username_url>/', views.schedule, name = 'now_schedule'),
+    path('schedule/<str:username_url>/<int:url_week>/', views.schedule, name = 'schedule'),
+
     # DUYệt GIÁO ÁN
      path('checklessons/<int:year>/<str:subject>/', views.check_lessons_subject, name='check_lessons_subject'),
      path('checklesson/<int:lesson_id>/', views.check_lesson, name='check_lesson'),
@@ -30,7 +33,6 @@ urlpatterns = [
     # THỐNG KÊ LỊCH BÁO GIẢNG
     path('dashboard/', views.dashboard, name='dashboard'),
     path('dashboard/<int:week>/', views.dashboard, name='dashboard_week'),
-    path('schedule/<str:username_url>/<int:year>/<int:week>/', views.schedule, name = 'schedule'),
     path('emptyschedule/', views.emptyschedule, name = 'emptyschedule'),
     path('schedule/add/', views.add_schedule, name = 'add_schedule'),
     path('schedule/add/<int:lesson_id>/', views.add_lesson_schedule, name = 'add_lesson_schedule'),

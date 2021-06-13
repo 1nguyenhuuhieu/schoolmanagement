@@ -9,8 +9,10 @@
         data-bs-toggle="dropdown" aria-expanded="false">
         <span class="visually-hidden">Toggle Dropdown</span>
       </button>
-      <ul class="dropdown-menu dropdown-menu-end ">
-        <li><h6 class="dropdown-header">Thêm giáo án vào môn <i class="fas fa-angle-down ms-1"></i></h6></li>
+      <ul class="dropdown-menu dropdown-menu-end " >
+        <li>
+          <h6 class="dropdown-header">Thêm giáo án vào môn <i class="fas fa-angle-down ms-1"></i></h6>
+        </li>
         <li>
           <hr class="dropdown-divider">
         </li>
@@ -20,19 +22,56 @@
       </ul>
     </div>
   </div>
-   <div class="list-group">
-    <hr>
-    <!-- Giáo án năm học này -->
-    <span class="fw-bold mb-3">Năm {{teacher.current_schoolyear}} </span>
-    {% for i in teacher.subjectclassyear %}
-    <a href="{% url 'lessons_subject' i.subject.slug %}"
-      class="list-group-item list-group-item-action border-0 text-primary ps-0 {%if i.subject.slug in request.path %} fw-bolder {%endif%}"><i class="fas fa-book fa-fw me-2 text-muted"></i>{{ i.subject }}  </a>
-    {% endfor %}
-   </div>
-   <hr>
-    <a href="{%url 'now_week_lessons' %}" class="btn btn-outline-success me-2 mb-3 {%if 'lessons/week' in request.path%}active{%endif%} "><i class="fas fa-calendar-week me-2 fa-fw"></i>Tuần</a>
-    <a href="{% url 'lessons' %}" class="btn btn-outline-success mb-3 {%if request.path == '/lessons/'%} active {%endif%}"><i class="fas fa-archive me-2 fa-fw"></i>Thư viện giáo án</a>
-      <h6 class="fw-bold mt-4"><i class="far fa-lightbulb me-2"></i>Bạn muốn xem các giáo án cũ hơn?</h6>
-   <p class="text-muted pe-3">Hệ thống lưu trữ toàn bộ các giáo án bạn đã tải lên. Đến thư viện giáo án và tìm lại.</p>
+  <hr class="mb-0">
+  <div class="accordion accordion-flush" id="accordionSubjectClassyear">
+    <div class="accordion-item">
+      <h6 class="accordion-header" id="headingOne">
+        <button id="btnSubjectCollapse" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSubject"
+          aria-expanded="true" aria-controls="collapseSubject">
+          <span class="fw-bold">Năm {{teacher.current_schoolyear}} </span>
+        </button>
+      </h6>
+      <div id="collapseSubject" class="accordion-collapse collapse show " aria-labelledby="headingOne"
+        data-bs-parent="#accordionSubjectClassyear">
+        <div class="accordion-body ">
+          <div class="list-group">
+            <!-- Giáo án năm học này -->
+            {% for i in teacher.subjectclassyear %}
+            <a href="{% url 'lessons_subject' i.subject.slug %}"
+              class="list-group-item list-group-item-action border-0 text-primary ps-0 {%if i.subject.slug in request.path %} fw-bolder {%endif%}"><i
+                class="fas fa-book fa-fw me-2 text-muted"></i>{{ i.subject }} </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="mt-0">
+  <div class="d-flex justify-content-end">
+
+    <a href="{%url 'now_week_lessons' %}"
+    class="btn btn-outline-success me-2  {%if 'lessons/week' in request.path%}active{%endif%} "><i
+      class="fas fa-calendar-week me-2 fa-fw"></i>Tuần</a>
+  <a href="{% url 'lessons' %}"
+    class="btn btn-outline-success {%if request.path == '/lessons/'%} active {%endif%}"><i
+      class="fas fa-archive me-2 fa-fw"></i>Thư viện giáo án</a>
+
+  </div>
+
+  <div class="d-none d-lg-block">
+    <h6 class="fw-bold mt-lg-4"><i class="far fa-lightbulb me-2"></i>Bạn muốn xem các giáo án cũ hơn?</h6>
+    <p class="text-muted pe-3">Hệ thống lưu trữ toàn bộ các giáo án bạn đã tải lên. Đến thư viện giáo án và tìm lại.</p>
+  </div>
 </div>
 {% endwith %}
+
+<script>
+  $(document).ready(function () {
+    var windowWidth = $(window).width();
+    if (windowWidth <= 1024){ //for iPad & smaller devices
+      $('#collapseSubject').removeClass('show');
+      $('#btnSubjectCollapse').addClass('collapsed');
+    }
+
+  });
+</script>
