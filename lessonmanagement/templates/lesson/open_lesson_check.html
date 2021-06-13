@@ -87,8 +87,14 @@
         <h3>Nội dung giáo án</h3>
     </div>
     <div class="col-12 d-flex justify-content-center py-4">
-        <div id="openLesson">
+        <div class="table-responsive">
+
+
+            <div id="openLesson">
+            </div>
         </div>
+
+ 
     </div>
     <div class="col-lg-8 text-end">
         <a href="#top" class="text-decoration-none ">
@@ -99,6 +105,7 @@
 <script>
     $("#openLesson").pptxToHtml({
         pptxFileUrl: "{{lesson.lesson_path.url}}"
+
     });
 </script>
 {%endblock%}
