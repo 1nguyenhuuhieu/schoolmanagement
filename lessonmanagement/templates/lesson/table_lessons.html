@@ -5,7 +5,11 @@
         <tr>
             <th>Tuần</th>
             <th>Tên giáo án</th>
-            <th>Trạng thái</th>
+
+           <th>Môn học</th>
+           <th>Bài</th>
+           <th>Trạng thái</th>
+
             <th>Năm học</th>
         </tr>
     </thead>
@@ -18,8 +22,14 @@
             </td>
             <td>
                 <span class="badge  bg-info text-dark me-1" style="min-width: 90px;">  {{lesson.subject}} </span>
+
+            </td>
+            <td>
+                <span class="fw-bold"> Bài {{ lesson.number_lesson}}</span>
+
+            </td>
+            <td>
                 <a href="{% url 'lesson' lesson.id %}" class="text-decoration-none link-dark">
-                    <span class="fw-bold"> Bài {{ lesson.number_lesson}}</span>
                     {{ lesson.title }}
                 </a>
             </td>
@@ -42,9 +52,17 @@
 $(document).ready( function () {
     $('#table_lessons').DataTable(
         {
-        "order": [[ 0, "desc" ]]
+        dom: 'Bfrtip',    
+        buttons: [
+            'copy', 'excel'
+        ],
+        "order": [[ 0, "desc" ]],
+        "pageLength": 25,
     }
-    );
+    );  
+
+    
+    
 } );
 </script>
 {% else %}
