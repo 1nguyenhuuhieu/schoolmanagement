@@ -143,10 +143,14 @@ def lessons(request, schoolyear='all'):
         ).order_by('-week')
         page_title = 'Thư viện giáo án'
     else:
+        schoolyear = Schoolyear.objects.get(
+            start_date__year=schoolyear
+        )
         lessons = Lesson.objects.filter(
         teacher=teacher,
-        schoolyear__start_date__year=schoolyear
+        schoolyear=schoolyear
         ).order_by('-week')
+
         page_title = 'Giáo án năm'
 
     context = {
@@ -241,7 +245,7 @@ def addlesson(request, url_week=99):
     #tuần tiếp theo của tuần hiện tại
     next_week = week + 1 if url_week is 99 else url_week
     print(next_week)
-    if next_week -2 > week_schoolyear:
+    if next_week -5 > week_schoolyear:
         raise Http404
     else:
         subjectclassyear = SubjectClassyear.objects.filter(

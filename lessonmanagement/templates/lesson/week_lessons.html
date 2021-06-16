@@ -19,7 +19,7 @@
 </div>
               <div class="btn-group ms-lg-3 mt-2 mt-lg-0" role="group" aria-label="Basic example">
                 <a href="{% url 'week_lessons' week|add:-1 %}" class="btn btn-outline-primary"><i class="fas fa-chevron-left"></i></a>
-                <a href="#" class="btn btn-outline-primary">Tuần {{ week }} ngày {{monday|date:"SHORT_DATE_FORMAT"}}</a>
+                <button  class="btn btn-outline-primary" disabled>Tuần {{ week }} ngày {{monday|date:"SHORT_DATE_FORMAT"}}</button>
                 <a href="{% url 'week_lessons' week|add:1 %}" class="btn btn-outline-primary"><i class="fas fa-chevron-right"></i> </a>
               </div>
             </div>

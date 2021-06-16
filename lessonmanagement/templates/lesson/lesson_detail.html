@@ -29,7 +29,7 @@
         {{ lesson.description }}
     </p>
     {% endif %}
-    <a href="{%url 'open_lesson' lesson.id%}" class="btn btn-sm btn-outline-success me-2"><i class="far fa-eye me-2"></i>Xem</a>
+    <a href="{%url 'open_lesson' lesson.id%}" class="btn btn-sm btn-outline-success me-2"><i class="fas fa-expand-arrows-alt me-2"></i>Trình chiếu</a>
     <a href="{{ lesson.lesson_path.url }}" class="btn btn-sm btn-outline-success me-2" download><i
             class="fas fa-download me-2"></i>Tải về</a>
             <a href="{% url 'add_lesson_schedule' lesson.id %}" class="btn btn-sm btn-success"><i
@@ -100,5 +100,32 @@
 
    
     {% endif %}
+
+
+
+    
 </div>
+
+
+    <div class="table-responsive mt-4" >
+      <div id="openLesson"></div>
+    
+    </div>
+    
+
+
+{% include 'lesson/open_lesson_head.html' %}
+
+      
+
+
+
+    <script>
+        $("#openLesson").pptxToHtml({
+     pptxFileUrl: "{{lesson.lesson_path.url}}"
+
+});
+    </script>
+
+
 {% endblock %}

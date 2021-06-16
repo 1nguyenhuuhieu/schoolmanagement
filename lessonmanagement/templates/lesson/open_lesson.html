@@ -5,14 +5,19 @@
 
 <div class="row">
     <div class="col-12 d-flex justify-content-center py-5">
-    <div id="openLesson"></div>
+        <div class="table-responsive">
+            <div id="openLesson"></div>
+
+        </div>
     </div>
 </div>
 
 
     <script>
         $("#openLesson").pptxToHtml({
-     pptxFileUrl: "{{lesson.lesson_path.url}}"
+     pptxFileUrl: "{{lesson.lesson_path.url}}",
+     slideMode:true,
+
 
 });
     </script>
