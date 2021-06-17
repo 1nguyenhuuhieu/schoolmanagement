@@ -32,8 +32,12 @@
     <a href="{%url 'open_lesson' lesson.id%}" class="btn btn-sm btn-outline-success me-2"><i class="fas fa-expand-arrows-alt me-2"></i>Trình chiếu</a>
     <a href="{{ lesson.lesson_path.url }}" class="btn btn-sm btn-outline-success me-2" download><i
             class="fas fa-download me-2"></i>Tải về</a>
-            <a href="{% url 'add_lesson_schedule' lesson.id %}" class="btn btn-sm btn-success"><i
-              class="far fa-calendar-check me-2"></i>Thêm giáo án vào lịch báo giảng</a>
+    <a href="{% url 'add_lesson_schedule' lesson.id %}" class="btn btn-sm btn-success mt-3 mt-lg-0"><i
+      class="far fa-calendar-check me-2"></i>Thêm giáo án vào lịch báo giảng</a>
+
+              <p class="text-muted mt-3"><i class="far fa-lightbulb me-2"></i>Tải file về và xem trên máy tính bằng PowerPoint để xem chính xác định dạng nhất.
+              </p>
+
     <hr class="my-4">
     <h6><i class="fas fa-toggle-on text-muted fa-fw me-2"></i>Trạng thái giáo án</h6>
     {% if lesson.status == 'pending' %}
@@ -106,12 +110,24 @@
     
 </div>
 
+<div class="row">
+  <div class="col-12">
 
     <div class="table-responsive mt-4" >
+      <table class="table">
+
       <div id="openLesson"></div>
+
+
+      </table>
     
     </div>
     
+
+  </div>
+</div>
+
+   
 
 
 {% include 'lesson/open_lesson_head.html' %}

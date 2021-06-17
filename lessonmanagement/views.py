@@ -20,17 +20,11 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
 
-# năm học hiện tại
-schoolyear = Schoolyear.objects.get(is_active=True)
-# số tuần học của năm học
-week_schoolyear = schoolyear.total_week
-# tuần hiện tại
-week = now_week_schoolyear(schoolyear)
-if week < 0: week = 0
-
 # TRANG CHỦ
 @login_required
 def index(request):
+    schoolyear = q_schoolyear()
+    week = now_week_schoolyear(schoolyear)
     page_title = 'Trang chủ'
     school = get_object_or_404(School, pk=1)
     monday = monday_week_schoolyear(schoolyear, week)
@@ -130,12 +124,13 @@ def teacher(request, teacher_id):
 # GIÁO ÁN
 @login_required
 def lessons(request, schoolyear='all'):
-    if request.user.teacher.is_work is True:
+    if request.user.teacher.is_work == True:
         teacher = request.user.teacher.id
     schoolyears = Schoolyear.objects.filter(
         subjectclassyear__teacher=teacher
+    ).order_by('-start_date'
     ).distinct()
-    if schoolyear is 'all':
+    if schoolyear == 'all':
         schoolyear = 'Tất cả năm học'
         lessons = Lesson.objects.filter(
         teacher=teacher,
@@ -151,7 +146,7 @@ def lessons(request, schoolyear='all'):
         schoolyear=schoolyear
         ).order_by('-week')
 
-        page_title = 'Giáo án năm'
+        page_title = 'Giáo án năm %s'%(schoolyear)
 
     context = {
         'current_year': schoolyear,
@@ -198,28 +193,28 @@ def lesson(request, id):
 
 @login_required
 def week_lessons(request, url_week=99):
+    schoolyear = q_schoolyear()
     if request.user.teacher.is_work == True:
         teacher = request.user.teacher.id
     if url_week == 99:
-        c_week = week
+        week = now_week_schoolyear(schoolyear)
         page_title = 'Giáo án tuần này'
     else:
-        c_week = url_week
-    
+        week = url_week
     page_title = 'Giáo án tuần %s' % (week)
     lessons = Lesson.objects.filter(
         teacher=teacher,
         schoolyear=schoolyear
     )
     lessons_week = lessons.filter(
-        week=c_week
+        week=week
         )
     weeks = lessons.values('week').order_by('week').distinct()
-    monday = monday_week_schoolyear(schoolyear, c_week)
+    monday = monday_week_schoolyear(schoolyear, week)
     context = {
         'lesson_list': lessons_week,
         'weeks': weeks,
-        'week': c_week,
+        'week': week,
         'page_title': page_title,
         'monday': monday
     }
@@ -241,10 +236,12 @@ def open_lesson(request, id):
 # Thêm giáo án tổng quan
 @login_required
 def addlesson(request, url_week=99):
+    schoolyear = q_schoolyear()
+    week_schoolyear = schoolyear.total_week
+    week = now_week_schoolyear(schoolyear)
     if request.user.teacher.is_work is True: teacher = request.user.teacher.id
     #tuần tiếp theo của tuần hiện tại
     next_week = week + 1 if url_week is 99 else url_week
-    print(next_week)
     if next_week -5 > week_schoolyear:
         raise Http404
     else:
@@ -287,7 +284,7 @@ def add_lesson_subject(request, subject, url_week=99):
     if request.user.teacher.is_work is True:
         teacher = request.user.teacher.id
     #tuần tiếp theo của tuần hiện tại
-    week = now_week_schoolyear(schoolyear) + 1 if url_week is 99 else url_week
+    week = now_week_schoolyear(schoolyear) + 1 if url_week == 99 else url_week
     monday = monday_week_schoolyear(schoolyear, week)
     now = datetime.datetime.now()
     # kiểm tra phân công giảng dạy
@@ -414,6 +411,8 @@ def edit_lesson(request, lesson_id):
 
 # lịch báo giảng của năm học hiện tại
 def schedule(request, username_url, url_week=99):
+    schoolyear = q_schoolyear()
+    week = now_week_schoolyear(schoolyear)
     username = request.user.username
     teacher = Teacher.objects.get(
         user__username=username_url
@@ -427,6 +426,7 @@ def schedule(request, username_url, url_week=99):
     else:
         c_week = url_week
     
+    print(c_week)
     # giáo án của giáo viên url_username
     lessons = LessonSchedule.objects.filter(
         lesson__teacher=teacher,

@@ -95,7 +95,11 @@ def now_week_schoolyear(schoolyear):
     start_monday = start_day + datetime.timedelta(days=-start_day.weekday())
     today = datetime.date.today()
     week = (today - start_monday)/7
-    return week.days
+    number_week = week.days
+    if number_week < 0 or number_week > 52:
+        number_week = 0
+    return number_week
+    
 
 # đổi ngày bất kì sang tuần tương ứng của năm học
 def day_week_schoolyear(schoolyear, d):
