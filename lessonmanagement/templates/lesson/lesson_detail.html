@@ -5,8 +5,8 @@
 {% block content %}
 {% include 'notification/success.html' %}
 <div class="bg-white rounded-15 shadow-sm p-4 border">
-    <h2 class="mb-4">{{ lesson.subject.subject.title }} {{ lesson.subject.level }} - Bài
-        {{ lesson.number_lesson }}</h2>
+    <h3 class="mb-4">Năm học {{ lesson.schoolyear}} / {{ lesson.subject.subject.title }} {{ lesson.subject.level }} / Bài
+        {{ lesson.number_lesson }}</h3>
     <h4 class="mb-3"><i class="fas fa-book me-2 text-muted fa-fw"></i>{{ lesson.title }}</h4>
     <hr>
     <div class="d-flex align-items-center mb-3">

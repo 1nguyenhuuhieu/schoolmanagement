@@ -10,7 +10,6 @@
                 <th>Tên giáo án</th>
                 <th>Tải lên</th>
                 <th>Trạng thái</th>
-                <th>Năm học</th>
             </tr>
         </thead>
         <tbody>
@@ -44,7 +43,6 @@
                             class="fas fa-times me-1"></i>{{lesson.get_status_display}}</span>
                     {% endif %}
                 </td>
-                <td>{{ lesson.schoolyear }}</td>
             </tr>
             {% endfor %}
         </tbody>
