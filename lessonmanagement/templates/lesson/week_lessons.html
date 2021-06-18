@@ -4,32 +4,39 @@
 {% load humanize%}
 {% load lessonmanagement_extras %}
 <div class="row">
-    <div class="col-lg-12">
-            <div class="d-flex flex-lg-row flex-column mb-4  align-items-lg-center align-items-end justify-content-end">
-<div class="btn-group">
-  <a href="{% url 'now_week_lessons' %}" class="btn btn-outline-primary {%if request.path == '/lessons/week/'%}active{%endif%}" >Tuần này</a>
-  <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-    <span class="visually-hidden">Toggle Dropdown</span>
-  </button>
-  <ul class="dropdown-menu dropdown-menu-end">
-    {% for week in weeks %}
-    <li><a class="dropdown-item" href="{% url 'week_lessons' week.week %}">Tuần {{week.week}}</a></li>
-    {% endfor %}
-  </ul>
-</div>
-              <div class="btn-group ms-lg-3 mt-2 mt-lg-0" role="group" aria-label="Basic example">
-                <a href="{% url 'week_lessons' week|add:-1 %}" class="btn btn-outline-primary"><i class="fas fa-chevron-left"></i></a>
-                <button  class="btn btn-outline-primary" disabled>Tuần {{ week }} ngày {{monday|date:"SHORT_DATE_FORMAT"}}</button>
-                <a href="{% url 'week_lessons' week|add:1 %}" class="btn btn-outline-primary"><i class="fas fa-chevron-right"></i> </a>
-              </div>
-            </div>
-
-            <div class="border py-4 px-3 rounded-15 shadow-sm bg-white">
-              {% include "lesson/table_lessons.html" %}
-            </div>
-            
+  <div class="col-lg-12">
+    <div class="d-flex flex-lg-row flex-column mb-4  align-items-lg-center align-items-end justify-content-end justify-content-lg-between">
+      <h4 class="d-none d-lg-block"><i class="fas fa-calendar-week me-2 fa-fw text-muted"></i>Giáo án tuần {{ week }}</h4>
+      <div>
+        <div class="btn-group">
+          <a href="{% url 'now_week_lessons' %}"
+            class="btn btn-outline-primary {%if request.path == '/lessons/week/'%}active{%endif%}">Tuần này</a>
+          <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="visually-hidden">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            {% for week in weeks %}
+            <li><a class="dropdown-item" href="{% url 'week_lessons' week.week %}">Tuần {{week.week}}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="btn-group ms-lg-3 mt-2 mt-lg-0" role="group" aria-label="Basic example">
+          <a href="{% url 'week_lessons' week|add:-1 %}" class="btn btn-outline-primary"><i
+              class="fas fa-chevron-left"></i></a>
+          <button class="btn btn-outline-primary" disabled>Tuần {{ week }} ngày
+            {{monday|date:"SHORT_DATE_FORMAT"}}</button>
+          <a href="{% url 'week_lessons' week|add:1 %}" class="btn btn-outline-primary"><i
+              class="fas fa-chevron-right"></i> </a>
+        </div>
+      </div>
     </div>
+    <div class="border py-4 px-3 rounded-15 shadow-sm bg-white">
+      {% include "lesson/table_lessons.html" %}
+    </div>
+
+  </div>
 </div>
-        
-             
-  {% endblock %}
+
+
+{% endblock %}

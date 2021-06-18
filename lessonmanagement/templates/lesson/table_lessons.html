@@ -9,6 +9,7 @@
                 <th>Bài</th>
                 <th>Tên giáo án</th>
                 <th>Tải lên</th>
+                <th>Năm học</th>
                 <th>Trạng thái</th>
             </tr>
         </thead>
@@ -26,11 +27,12 @@
                     <span class="fw-bold"> Bài {{ lesson.number_lesson}}</span>
                 </td>
                 <td>
-                    <a href="{% url 'lesson' lesson.id %}" class="text-decoration-none link-dark">
+                    <a href="{% url 'lesson' lesson.id %}" class="text-decoration-none ">
                         {{ lesson.title }}
                     </a>
                 </td>
                 <td class="text-muted">{{ lesson.upload_time|naturaltime }} / {{lesson.upload_time|date:"SHORT_DATE_FORMAT"}}</td>
+                <td>{{ lesson.schoolyear    }}</td>
 
                 <td> {% if lesson.status == "pending" %}
                     <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i
@@ -56,7 +58,7 @@
                 buttons: [
                     'copy', 'excel'
                 ],
-                "order": [[0, "desc"], [1, "desc"], [2, "desc"]],
+                "order": [[5, "desc"],[0, "desc"], [1, "desc"], [2, "desc"]],
                 "pageLength": 25,
             }
         );

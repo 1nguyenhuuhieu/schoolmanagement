@@ -53,8 +53,7 @@
     class="btn btn-outline-success me-2  {%if 'lessons/week' in request.path%}active{%endif%} "><i
       class="fas fa-calendar-week me-2 fa-fw"></i>Tuần</a>
   <a href="{% url 'lessons' %}"
-    class="btn btn-outline-success {%if request.path == '/lessons/'%} active {%endif%}"><i
-      class="fas fa-archive me-2 fa-fw"></i>Thư viện giáo án</a>
+    class="btn btn-outline-success {%if request.path == '/lessons/'%} active {%endif%}"><i class="fas fa-calendar fa-fw me-2"></i>Năm</a>
 
   </div>
 

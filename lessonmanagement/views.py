@@ -241,7 +241,7 @@ def addlesson(request, url_week=99):
     week = now_week_schoolyear(schoolyear)
     if request.user.teacher.is_work is True: teacher = request.user.teacher.id
     #tuần tiếp theo của tuần hiện tại
-    next_week = week + 1 if url_week is 99 else url_week
+    next_week = week + 1 if url_week == 99 else url_week
     if next_week -5 > week_schoolyear:
         raise Http404
     else:
@@ -425,8 +425,6 @@ def schedule(request, username_url, url_week=99):
         c_week = week
     else:
         c_week = url_week
-    
-    print(c_week)
     # giáo án của giáo viên url_username
     lessons = LessonSchedule.objects.filter(
         lesson__teacher=teacher,
@@ -532,16 +530,19 @@ def emptyschedule(request):
 #thêm giáo án vào ngày trong lịch báo giảng
 @login_required
 def add_schedule(request):
-    teacher = request.user.teacher.id
-
+    schoolyear=q_schoolyear()
+    if request.user.teacher.is_work is True:
+        teacher = request.user.teacher.id
     last_schedule = LessonSchedule.objects.filter(
         lesson__teacher=teacher
     ).order_by('-id')[:5]
     lessons = Lesson.objects.filter(
-        teacher=teacher, schoolyear=q_schoolyear()
+        teacher=teacher,
+        schoolyear=schoolyear
     )
     classyear = SubjectClassyear.objects.filter(
-            teacher=teacher, schoolyear=q_schoolyear()
+            teacher=teacher,
+            schoolyear=schoolyear
             ).order_by(
                 'classyear__startyear__start_date__year'
                 ).values(
