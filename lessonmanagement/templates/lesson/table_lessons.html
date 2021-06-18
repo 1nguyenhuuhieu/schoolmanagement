@@ -29,6 +29,7 @@
                         {{ lesson.title }}
                     </a>
                 </td>
+
                 <td> {% if lesson.status == "pending" %}
                     <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i
                             class="far fa-clock me-1"></i>{{lesson.get_status_display}}</span>
@@ -53,7 +54,7 @@
                 buttons: [
                     'copy', 'excel'
                 ],
-                "order": [[5, "desc"],[0, "desc"], [1, "desc"], [2, "desc"]],
+                "order": [[0, "desc"], [1, "desc"], [2, "desc"]],
                 "pageLength": 25,
             }
         );

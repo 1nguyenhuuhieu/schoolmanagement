@@ -101,12 +101,7 @@
                                             {{j.title}} </option>
                                         {% endfor %}
                                     </select>
-                                    <p class="mt-3">
-                                        <i class="far fa-lightbulb me-2"></i> <a href="{% url 'addlesson'%}"
-                                            class="text-decoration-none"> Thêm mới giáo án</a> nếu không tìm thấy giáo
-                                        án phù hợp với
-                                        yêu cầu của bạn.
-                                    </p>
+                     
                                     <input type="hidden" name="schedule_date">
                                     <input type="hidden" name="session_date">
                                     <input type="hidden" name="order_schedule">
@@ -121,7 +116,16 @@
                     {%endfor%}
                 </div>
             </div>
+
+            
             <div class="modal-footer">
+
+                <p class="mt-3">
+                    <i class="far fa-lightbulb me-2"></i> <a href="{% url 'addlesson'%}"
+                        class="text-decoration-none"> Thêm mới giáo án</a> nếu không tìm thấy giáo
+                    án phù hợp với
+                    yêu cầu của bạn.
+                </p>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
         </div>
