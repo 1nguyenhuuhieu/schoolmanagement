@@ -8,8 +8,6 @@
                 <th>Môn học</th>
                 <th>Bài</th>
                 <th>Tên giáo án</th>
-                <th>Tải lên</th>
-                <th>Năm học</th>
                 <th>Trạng thái</th>
             </tr>
         </thead>
@@ -31,9 +29,6 @@
                         {{ lesson.title }}
                     </a>
                 </td>
-                <td class="text-muted">{{ lesson.upload_time|naturaltime }} / {{lesson.upload_time|date:"SHORT_DATE_FORMAT"}}</td>
-                <td>{{ lesson.schoolyear    }}</td>
-
                 <td> {% if lesson.status == "pending" %}
                     <span class="badge bg-warning text-dark rounded-pill" style="width: 100px;"><i
                             class="far fa-clock me-1"></i>{{lesson.get_status_display}}</span>
