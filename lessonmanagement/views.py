@@ -244,7 +244,7 @@ def addlesson(request, url_week=99):
     if request.user.teacher.is_work is True: teacher = request.user.teacher.id
     #tuần tiếp theo của tuần hiện tại
     next_week = week + 1 if url_week is 99 else url_week
-    if next_week -5 > week_schoolyear:
+    if next_week -20 > week_schoolyear:
         raise Http404
     else:
         subjectclassyear = SubjectClassyear.objects.filter(
