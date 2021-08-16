@@ -46,12 +46,13 @@
       </ul>
 
       <div class="d-flex justify-content-between align-items-center">
-        <a href="{% url 'addlesson' %}" class=" btn btn-success  me-2
+        <a href="{% url 'addlesson' %}" class=" btn btn-light  me-2
         {% if request.path == '/lesson/add/'%}
         active
         {% endif %}
         ">
-        <i class="fas fa-plus me-2"></i>Thêm giáo án
+        <i class="fas fa-plus"></i>
+        
         </a>
         <a href="{% url 'profile' %}" class=" btn btn-outline-light me-2
         {% if request.path == '/profile/'%}
