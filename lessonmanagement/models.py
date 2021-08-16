@@ -4,6 +4,10 @@ import datetime
 from django.conf import settings
 from django.db.models import F
 from django.utils.text import slugify
+from django.utils import timezone
+
+# thời gian có thể sửa giáo án sau khi upload tính bằng phút
+TIME_OUT_EDIT = 10
 
 LEVEL_CHOICES = [
         (6, 6),
@@ -472,6 +476,12 @@ class Lesson(models.Model):
         verbose_name_plural = "Giáo Án"
         ordering = ["-upload_time"]
         unique_together = ['subject', 'number_lesson', 'teacher', 'schoolyear']
+
+    # có thể chỉnh sửa hay không
+    def is_edit(self):
+        now = timezone.now()
+        limit_time_edit = now - datetime.timedelta(minutes=TIME_OUT_EDIT)
+        return self.status =='deny' or (self.status == 'pending' and self.upload_time >= limit_time_edit )
 
     #niên khoá hiện tại
     def school_year(self):

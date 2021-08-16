@@ -4,6 +4,8 @@
 {% load lessonmanagement_extras %}
 {% block content %}
 {% include 'notification/success.html' %}
+
+
 <div class="bg-white rounded-15 shadow-sm p-4 border">
     <h3 class="mb-4">Năm học {{ lesson.schoolyear}} / {{ lesson.subject.subject.title }} {{ lesson.subject.level }} / Bài
         {{ lesson.number_lesson }}</h3>
@@ -53,9 +55,13 @@
     {% else %}
     <span class="badge bg-danger text-white rounded-pill">{{ lesson.get_status_display }}</span> bởi
     <a href="#" class="text-decoration-none">{{ lesson.checker }} </a> / {{ lesson.check_date|naturaltime }}
+  
+    {% endif %}
+
+    {% if lesson.is_edit %}
     <a href="{% url 'edit_lesson' lesson.id %}" class="btn btn-warning ms-2"><i class="fas fa-wrench me-2"></i>Sửa
-        giáo án</a>
-    
+      giáo án</a>
+  
     {% endif %}
 
     {% if lesson.note_checker %}

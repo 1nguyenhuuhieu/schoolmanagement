@@ -28,6 +28,9 @@ week_schoolyear = schoolyear.total_week
 week = now_week_schoolyear(schoolyear)
 if week < 0: week = 0
 
+
+TIME_EDIT = 600
+
 # TRANG CHỦ
 @login_required
 def index(request):
@@ -384,32 +387,35 @@ def edit_lesson(request, lesson_id):
     now = datetime.datetime.now()
     teacher = request.user.teacher.id
     lesson = get_object_or_404(Lesson,
-    teacher=teacher, pk=lesson_id, status="deny")
-    context = {
-        'lesson': lesson,
-        'page_title': 'Sửa giáo án'}
-    if request.method == "POST":
-        title = request.POST['title_lesson']
-        start_lesson = request.POST['start_lesson']
-        description_lesson = request.POST['description_lesson']
-        lesson.title = title
-        lesson.number_lesson = start_lesson
-        lesson.description = description_lesson
-        lesson.status = 'pending'
-        lesson.edit_time = now
-        lesson.save()
-        if bool(request.FILES.get('file_lesson', False)) == True:
-            lesson_file_form = request.FILES['file_lesson']
-            teacher_location = 'media/lessons/' + \
-                str(request.user.username)
-            fs = FileSystemStorage(location=teacher_location)
-            lesson_file = fs.save(lesson_file_form.name, lesson_file_form)
-            lesson_path = teacher_location + '/' + \
-                fs.get_valid_name(lesson_file)
-            lesson.lesson_path = lesson_path
+    teacher=teacher, pk=lesson_id)
+    if lesson.is_edit() is True:
+        context = {
+            'lesson': lesson,
+            'page_title': 'Sửa giáo án'}
+        if request.method == "POST":
+            title = request.POST['title_lesson']
+            start_lesson = request.POST['start_lesson']
+            description_lesson = request.POST['description_lesson']
+            lesson.title = title
+            lesson.number_lesson = start_lesson
+            lesson.description = description_lesson
+            lesson.status = 'pending'
+            lesson.edit_time = now
             lesson.save()
-        return redirect('lesson', id=lesson.id, permanent=True)
-    return render(request, 'lesson/edit_lesson.html', context)
+            if bool(request.FILES.get('file_lesson', False)) == True:
+                lesson_file_form = request.FILES['file_lesson']
+                teacher_location = 'media/lessons/' + \
+                    str(request.user.username)
+                fs = FileSystemStorage(location=teacher_location)
+                lesson_file = fs.save(lesson_file_form.name, lesson_file_form)
+                lesson_path = teacher_location + '/' + \
+                    fs.get_valid_name(lesson_file)
+                lesson.lesson_path = lesson_path
+                lesson.save()
+            return redirect('lesson', id=lesson.id, permanent=True)
+        return render(request, 'lesson/edit_lesson.html', context)
+    else:
+        raise Http404("Không có quyền chỉnh sửa.")
 
 # lịch báo giảng của năm học hiện tại
 def schedule(request, username_url, url_week=99):

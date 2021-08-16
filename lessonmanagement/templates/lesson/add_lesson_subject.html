@@ -10,6 +10,7 @@
     {% if is_add %}
     <p class="text-center text-muted"><i class="far fa-lightbulb me-2"></i>Giáo án này sẽ được sử dụng vào tuần <span class="fw-bold">{{ week }}</span> của năm học {{ schoolyear }}.
     </p>
+    <p class="text-center text-danger">Bạn có 10 phút để chỉnh sửa giáo án mình vừa tải lên. Quá thời gian này hệ thống sẽ khóa tính năng chỉnh sửa giáo án</p>
     {% else %}
     <p class="text-center text-danger"><i class="far fa-lightbulb me-2"></i>Giáo án {{ subjectclassyear.subject }} tuần {{ week }} đã được thêm đủ: {{ lessons_week_count }}/{{subjectclassyear.subject.week_lesson}}. Bạn không thể thêm nữa
     </p>
