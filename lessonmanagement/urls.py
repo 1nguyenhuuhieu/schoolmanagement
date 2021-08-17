@@ -38,6 +38,5 @@ urlpatterns = [
     path('emptyschedule/', views.emptyschedule, name = 'emptyschedule'),
 
     path('teacher/<int:teacher_id>/', views.teacher, name='teacher'),
-    # Hướng dẫn
-    path('guide/', views.guide, name='guide'),
+
 ] 

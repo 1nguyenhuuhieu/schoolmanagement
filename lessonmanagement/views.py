@@ -619,14 +619,6 @@ def add_lesson_schedule(request, lesson_id):
     }
     return render(request, 'schedule/add_lesson_schedule.html', context)
 
-@login_required
-def guide(request):
-    context = {
-
-    }
-    return render(request, 'guide/guide.html', context)
-
-
 # DUYỆT GIÁO ÁN
 @login_required
 def check_lessons_subject(request, year, subject):

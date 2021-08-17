@@ -30,17 +30,13 @@
             <i class="fas fa-ellipsis-h"></i>
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'guide' %}">Hướng dẫn</a></li>
             <li><a class="dropdown-item" href="{% url 'check_lessons_subject' request.user.teacher.current_schoolyear.start_date.year 'all' %}">Duyệt giáo án</a></li>
 
-            <li><a class="dropdown-item" href="{% url 'dashboard'%}">Thống kê</a></li>
+            <!-- <li><a class="dropdown-item" href="{% url 'dashboard'%}">Thống kê</a></li> -->
 
 
             <li><a class="dropdown-item" href="{% url 'admin:index'%}">Quản trị</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
+           
           </ul>
         </li>
       </ul>

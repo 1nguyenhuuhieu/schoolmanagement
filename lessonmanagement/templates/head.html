@@ -8,19 +8,26 @@
     <script src="https://kit.fontawesome.com/b2208e09de.js" crossorigin="anonymous"></script>
     <!-- boostrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-    <!-- data table -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.css"/>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.bootstrap5.css"/>
-     
+
+
+    
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.bootstrap5.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.js"></script>
 
+
+    <!-- data table -->
+
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap5.css' %}">
+    <link rel="stylesheet" href="{% static 'css/buttons.bootstrap5.css' %}">
+    <link rel="stylesheet" href="{% static 'js/jquery.dataTables.js' %}">
+    <link rel="stylesheet" href="{% static 'js/dataTables.bootstrap5.js' %}">
+    <link rel="stylesheet" href="{% static 'js/dataTables.buttons.js' %}">
+    <link rel="stylesheet" href="{% static 'js/buttons.bootstrap5.js' %}">
+    <link rel="stylesheet" href="{% static 'js/buttons.html5.js' %}">
+
+    <!-- custom css -->
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
     <title> {% if page_title %} {{ page_title }} - {% endif %}Quản lý giáo án Trường THCS Anh Sơn</title>
   </head>
