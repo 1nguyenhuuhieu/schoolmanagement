@@ -20,20 +20,17 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
 
-# năm học hiện tại
-schoolyear = Schoolyear.objects.get(is_active=True)
-# số tuần học của năm học
-week_schoolyear = schoolyear.total_week
-# tuần hiện tại
-week = now_week_schoolyear(schoolyear)
-if week < 0: week = 0
 
-
-TIME_EDIT = 600
 
 # TRANG CHỦ
 @login_required
 def index(request):
+    schoolyear = Schoolyear.objects.get(is_active=True)
+    # số tuần học của năm học
+    week_schoolyear = schoolyear.total_week
+    # tuần hiện tại
+    week = now_week_schoolyear(schoolyear)
+    if week < 0: week = 0
     page_title = 'Trang chủ'
     school = get_object_or_404(School, pk=1)
     monday = monday_week_schoolyear(schoolyear, week)
@@ -73,7 +70,7 @@ def profile(request):
         current_user.sex = sex
         current_user.save()
         messages.add_message(request, messages.SUCCESS,
-                             'Cập nhập thông tin thành công.')
+                            'Cập nhập thông tin thành công.')
         return redirect('profile', permanent=True)
     if request.method == 'POST' and 'btnchangeeducation' in request.POST:
         current_user = Teacher.objects.get(user=request.user)
@@ -84,7 +81,7 @@ def profile(request):
         current_user.education_level = education_level
         current_user.save()
         messages.add_message(request, messages.SUCCESS,
-                             'Cập nhập thông tin thành công.')
+                            'Cập nhập thông tin thành công.')
         return redirect('profile', permanent=True)
     if request.method == 'POST' and 'btnavatar' in request.POST and request.FILES['avatar']:
         current_user = Teacher.objects.get(user=request.user)
@@ -100,7 +97,7 @@ def profile(request):
         current_user.avatar = lesson_path
         current_user.save()
         messages.add_message(request, messages.SUCCESS,
-                             'Cập nhập thông tin thành công.')
+                            'Cập nhập thông tin thành công.')
         return redirect('profile', permanent=True)
     context = {
         'list_subject': list_subject,
@@ -138,7 +135,7 @@ def lessons(request, schoolyear='all'):
     schoolyears = Schoolyear.objects.filter(
         subjectclassyear__teacher=teacher
     ).distinct()
-    if schoolyear is 'all':
+    if schoolyear == 'all':
         schoolyear = 'Tất cả năm học'
         lessons = Lesson.objects.filter(
         teacher=teacher,
@@ -246,7 +243,7 @@ def open_lesson(request, id):
 def addlesson(request, url_week=99):
     if request.user.teacher.is_work is True: teacher = request.user.teacher.id
     #tuần tiếp theo của tuần hiện tại
-    next_week = week + 1 if url_week is 99 else url_week
+    next_week = week + 1 if url_week == 99 else url_week
     if next_week -100 > week_schoolyear:
         raise Http404
     else:
@@ -289,7 +286,7 @@ def add_lesson_subject(request, subject, url_week=99):
     if request.user.teacher.is_work is True:
         teacher = request.user.teacher.id
     #tuần tiếp theo của tuần hiện tại
-    week = now_week_schoolyear(schoolyear) + 1 if url_week is 99 else url_week
+    week = now_week_schoolyear(schoolyear) + 1 if url_week == 99 else url_week
     monday = monday_week_schoolyear(schoolyear, week)
     now = datetime.datetime.now()
     # kiểm tra phân công giảng dạy
