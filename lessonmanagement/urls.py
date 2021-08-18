@@ -9,7 +9,7 @@ urlpatterns = [
     path('lessons/<int:schoolyear>/', views.lessons, name="lessons_schoolyear"),
     
     path('lessons/week/', views.week_lessons, name='now_week_lessons'),
-    path('lessons/week/<int:url_week>', views.week_lessons, name='week_lessons'),
+    path('lessons/week/<int:url_week>/', views.week_lessons, name='week_lessons'),
 
     path('lessons/empty/', views.emptylesson, name="emptylesson"),
     path('lesson/open/<int:id>/', views.open_lesson, name="open_lesson"),

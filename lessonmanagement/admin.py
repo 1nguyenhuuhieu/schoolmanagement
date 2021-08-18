@@ -31,9 +31,6 @@ class ClassyearManagerInline(admin.TabularInline):
     model = ClassyearManager
     extra = 1
 
-class SchoolManagerInline(admin.TabularInline):
-    model = SchoolManager
-
 class GroupSubjectManagerInline(admin.TabularInline):
     model = GroupSubjectManager
 
@@ -74,7 +71,7 @@ class TeacherResource(resources.ModelResource):
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
-    inlines = [SchoolManagerInline,]
+    pass
 @admin.register(Subject)
 class SubjectAdmin(ImportExportModelAdmin):
     list_display = ('title', 'group' )
