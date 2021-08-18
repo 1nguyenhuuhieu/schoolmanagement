@@ -74,7 +74,7 @@ class TeacherResource(resources.ModelResource):
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
-    pass
+    inlines = [SchoolManagerInline,]
 @admin.register(Subject)
 class SubjectAdmin(ImportExportModelAdmin):
     list_display = ('title', 'group' )

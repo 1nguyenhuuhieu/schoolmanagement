@@ -33,7 +33,7 @@ def class_level_def(year):
 def schoolyear_learning():
     now = datetime.datetime.now()
     listyear = []
-    for i in [1,2,3,4]:
+    for i in [0,1,2,3,4]:
         if now.month < 9:
             listyear.append(now.year - i)
         else:
