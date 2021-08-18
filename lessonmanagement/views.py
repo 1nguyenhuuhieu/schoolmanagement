@@ -202,7 +202,6 @@ def lesson(request, id):
 @login_required
 def week_lessons(request, url_week=99):
     week = f_week()
-    print(week)
     schoolyear = f_schoolyear()
     if request.user.teacher.is_work == True:
         teacher = request.user.teacher.id
