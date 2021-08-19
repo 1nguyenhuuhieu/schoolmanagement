@@ -32,8 +32,8 @@
     </p>
     {% endif %}
     <a href="{%url 'open_lesson' lesson.id%}" class="btn btn-sm btn-outline-success me-2"><i class="fas fa-expand-arrows-alt me-2"></i>Trình chiếu</a>
-    <a href="https://view.officeapps.live.com/op/embed.aspx?src={{ request.META.HTTP_HOST }}{{lesson.lesson_path.url}}" target="_blank">xem bằng microsoft office</a>
-    <a href="{{ lesson.lesson_path.url }}" class="btn btn-sm btn-outline-success me-2" download><i
+    <a href="https://view.officeapps.live.com/op/embed.aspx?src=https://www.pythonanywhere.com/user/huhivn90/files/home/huhivn90/{{lesson.lesson_path.url}}" target="_blank">xem bằng microsoft office</a>
+    <a href="https://www.pythonanywhere.com/user/huhivn90/files/home/huhivn90/{{ lesson.lesson_path.url }}" class="btn btn-sm btn-outline-success me-2" download><i
             class="fas fa-download me-2"></i>Tải về</a>
     <a href="{% url 'add_lesson_schedule' lesson.id %}" class="btn btn-sm btn-success mt-3 mt-lg-0"><i
       class="far fa-calendar-check me-2"></i>Thêm giáo án vào lịch báo giảng</a>
