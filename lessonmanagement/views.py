@@ -412,7 +412,7 @@ def edit_lesson(request, lesson_id):
             lesson.save()
             if bool(request.FILES.get('file_lesson', False)) == True:
                 lesson_file_form = request.FILES['file_lesson']
-                teacher_location = 'media/lessons/' + \
+                teacher_location = 'lessons/' + \
                     str(request.user.username)
                 fs = FileSystemStorage(location=teacher_location)
                 lesson_file = fs.save(lesson_file_form.name, lesson_file_form)
