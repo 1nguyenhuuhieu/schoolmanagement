@@ -415,9 +415,10 @@ def edit_lesson(request, lesson_id):
                 teacher_location = 'lessons/' + \
                     str(request.user.username)
                 fs = FileSystemStorage(location=teacher_location)
-                lesson_file = fs.save(lesson_file_form.name, lesson_file_form)
-                lesson_path = teacher_location + '/' + \
-                    fs.get_valid_name(lesson_file)
+                file_extension = pathlib.Path(lesson.name).suffix
+                lesson_file = fs.save(slugify(lesson.name)+file_extension, lesson)
+                lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
+                lesson_path = lesson_location_withoutmedia + fs.get_valid_name(lesson_file)
                 lesson.lesson_path = lesson_path
                 lesson.save()
             return redirect('lesson', id=lesson.id, permanent=True)
