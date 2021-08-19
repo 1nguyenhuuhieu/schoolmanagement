@@ -411,15 +411,15 @@ def edit_lesson(request, lesson_id):
             lesson.edit_time = now
             lesson.save()
             if bool(request.FILES.get('file_lesson', False)) == True:
-                lesson = request.FILES['file_lesson']
-                teacher_location = 'media/lessons/' + str(request.user.username)
-                lesson_location = teacher_location + '/'
-                lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
-                fs = FileSystemStorage(location=lesson_location)
-                file_extension = pathlib.Path(lesson.name).suffix
-                lesson_file = fs.save(slugify(lesson.name)+file_extension, lesson)
-                lesson_path = lesson_location_withoutmedia + fs.get_valid_name(lesson_file)
-                lesson.lesson_path = lesson_path
+            lesson = request.FILES['file_lesson']
+            teacher_location = 'media/lessons/' + str(request.user.username)
+            lesson_location = teacher_location + '/'
+            lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
+            fs = FileSystemStorage(location=lesson_location)
+            file_extension = pathlib.Path(lesson.name).suffix
+            lesson_file = fs.save(slugify(lesson.name)+file_extension, lesson)
+            new_lesson_path = lesson_location_withoutmedia + fs.get_valid_name(lesson_file)
+                lesson.lesson_path = new_lesson_path
                 lesson.save()
             return redirect('lesson', id=lesson.id, permanent=True)
         return render(request, 'lesson/edit_lesson.html', context)
