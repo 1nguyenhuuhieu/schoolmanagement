@@ -364,7 +364,7 @@ def add_lesson_subject(request, subject, url_week=99):
             start_lesson = request.POST['start_lesson']
             description_lesson = request.POST['description_lesson']
             lesson = request.FILES['file_lesson']
-            teacher_location = '/media/lessons/' + str(request.user.username)
+            teacher_location = 'schoolmanagement/media/lessons/' + str(request.user.username)
             lesson_location = teacher_location + '/'
             lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
             fs = FileSystemStorage(location=lesson_location)
