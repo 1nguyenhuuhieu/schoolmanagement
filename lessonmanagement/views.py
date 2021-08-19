@@ -19,8 +19,6 @@ from django.db import models
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
-import pathlib
-
 def f_schoolyear():
     return Schoolyear.objects.get(is_active=True)
 
@@ -369,8 +367,7 @@ def add_lesson_subject(request, subject, url_week=99):
             lesson_location = teacher_location + '/'
             lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
             fs = FileSystemStorage(location=lesson_location)
-            file_extension = pathlib.Path(lesson.name).suffix
-            lesson_file = fs.save(slugify(lesson.name) + file_extension, lesson)
+            lesson_file = fs.save(slugify(lesson.name)+'.pptx', lesson)
             lesson_path = lesson_location_withoutmedia + fs.get_valid_name(lesson_file)
             q_subject = subjectclassyear.subject
             new_lesson = Lesson(title=title, upload_time=now, description=description_lesson, teacher=request.user.teacher,subject=q_subject, number_lesson=start_lesson, lesson_path=lesson_path, schoolyear=schoolyear, week=week)
