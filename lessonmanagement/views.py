@@ -370,7 +370,7 @@ def add_lesson_subject(request, subject, url_week=99):
             lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
             fs = FileSystemStorage(location=lesson_location)
             file_extension = pathlib.Path(lesson.name).suffix
-            lesson_file = fs.save(slugify(lesson.name)+file_extension, lesson)
+            lesson_file = fs.save(slugify(title)+file_extension, lesson)
             lesson_path = lesson_location_withoutmedia + fs.get_valid_name(lesson_file)
             q_subject = subjectclassyear.subject
             new_lesson = Lesson(title=title, upload_time=now, description=description_lesson, teacher=request.user.teacher,subject=q_subject, number_lesson=start_lesson, lesson_path=lesson_path, schoolyear=schoolyear, week=week)
