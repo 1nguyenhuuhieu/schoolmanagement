@@ -412,8 +412,8 @@ def edit_lesson(request, lesson_id):
             lesson.save()
             if bool(request.FILES.get('file_lesson', False)) == True:
                 lesson_file_form = request.FILES['file_lesson']
-                teacher_location = 'lessons/' + \
-                    str(request.user.username)
+                teacher_location = 'media/lessons/' + str(request.user.username)
+                lesson_location = teacher_location + '/'
                 fs = FileSystemStorage(location=teacher_location)
                 file_extension = pathlib.Path(lesson.name).suffix
                 lesson_file = fs.save(slugify(lesson.name)+file_extension, lesson)
