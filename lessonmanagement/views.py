@@ -411,6 +411,7 @@ def edit_lesson(request, lesson_id):
             lesson.edit_time = now
             lesson.save()
             if bool(request.FILES.get('file_lesson', False)) == True:
+                lesson = request.FILES['file_lesson']
                 teacher_location = 'media/lessons/' + str(request.user.username)
                 lesson_location = teacher_location + '/'
                 lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
