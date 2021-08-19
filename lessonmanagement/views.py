@@ -411,13 +411,12 @@ def edit_lesson(request, lesson_id):
             lesson.edit_time = now
             lesson.save()
             if bool(request.FILES.get('file_lesson', False)) == True:
-                lesson_file_form = request.FILES['file_lesson']
                 teacher_location = 'media/lessons/' + str(request.user.username)
                 lesson_location = teacher_location + '/'
-                fs = FileSystemStorage(location=teacher_location)
+                lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
+                fs = FileSystemStorage(location=lesson_location)
                 file_extension = pathlib.Path(lesson.name).suffix
                 lesson_file = fs.save(slugify(lesson.name)+file_extension, lesson)
-                lesson_location_withoutmedia = 'lessons/' + str(request.user.username) + '/'
                 lesson_path = lesson_location_withoutmedia + fs.get_valid_name(lesson_file)
                 lesson.lesson_path = lesson_path
                 lesson.save()
