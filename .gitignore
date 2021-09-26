@@ -1,6 +1,5 @@
-venv
+*.log
+*.pot
 *.pyc
-staticfiles
-.env
+__pycache__
 db.sqlite3
-getting-started/*
