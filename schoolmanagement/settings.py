@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -78,13 +79,24 @@ WSGI_APPLICATION = 'schoolmanagement.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE" : "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3")
+
+    'default': {
+
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+
+        'NAME': 'd90ksastpk6n2p',
+
+        'USER': 'ajiqsuynxsavjz',
+
+        'PASSWORD': '35203cceb0469992cb0c6cf22e60945bf2aefc82cde67863eead3c204d0b6b8b',
+
+        'HOST': 'ec2-54-145-110-118.compute-1.amazonaws.com',
+
+        'PORT': '5432',
+
     }
+
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -127,6 +139,7 @@ MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = "/static/"
+django_heroku.settings(locals())
 
 
 
