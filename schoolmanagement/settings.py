@@ -12,10 +12,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -74,29 +73,39 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'schoolmanagement.wsgi.application'
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
 
-    'default': {
 
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+# DATABASES = {
 
-        'NAME': 'd90ksastpk6n2p',
+#     'default': {
 
-        'USER': 'ajiqsuynxsavjz',
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'PASSWORD': '35203cceb0469992cb0c6cf22e60945bf2aefc82cde67863eead3c204d0b6b8b',
+#         'NAME': 'd90ksastpk6n2p',
 
-        'HOST': 'ec2-54-145-110-118.compute-1.amazonaws.com',
+#         'USER': 'ajiqsuynxsavjz',
 
-        'PORT': '5432',
+#         'PASSWORD': '35203cceb0469992cb0c6cf22e60945bf2aefc82cde67863eead3c204d0b6b8b',
 
-    }
+#         'HOST': 'ec2-54-145-110-118.compute-1.amazonaws.com',
 
-}
+#         'PORT': '5432',
+
+#     }
+
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -137,9 +146,7 @@ USE_TZ = True
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = "/static/"
-django_heroku.settings(locals())
+STATIC_URL = '/static/'
 
 
 
