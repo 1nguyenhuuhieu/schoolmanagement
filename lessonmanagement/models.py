@@ -522,6 +522,15 @@ class LessonSchedule(models.Model):
         
     def dayofweek(self):
         return self.teach_date_schedule.weekday()
+    def list_classyear(self):
+        classyears = ""
+        for i in LessonSchedule.objects.filter(lesson=self.lesson,
+        teach_date_schedule=self.teach_date_schedule,
+        session=self.session,
+        order_schedule=self.order_schedule
+        ):
+            classyears += (str(i.classyear) + ", ")
+        return classyears
 
     class Meta:
         # 1 lần chỉ dạy 1 lớp

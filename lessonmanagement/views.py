@@ -451,6 +451,7 @@ def schedule(request, username_url, url_week=99):
     # lịch báo giảng của tuần thứ <week> lấy theo URL
     schedule_all = lessons.filter(week=c_week)
     schedule_morning = schedule_all.filter(session='morning')
+
     schedule_afternoon = schedule_all.filter(session='afternoon')
     # lấy ngày thứ hai của năm <schoolyear> và tuần <week> from URL
     monday = monday_week_schoolyear(schoolyear, c_week)
