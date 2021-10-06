@@ -81,7 +81,7 @@ rn = {{i.order_schedule}};
 // Thứ mấy
 cn = {{i.dayofweek|add:1}};
 // Nội dung
-content = "<small><span class='badge {% if i.lesson.status == "pending"%}bg-warning{%elif i.lesson.status == "acept"%}bg-success{%else%}bg-danger{%endif%} me-2'>{{ i.lesson.get_status_display }}</span><span class='badge bg-primary me-2'>{{ i.lesson.subject.subject.title }} {{ i.lesson.subject.subject.title }} {{i.list_classyear}} </span><span class='badge bg-primary me-2'>Bài {{ i.lesson.number_lesson }} </span><br>{{ i.lesson.title }}</small>";  
+content = "<small><span class='badge {% if i.lesson.status == "pending"%}bg-warning{%elif i.lesson.status == "acept"%}bg-success{%else%}bg-danger{%endif%} me-2'>{{ i.lesson.get_status_display }}</span><span class='badge bg-primary me-2'>{{ i.lesson.subject.subject.title }} {{i.list_classyear}} </span><span class='badge bg-primary me-2'>Bài {{ i.lesson.number_lesson }} </span><br>{{ i.lesson.title }}</small>";  
 var x=document.getElementById('afternoon_table').rows[parseInt(rn,10)].cells;
 x[parseInt(cn,10)].innerHTML=content;
 x[parseInt(cn,10)].setAttribute("name", "{{ i.lesson.id }}"); 
