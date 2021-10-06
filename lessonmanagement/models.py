@@ -540,3 +540,10 @@ class LessonSchedule(models.Model):
     
     def __str__(self):
         return '%s %s' % (self.lesson, self.classyear)
+
+
+class LectureFile(models.Model):
+    title = models.CharField(max_length=100)
+    file = models.FileField(upload_to="test")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_upload = models.DateTimeField(auto_now=True)

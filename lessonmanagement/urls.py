@@ -39,4 +39,7 @@ urlpatterns = [
 
     path('teacher/<int:teacher_id>/', views.teacher, name='teacher'),
 
+    #Tải lên file
+    path('upload/', views.upload_file, name='upload'),
+
 ] 
