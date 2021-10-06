@@ -457,8 +457,11 @@ def schedule(request, username_url, url_week=99):
     #dữ liệu để thêm vào lịch báo giảng
     all_lesson = Lesson.objects.filter(
         teacher=teacher,
-        schoolyear=schoolyear,
-        week=c_week
+        schoolyear=schoolyear
+        
+        # Chỉ cho add trong tuần đó
+        # week=c_week
+
         ).order_by(
             'subject__subjectclassyear__classyear'
             ).values(

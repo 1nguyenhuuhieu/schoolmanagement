@@ -524,7 +524,8 @@ class LessonSchedule(models.Model):
         return self.teach_date_schedule.weekday()
 
     class Meta:
-        unique_together = ('teach_date_schedule', 'session', 'order_schedule', 'lesson')
+        # 1 lần chỉ dạy 1 lớp
+        # unique_together = ('teach_date_schedule', 'session', 'order_schedule', 'lesson')
         verbose_name = 'Lịch báo giảng'
         verbose_name_plural = 'Lịch báo giảng'
     
