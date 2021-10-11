@@ -7,7 +7,7 @@ from django.utils.text import slugify
 from django.utils import timezone
 
 # thời gian có thể sửa giáo án sau khi upload tính bằng phút
-TIME_OUT_EDIT = 10
+TIME_OUT_EDIT = 1440
 
 LEVEL_CHOICES = [
         (6, 6),
