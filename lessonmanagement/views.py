@@ -19,6 +19,8 @@ from django.db import models
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
+from django.http import HttpResponseRedirect
+from .forms import *
 import pathlib
 
 def f_schoolyear():
@@ -746,3 +748,16 @@ def dashboard(request, week=99):
     }
 
     return render(request, 'dashboard/home.html', context)
+
+
+def upload_file(request):
+    if request.method == 'POST':
+        form = LectureFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            # file is saved
+            form.save()
+            return HttpResponseRedirect('/success/url/')
+    else:
+        form = LectureFileForm()
+        form.fields['user'].initial = request.user.id
+    return render(request, 'upload.html', {'form': form})
