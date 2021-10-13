@@ -31,8 +31,6 @@ class ClassyearManagerInline(admin.TabularInline):
     model = ClassyearManager
     extra = 1
 
-class GroupSubjectManagerInline(admin.TabularInline):
-    model = GroupSubjectManager
 
 class SubjectDetailInline(admin.TabularInline):
     model = SubjectDetail
@@ -74,8 +72,7 @@ class SchoolAdmin(admin.ModelAdmin):
     pass
 @admin.register(Subject)
 class SubjectAdmin(ImportExportModelAdmin):
-    list_display = ('title', 'group' )
-    list_filter = ('group', )
+    list_display = ('title', )
     exclude = ('subject_slug',)
     inlines = [SubjectDetailInline, SubjectManagerInline ]
     resource_class = SubjectResource
@@ -86,10 +83,7 @@ class SubjectLesson(ImportExportModelAdmin):
     list_display = ('subject', 'number_lesson','title')
     resource_class = SubjectLessonResource
 
-@admin.register(GroupSubject)
-class SchoolAdmin(admin.ModelAdmin):
-    list_display = ( 'title', )
-    
+
 @admin.register(SubjectManager)
 class SubjectManagerAdmin(admin.ModelAdmin):
     date_hierarchy = 'startdate'
@@ -106,9 +100,6 @@ class ClassyearAdmin(ImportExportModelAdmin):
 class ClassyearManagerAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(GroupSubjectManager)
-class GroupSubjectManagerAdmin(admin.ModelAdmin):
-    pass
 
 @admin.register(Teacher)
 class TeacherAdmin(ImportExportModelAdmin):
@@ -120,7 +111,7 @@ class TeacherAdmin(ImportExportModelAdmin):
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
     date_hierarchy = 'upload_time'
-    list_filter = ('subject', 'subject__subject__group__title','teacher__lastname','status','checker')
+    list_filter = ('subject', 'teacher__lastname','status','checker')
 
 @admin.register(LessonSchedule)
 class LessonScheduleAdmin(ImportExportModelAdmin):

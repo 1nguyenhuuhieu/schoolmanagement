@@ -349,29 +349,10 @@ class ClassyearManager(MembershipAbstract):
     def __str__(self):
         return self.classyear.__str__()
 
-# BỘ MÔN
-class GroupSubject(SchoolAbstract):
-    class Meta:
-        verbose_name = "Bộ môn"
-        verbose_name_plural = "Bộ môn"
 
-# QUẢN LÝ BỘ MÔN
-class GroupSubjectManager(MembershipAbstract):
-    group = models.ForeignKey(GroupSubject, on_delete=models.CASCADE)
-    ROLE_CHOICES = [
-    ('submanager', 'Phó bộ môn'),
-    ('manager', 'Trưởng bộ môn'),
-    ]
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
-    class Meta:
-        verbose_name = "Quản lý Bộ Môn"
-        verbose_name_plural = "Quản lý Bộ Môn"
-    def __str__(self):
-        return '%s %s ' % (self.teacher.full_name(),  self.group.title)
 
 # MÔN HỌC
 class Subject(SchoolAbstract):
-    group = models.ForeignKey(GroupSubject,on_delete=models.CASCADE, verbose_name='Bộ môn')
     subject_slug = models.SlugField(max_length=50, null=True, blank=True)
     def teachers(self):
         return Teacher.objects.filter(
