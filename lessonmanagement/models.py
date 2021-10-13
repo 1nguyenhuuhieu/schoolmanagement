@@ -205,10 +205,6 @@ class Teacher(models.Model):
     def managers(self):
         managers = {}
         teacher = self.user.teacher.id
-        group_manager = GroupSubjectManager.objects.filter(teacher=teacher).filter(is_active=True)
-        if group_manager:
-            group_manager = group_manager.latest('-id')
-            managers['group'] = group_manager
         school_manager = SchoolManager.objects.filter(teacher=teacher).filter(is_active=True)
         if school_manager:
             school_manager = school_manager.latest('-id')
