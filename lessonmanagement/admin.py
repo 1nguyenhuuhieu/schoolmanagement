@@ -61,6 +61,11 @@ class SubjectDetailResource(resources.ModelResource):
     class Meta:
         model = SubjectDetail
         fields = ('id', 'subject', 'subject__title', 'level', 'total_lesson' ,'week_lesson')
+
+class SubjectClassyearResource(resources.ModelResource):
+    class Meta:
+        model = SubjectClassyear
+
 class TeacherResource(resources.ModelResource):
     class Meta:
         model = Teacher
@@ -119,10 +124,11 @@ class LessonScheduleAdmin(ImportExportModelAdmin):
    
 
 @admin.register(SubjectClassyear)
-class SubjectClassyearAdmin(admin.ModelAdmin):
+class SubjectClassyearAdmin(ImportExportModelAdmin):
     list_display = ('teacher','subject', 'classyear_list', 'schoolyear','is_active')
     list_filter = ('classyear', 'subject__subject__title', 'schoolyear', 'is_active')
     form = SubjectClassyearForm
+    resource_class = SubjectClassyearResource
 
 @admin.register(SchoolManager)
 class SchoolManagerAdmin(admin.ModelAdmin):
