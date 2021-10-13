@@ -137,7 +137,3 @@ class SchoolyearAdmin(ImportExportModelAdmin):
 class SubjectDetailAdmin(ImportExportModelAdmin):
 
     resource_class = SubjectDetailResource
-
-@admin.register(LectureFile)
-class LectureFileAdmin(admin.ModelAdmin):
-    pass
