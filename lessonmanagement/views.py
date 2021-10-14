@@ -543,6 +543,7 @@ def schedule(request, username_url, url_week=99):
         return redirect('schedule',username_url=username, url_week=week_search, permanent=True)
     return render(request, 'schedule/schedule.html', context)
 
+
 # không tìm thấy lịch báo giảng với năm học đã cho từ URL
 def emptyschedule(request):
     context = {
