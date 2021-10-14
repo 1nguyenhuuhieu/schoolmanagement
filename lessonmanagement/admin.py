@@ -39,7 +39,9 @@ class SubjectDetailInline(admin.TabularInline):
 class ClassyearResource(resources.ModelResource):
     class Meta:
         model = Classyear
-
+class LessonResource(resources.ModelResource):
+    class Meta:
+        model = Lesson
 class LessonScheduleResource(resources.ModelResource):
     class Meta:
         model = LessonSchedule
@@ -114,9 +116,10 @@ class TeacherAdmin(ImportExportModelAdmin):
     resource_class = TeacherResource
 
 @admin.register(Lesson)
-class LessonAdmin(admin.ModelAdmin):
+class LessonAdmin(ImportExportModelAdmin):
     date_hierarchy = 'upload_time'
     list_filter = ('subject', 'teacher__lastname','status','checker')
+    resource_class = LessonResource
 
 @admin.register(LessonSchedule)
 class LessonScheduleAdmin(ImportExportModelAdmin):
