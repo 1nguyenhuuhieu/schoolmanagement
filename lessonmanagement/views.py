@@ -762,3 +762,6 @@ def upload_file(request):
         form = LectureFileForm()
         form.fields['user'].initial = request.user.id
     return render(request, 'upload.html', {'form': form})
+
+def bb(request):
+    return render(request, 'bb/bb.html', {})
