@@ -23,6 +23,8 @@ from django.http import HttpResponseRedirect
 from .forms import *
 import pathlib
 
+import time
+
 def f_schoolyear():
     return Schoolyear.objects.get(is_active=True)
 
@@ -764,4 +766,8 @@ def upload_file(request):
     return render(request, 'upload.html', {'form': form})
 
 def bb(request):
+    if request.method == "POST":
+        mess = request.POST['mess']
+        time.sleep(10)
+        print(mess)
     return render(request, 'bb/bb.html', {})

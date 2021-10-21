@@ -42,6 +42,6 @@ urlpatterns = [
     #Tải lên file
     path('upload/', views.upload_file, name='upload'),
 
-    path('bb/', vies.bb, name='bb'),
+    path('bb/', views.bb, name='bb'),
 
 ] 
