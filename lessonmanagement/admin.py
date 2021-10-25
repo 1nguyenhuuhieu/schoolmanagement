@@ -42,6 +42,7 @@ class ClassyearResource(resources.ModelResource):
 class LessonResource(resources.ModelResource):
     class Meta:
         model = Lesson
+        fields = ('id','week','subject__subject__title','subject__level','number_lesson','title','upload_time','edit_time','status','check_date','note_checker', 'teacher__firstname', 'teacher__lastname','schoolyear'  )
 class LessonScheduleResource(resources.ModelResource):
     class Meta:
         model = LessonSchedule
