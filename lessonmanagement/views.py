@@ -766,8 +766,4 @@ def upload_file(request):
     return render(request, 'upload.html', {'form': form})
 
 def bb(request):
-    if request.method == "POST":
-        mess = request.POST['mess']
-        time.sleep(10)
-        print(mess)
     return render(request, 'bb/bb.html', {})

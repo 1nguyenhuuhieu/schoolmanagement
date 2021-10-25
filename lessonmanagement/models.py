@@ -524,3 +524,7 @@ class LectureFile(models.Model):
     file = models.FileField(upload_to="test")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_upload = models.DateTimeField(auto_now=True)
+
+
+class Chat(models.Model):
+    mess = models.CharField(max_length=1000)
