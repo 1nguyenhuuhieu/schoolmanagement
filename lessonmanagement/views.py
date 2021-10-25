@@ -766,4 +766,17 @@ def upload_file(request):
     return render(request, 'upload.html', {'form': form})
 
 def bb(request):
-    return render(request, 'bb/bb.html', {})
+    is_acept = False
+    if request.method == "POST":
+        form = CheckForm(request.POST)
+        if request.POST['pwd'] == "123":
+
+            is_acept = True
+            form = CheckForm()
+    else:
+        form = CheckForm()
+    context = {
+        'form': form,
+        'is_acept' : is_acept
+    }
+    return render(request, 'bb/bb.html', context)

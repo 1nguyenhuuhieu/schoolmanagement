@@ -7,3 +7,6 @@ class LectureFileForm(ModelForm):
         model = LectureFile
         fields = ['title', 'file', 'user']
         widgets = {'user': forms.HiddenInput()}
+
+class CheckForm(forms.Form):
+    pwd = forms.PasswordInput()
