@@ -108,12 +108,8 @@ def now_week_schoolyear(schoolyear):
 # đổi ngày bất kì sang tuần tương ứng của năm học
 def day_week_schoolyear(schoolyear, d):
     start_day = schoolyear.start_date
-    print("start_day: %s",start_day )
-    print()
     start_monday = start_day + datetime.timedelta(days=-start_day.weekday())
     week = (d - start_monday)/7
-    print(d)
-    print("start_monday: %s",start_monday )
     return week.days
 
 # lấy ngày thứ hai của tuần năm học
