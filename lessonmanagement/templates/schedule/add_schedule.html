@@ -39,8 +39,8 @@
                   </select>
             </div>
             <div class="col-lg-4">
-              {% now "Y" as now_year %}
-              
+              {{ request.user.teacher }}
+              <h5>test</h5>
                 <label for="schedule" class="form-label">Ngày giảng dạy</label>
 
                 <input class="form-control" type="date" id="schedule" name="schedule_date" required min="{{ now_year  }}">
