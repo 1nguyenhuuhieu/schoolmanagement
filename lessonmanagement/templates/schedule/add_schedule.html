@@ -40,10 +40,10 @@
             </div>
             <div class="col-lg-4">
               {% now "Y" as now_year %}
-              {{ now_year  }}
+              
                 <label for="schedule" class="form-label">Ngày giảng dạy</label>
 
-                <input class="form-control" type="date" id="schedule" name="schedule_date" required>
+                <input class="form-control" type="date" id="schedule" name="schedule_date" required min="{{ now_year  }}">
             </div>
             <div class="col-lg-2">
                 <label for="session" class="form-label">Buổi</label>
