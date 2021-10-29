@@ -581,7 +581,7 @@ def add_schedule(request):
         lesson_id = request.POST['lesson']
         lesson = Lesson.objects.get(pk=lesson_id)
         new_schedule = LessonSchedule(lesson=lesson, classyear=classyear, session=session_schedule, order_schedule=order_schedule, teach_date_schedule=schedule_date)
-        print("Năm tải lên giáo án:",new_schedule.teach_date_schedule.year)
+        print("Năm tải lên giáo án:",schedule_date)
         new_schedule.save()
 
         q = LessonSchedule.objects.get(pk=new_schedule.id)
