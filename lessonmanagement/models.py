@@ -109,6 +109,8 @@ def now_week_schoolyear(schoolyear):
 def day_week_schoolyear(schoolyear, d):
     start_day = schoolyear.start_date
     print(start_day)
+    print("-+++")
+    print(start_day.weekday())
     start_monday = start_day + datetime.timedelta(days=-start_day.weekday())
     week = (d - start_monday)/7
     print(d)
