@@ -124,6 +124,7 @@ class LessonAdmin(ImportExportModelAdmin):
 
 @admin.register(LessonSchedule)
 class LessonScheduleAdmin(ImportExportModelAdmin):
+    list_filter = ('lesson__teacher', 'lesson_subject')
     resource_class = LessonScheduleResource
    
 
