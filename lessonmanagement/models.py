@@ -110,6 +110,9 @@ def day_week_schoolyear(schoolyear, d):
     start_day = schoolyear.start_date
     start_monday = start_day + datetime.timedelta(days=-start_day.weekday())
     week = (d - start_monday)/7
+    print(d)
+    print("---")
+    print(start_monday)
     return week.days
 
 # lấy ngày thứ hai của tuần năm học
