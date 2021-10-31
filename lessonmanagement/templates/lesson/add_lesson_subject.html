@@ -65,7 +65,7 @@
         <div class="me-3">
           <label for="startLesson" class="form-label">Bài giảng số</label>
           <input type="number" class="form-control" id="startLesson" name="start_lesson"
-            onchange="getLessonTitle()" value='{{ new_number_lesson }}' required>
+            onchange="getLessonTitle()" value='{{ new_number_lesson }}' required min="1">
           <div class="invalid-feedback">
             Phải chọn bài giảng số mấy
           </div>
