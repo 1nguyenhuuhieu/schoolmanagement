@@ -430,6 +430,16 @@ def edit_lesson(request, lesson_id):
     else:
         raise Http404("Không có quyền chỉnh sửa.")
 
+# xóa giáo án
+@login_required
+def removelesson(request, id):
+    lesson = Lesson.objects.get(
+        pk=id,
+        teacher=request.user.teacher
+        )
+    lesson.delete()
+
+    return redirect('index')
 # lịch báo giảng của năm học hiện tại
 def schedule(request, username_url, url_week=99):
     schoolyear = f_schoolyear()

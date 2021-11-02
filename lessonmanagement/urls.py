@@ -44,4 +44,7 @@ urlpatterns = [
 
     path('bb/', views.bb, name='bb'),
 
+    #xóa giáo án update ngày 02/11/2021
+    path('removelesson/<int:id>/', views.removelesson, name='removelesson'),
+
 ] 
