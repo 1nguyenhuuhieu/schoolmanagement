@@ -46,7 +46,7 @@ class LessonResource(resources.ModelResource):
 class LessonScheduleResource(resources.ModelResource):
     class Meta:
         model = LessonSchedule
-        fields = ('id', 'classyear', 'classyear__startyear__start_date','classyear__title','week','session', 'order_schedule', 'teach_date_schedule'  )
+        fields = ('id','lesson__title','lesson__number_lesson','classyear__startyear__start_date', 'classyear__title','lesson__teacher__firstname','lesson__teacher__lastname', 'week','session', 'order_schedule', 'teach_date_schedule'  )
 class SubjectResource(resources.ModelResource):
     class Meta:
         model = Subject
@@ -124,7 +124,7 @@ class LessonAdmin(ImportExportModelAdmin):
 
 @admin.register(LessonSchedule)
 class LessonScheduleAdmin(ImportExportModelAdmin):
-    list_filter = ('lesson__teacher', 'lesson__subject', 'teach_date_schedule', 'week')
+    list_filter = ('lesson__teacher', 'lesson__subject', 'teach_date_schedule', 'week','classyear')
     resource_class = LessonScheduleResource
    
 
