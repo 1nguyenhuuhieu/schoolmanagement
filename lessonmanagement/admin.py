@@ -124,6 +124,7 @@ class LessonAdmin(ImportExportModelAdmin):
 
 @admin.register(LessonSchedule)
 class LessonScheduleAdmin(ImportExportModelAdmin):
+    date_hierarchy = 'lesson__upload_time'
     list_filter = ('lesson__teacher', 'lesson__subject', 'teach_date_schedule', 'week','classyear')
     resource_class = LessonScheduleResource
    
